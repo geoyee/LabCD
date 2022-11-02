@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/main">
+        <file>resources/Icon.png</file>
+    </qresource>
+    <qresource prefix="/menu">
+        <file>resources/File.png</file>
+        <file>resources/Folder.png</file>
+    </qresource>
+    <qresource prefix="/tools">
+        <file>resources/Enlarge.png</file>
+        <file>resources/Full.png</file>
+        <file>resources/Narrow.png</file>
+        <file>resources/Redo.png</file>
+        <file>resources/Undo.png</file>
+    </qresource>
+</RCC>

@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QString>
 #include "labcd.h"
+#include "widgets/labeltable.h"
 
 LabCD::LabCD(QWidget *parent)
     : QMainWindow(parent)
@@ -49,12 +50,16 @@ LabCD::LabCD(QWidget *parent)
 
     /* 图像文件列表 */
     QDockWidget* filesDock = new QDockWidget("图像列表", this);
+    filesDock->setMinimumWidth(200);
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, filesDock);
 
     /* 标签列表 */
     QDockWidget* labelsDock = new QDockWidget("标签列表", this);
+    labelsDock->setMinimumWidth(200);
     labelsDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    LabelTable* labTable = new LabelTable(this);
+    labelsDock->setWidget(labTable);
     addDockWidget(Qt::RightDockWidgetArea, labelsDock);
     
     /* 界面设置 */

@@ -37,5 +37,56 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="utils\label.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="widgets\labeltable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\colormap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\Enlarge.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\File.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Folder.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Full.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Narrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Redo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Undo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils\label.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\colormap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="widgets\labeltable.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="configs\colormap.txt" />
   </ItemGroup>
 </Project>

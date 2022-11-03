@@ -109,10 +109,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="utils\colormap.cpp" />
+    <ClCompile Include="utils\label.cpp" />
+    <ClCompile Include="widgets\labeltable.cpp" />
     <QtRcc Include="labcd.qrc" />
     <QtMoc Include="labcd.h" />
     <ClCompile Include="labcd.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\Enlarge.png" />
+    <Image Include="resources\File.png" />
+    <Image Include="resources\Folder.png" />
+    <Image Include="resources\Full.png" />
+    <Image Include="resources\Icon.png" />
+    <Image Include="resources\Narrow.png" />
+    <Image Include="resources\Redo.png" />
+    <Image Include="resources\Undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils\colormap.h" />
+    <ClInclude Include="utils\label.h" />
+    <QtMoc Include="widgets\labeltable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="configs\colormap.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

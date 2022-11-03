@@ -13,4 +13,11 @@
         <file>resources/Redo.png</file>
         <file>resources/Undo.png</file>
     </qresource>
+    <qresource prefix="/docks">
+        <file>resources/AddLabel.png</file>
+        <file>resources/Delete.png</file>
+    </qresource>
+    <qresource prefix="/configs">
+        <file>configs/colormap.txt</file>
+    </qresource>
 </RCC>

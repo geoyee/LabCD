@@ -3,7 +3,6 @@
         <file>resources/Icon.png</file>
     </qresource>
     <qresource prefix="/menu">
-        <file>resources/File.png</file>
         <file>resources/Folder.png</file>
     </qresource>
     <qresource prefix="/tools">

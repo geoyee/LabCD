@@ -110,7 +110,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="utils\colormap.cpp" />
+    <ClCompile Include="utils\fileworker.cpp" />
     <ClCompile Include="utils\label.cpp" />
+    <ClCompile Include="widgets\filelist.cpp" />
     <ClCompile Include="widgets\labeltable.cpp" />
     <QtRcc Include="labcd.qrc" />
     <QtMoc Include="labcd.h" />
@@ -118,8 +120,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\AddLabel.png" />
+    <Image Include="resources\Delete.png" />
     <Image Include="resources\Enlarge.png" />
-    <Image Include="resources\File.png" />
     <Image Include="resources\Folder.png" />
     <Image Include="resources\Full.png" />
     <Image Include="resources\Icon.png" />
@@ -129,7 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\colormap.h" />
+    <ClInclude Include="utils\fileworker.h" />
     <ClInclude Include="utils\label.h" />
+    <QtMoc Include="widgets\filelist.h" />
     <QtMoc Include="widgets\labeltable.h" />
   </ItemGroup>
   <ItemGroup>

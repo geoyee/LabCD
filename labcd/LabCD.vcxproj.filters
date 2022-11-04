@@ -46,12 +46,15 @@
     <ClCompile Include="utils\colormap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="widgets\filelist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\fileworker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\Enlarge.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\File.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\Folder.png">
@@ -72,6 +75,12 @@
     <Image Include="resources\Undo.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\AddLabel.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Delete.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">
@@ -80,9 +89,15 @@
     <ClInclude Include="utils\colormap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\fileworker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="widgets\labeltable.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="widgets\filelist.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

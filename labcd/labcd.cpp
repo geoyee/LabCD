@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QString>
 #include "labcd.h"
-#include "widgets/labeltable.h"
+#include "utils/fileworker.h"
 
 LabCD::LabCD(QWidget *parent)
     : QMainWindow(parent)
@@ -20,10 +20,9 @@ LabCD::LabCD(QWidget *parent)
     /* 菜单栏 */
     QMenuBar* lcdMenuBar = menuBar();
     QMenu* fileMenu = new QMenu("文件", this);
-    QAction* openAct = fileMenu->addAction(
-        QIcon(":/menu/resources/File.png"), "打开文件");
     QAction* opensAct = fileMenu->addAction(
         QIcon(":/menu/resources/Folder.png"), "打开文件夹");
+    connect(opensAct, &QAction::triggered, this, &LabCD::openDir);
     lcdMenuBar->addMenu(fileMenu);
     QMenu* aboutMenu = new QMenu("关于", this);
     lcdMenuBar->addMenu(aboutMenu);
@@ -49,17 +48,19 @@ LabCD::LabCD(QWidget *parent)
     setCentralWidget(canvas);
 
     /* 图像文件列表 */
-    QDockWidget* filesDock = new QDockWidget("图像列表", this);
+    QDockWidget* filesDock = new QDockWidget("数据列表", this);
     filesDock->setMinimumWidth(200);
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    fListWidget = new FileList(this);
+    filesDock->setWidget(fListWidget);
     addDockWidget(Qt::RightDockWidgetArea, filesDock);
 
     /* 标签列表 */
     QDockWidget* labelsDock = new QDockWidget("标签列表", this);
     labelsDock->setMinimumWidth(200);
     labelsDock->setAllowedAreas(Qt::RightDockWidgetArea);
-    LabelTable* labTable = new LabelTable(this);
-    labelsDock->setWidget(labTable);
+    labTableWidget = new LabelTable(this);
+    labelsDock->setWidget(labTableWidget);
     addDockWidget(Qt::RightDockWidgetArea, labelsDock);
     
     /* 界面设置 */
@@ -71,4 +72,14 @@ LabCD::LabCD(QWidget *parent)
 LabCD::~LabCD()
 {
 
+}
+
+void LabCD::openDir()
+{
+    QStringList t1List;
+    QStringList t2List;
+    if (FileWorker::openImageDir(&t1List, &t2List, this))
+    {
+        fListWidget->addFileNames(t1List, t2List);
+    }
 }

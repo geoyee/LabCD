@@ -15,6 +15,10 @@ bool FileWorker::openImageDir(
         QString(),
         QFileDialog::ShowDirsOnly
     );
+    if (dirPath.isEmpty())
+    {
+        return false;
+    }
     
     QDir dir(dirPath);
     QStringList subDirList;
@@ -31,7 +35,8 @@ bool FileWorker::openImageDir(
     else  // 获取所有图像
     {
         QStringList nameFilters;
-        nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
+        nameFilters << "*.jpg" << "*.jpeg" << "*.png";
+        // nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
         QDir dirT1(dirPath + "/" + subDirList.at(0));
         QStringList t1ListTmp = (dirT1).entryList(
             nameFilters, QDir::Readable | QDir::Files, QDir::Name);

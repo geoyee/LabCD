@@ -12,9 +12,9 @@ class LabelTable : public QWidget
 	Q_OBJECT
 
 private:
-	QTableWidget* labelTable;
-	Label* nowLabel;
-	ColorMap* cMap;
+	QTableWidget* labelTable = nullptr;
+	Label* nowLabel = nullptr;
+	ColorMap* cMap = nullptr;
 
 public:
 	LabelTable(QWidget *parent = nullptr);

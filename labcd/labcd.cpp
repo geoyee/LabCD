@@ -44,14 +44,17 @@ LabCD::LabCD(QWidget *parent)
     addToolBar(Qt::LeftToolBarArea, lcdToolBar);
 
     /* 绘图界面 */
-    QGraphicsView* canvas = new QGraphicsView(this);
-    setCentralWidget(canvas);
+    drawCanvas = new MultCanvas(this);
+    setCentralWidget(drawCanvas);
 
     /* 图像文件列表 */
     QDockWidget* filesDock = new QDockWidget("数据列表", this);
     filesDock->setMinimumWidth(200);
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
     fListWidget = new FileList(this);
+    connect(fListWidget, &FileList::FileClickRequest, \
+        [=](QString t1Path, QString t2Path) {drawCanvas->loadImages(t1Path, t2Path); }
+    );  // 加载图像
     filesDock->setWidget(fListWidget);
     addDockWidget(Qt::RightDockWidgetArea, filesDock);
 
@@ -64,7 +67,7 @@ LabCD::LabCD(QWidget *parent)
     addDockWidget(Qt::RightDockWidgetArea, labelsDock);
     
     /* 界面设置 */
-    resize(800, 600);
+    resize(1000, 600);
     setWindowTitle("LabCD - 遥感变化检测标注工具");
     setWindowIcon(QIcon(":/main/resources/Icon.png"));
 }

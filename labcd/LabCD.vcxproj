@@ -111,7 +111,12 @@
   <ItemGroup>
     <ClCompile Include="utils\colormap.cpp" />
     <ClCompile Include="utils\fileworker.cpp" />
+    <ClCompile Include="utils\imgpress.cpp" />
     <ClCompile Include="utils\label.cpp" />
+    <ClCompile Include="widgets\annotationscence.cpp" />
+    <ClCompile Include="widgets\annotationview.cpp" />
+    <ClCompile Include="widgets\canvas.cpp" />
+    <ClCompile Include="widgets\multcanvas.cpp" />
     <ClCompile Include="widgets\filelist.cpp" />
     <ClCompile Include="widgets\labeltable.cpp" />
     <QtRcc Include="labcd.qrc" />
@@ -133,7 +138,12 @@
   <ItemGroup>
     <ClInclude Include="utils\colormap.h" />
     <ClInclude Include="utils\fileworker.h" />
+    <ClInclude Include="utils\imgpress.h" />
     <ClInclude Include="utils\label.h" />
+    <QtMoc Include="widgets\annotationscence.h" />
+    <QtMoc Include="widgets\annotationview.h" />
+    <QtMoc Include="widgets\canvas.h" />
+    <QtMoc Include="widgets\multcanvas.h" />
     <QtMoc Include="widgets\filelist.h" />
     <QtMoc Include="widgets\labeltable.h" />
   </ItemGroup>

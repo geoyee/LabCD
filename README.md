@@ -19,6 +19,12 @@
 - [ ] 项目管理
 - [ ] 更多功能
 
+## BUG
+
+- 左右图像同步存在问题
+
+参考改进：[在两个 qgraphicsview 对象之间链接缩放](https://www.imooc.com/wenda/detail/669911)
+
 ## 资源来源
 
 - 图标：[SuperMap GIS产品彩色系功能图标库](https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=32519)

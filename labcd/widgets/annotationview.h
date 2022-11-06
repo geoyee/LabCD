@@ -27,6 +27,7 @@ public:
 		QWidget *parent = nullptr
 	);
 	~AnnotationView();
+	bool checkZoomAll();
 	void setZoomAll(double value);
 	double getZoomAll();
 	// 事件
@@ -42,5 +43,5 @@ signals:
 	// 同步信号
 	void syncWheel(int x, int y, double zoom);
 	void syncMove(int x, int y, double zoom = 1);
-	void syncScroll(int hValue, int vValue);
+	void syncScroll(int hPos, int vPos);
 };

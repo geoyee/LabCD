@@ -24,6 +24,6 @@ public:
 	void scroolTranslate(int hPos, int vPos);
 
 signals:
-	void syncCanvas(int x, int y, double zoom);
-	void syncScroll(int hValue, int vValue);
+	void syncCanvas(int x, int y, double zoom); 
+	void syncScroll(int hPos, int vPos);
 };

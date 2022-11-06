@@ -35,6 +35,18 @@ double AnnotationView::limitZoom(double min, double now, double max)
 	}
 }
 
+bool AnnotationView::checkZoomAll()
+{
+	if (zoomAll != minRange and zoomAll != maxRange)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void  AnnotationView::setZoomAll(double value)
 {
 	zoomAll = value;
@@ -54,7 +66,7 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 		zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
 		emit zoomRequest(zoomAll);
 		// 限制缩放
-		if (zoomAll != minRange and zoomAll != maxRange)
+		if (AnnotationView::checkZoomAll())
 		{
 			QPointF oldPos = this->mapToScene(ev->position().toPoint());
 			this->scale(zoom, zoom);

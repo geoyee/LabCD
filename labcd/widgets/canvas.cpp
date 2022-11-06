@@ -67,8 +67,10 @@ void Canvas::loadImageFromPixmap(QPixmap pixmap)
 void Canvas::viewTranslate(int x, int y, double zoom)
 {
 	aView->setZoomAll(aView->getZoomAll() * zoom);
-	aView->scale(zoom, zoom);
-	aView->translate(x, y);
+	if (aView->checkZoomAll()) {
+		aView->scale(zoom, zoom);
+		aView->translate(x, y);
+	}
 }
 
 void Canvas::scroolTranslate(int hPos, int vPos)

@@ -1,4 +1,5 @@
 ﻿#include <QGridLayout>
+#include <QScrollBar>
 #include <opencv2/opencv.hpp>
 #include "multcanvas.h"
 #include "../utils/imgpress.h"
@@ -18,6 +19,9 @@ MultCanvas::MultCanvas(QWidget *parent)
 	// 同步垂直和水平滑动条位置
 	connect(t1Canva, &Canvas::syncScroll, t2Canva, &Canvas::scroolTranslate);
 	connect(t2Canva, &Canvas::syncScroll, t1Canva, &Canvas::scroolTranslate);
+	// 同步zoomAll
+	connect(t1Canva, &Canvas::syncZoomAll, t2Canva, &Canvas::setZoomAll);
+	connect(t2Canva, &Canvas::syncZoomAll, t1Canva, &Canvas::setZoomAll);
 	setLayout(gLayout);
 }
 

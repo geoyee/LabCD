@@ -19,7 +19,6 @@ private:
 	double maxRange = 50;
 	double zoomAll = 1;
 	
-
 	double limitZoom(double min, double now, double max);
 
 public:

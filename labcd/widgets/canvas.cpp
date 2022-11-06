@@ -19,6 +19,13 @@ Canvas::Canvas(QWidget *parent)
 	connect(aView, &AnnotationView::syncWheel, this, &Canvas::syncCanvas);
 	connect(aView, &AnnotationView::syncMove, this, &Canvas::syncCanvas);
 	connect(aView, &AnnotationView::syncScroll, this, &Canvas::syncScroll);
+	// 保持滑动滑块的时候也能同步
+	connect(aView->horizontalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
+		emit syncScroll(value, aView->verticalScrollBar()->value());
+	});
+	connect(aView->verticalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
+		emit syncScroll(aView->horizontalScrollBar()->value(), value);
+	});
 	// 加载
 	setWidget(aView);
 }

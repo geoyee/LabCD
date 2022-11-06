@@ -33,6 +33,6 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path)
 	QPixmap t2;
 	t2.load(t2Path);
 	t1Canva->loadImageFromPixmap(t1);
-	t2Canva->loadImageFromPixmap(t1);
+	t2Canva->loadImageFromPixmap(t2);
 	// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);  // 鹰眼图
 }

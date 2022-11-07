@@ -35,6 +35,16 @@ double AnnotationView::limitZoom(double min, double now, double max)
 	}
 }
 
+void AnnotationView::sendSyncSignal()
+{
+	emit syncRequest(
+		this->horizontalScrollBar()->value(),
+		this->verticalScrollBar()->value(),
+		this->transform(),
+		zoomAll
+	);
+}
+
 bool AnnotationView::checkZoomAll()
 {
 	if (zoomAll != minRange and zoomAll != maxRange)
@@ -57,6 +67,14 @@ double AnnotationView::getZoomAll()
 	return zoomAll;
 }
 
+void AnnotationView::syncTranslate(int hPos, int vPos, QTransform tf, double zoom)
+{
+	zoomAll = zoom;
+	this->setTransform(tf);
+	this->horizontalScrollBar()->setValue(hPos);
+	this->verticalScrollBar()->setValue(vPos);
+}
+
 void AnnotationView::wheelEvent(QWheelEvent* ev)
 {
 	if (ev->modifiers() && Qt::ControlModifier)
@@ -73,7 +91,6 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 			QPointF newPos = this->mapToScene(ev->position().toPoint());
 			QPointF delta = newPos - oldPos;
 			this->translate(delta.x(), delta.y());
-			emit syncWheel(delta.x(), delta.y(), zoom);
 		}
 		ev->ignore();  // 忽略滚动条
 	}
@@ -81,10 +98,6 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 	{
 		QGraphicsView::wheelEvent(ev);
 	}
-	emit syncScroll(
-		this->horizontalScrollBar()->value(),
-		this->verticalScrollBar()->value()
-	);
 }
 
 void AnnotationView::mouseMoveEvent(QMouseEvent* ev)
@@ -99,11 +112,6 @@ void AnnotationView::mouseMoveEvent(QMouseEvent* ev)
 		point = new QPoint(*point + *endPos);
 		startPos = new QPoint(ev->pos());
 		this->translate(endPos->x(), endPos->y());
-		emit syncMove(endPos->x(), endPos->y());
-		emit syncScroll(
-			this->horizontalScrollBar()->value(),
-			this->verticalScrollBar()->value()
-		);
 	}
 	QGraphicsView::mouseMoveEvent(ev);
 }
@@ -128,4 +136,16 @@ void AnnotationView::leaveEvent(QEvent* ev)
 {
 	emit mousePosChanged(QPoint(-1, -1));
 	QGraphicsView::leaveEvent(ev);
+}
+
+void AnnotationView::scale(qreal sx, qreal sy)
+{
+	QGraphicsView::scale(sx, sy);
+	sendSyncSignal();
+}
+
+void AnnotationView::translate(qreal dx, qreal dy)
+{
+	QGraphicsView::translate(dx, dy);
+	sendSyncSignal();
 }

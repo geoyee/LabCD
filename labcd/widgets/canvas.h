@@ -20,10 +20,10 @@ public:
 	~Canvas();
 	void resetZoom(int width, int height);
 	void loadImageFromPixmap(QPixmap pixmap);
-	void viewTranslate(int x, int y, double zoom = 1);
+	void syncViewTranslate(int hPos, int vPos, QTransform tf, double zoom);
 	void scroolTranslate(int hPos, int vPos);
 
 signals:
-	void syncCanvas(int x, int y, double zoom); 
-	void syncScroll(int hPos, int vPos);
+	void syncViewRequest(int hPos, int vPos, QTransform tf, double zoom);
+	void syncScroll(int hPos, int vPos);  // 滑块控制
 };

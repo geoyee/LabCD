@@ -14,8 +14,8 @@ MultCanvas::MultCanvas(QWidget *parent)
 	gLayout->addWidget(t2Canva, 0, 1);
 	/* 操作关联 */
 	// 同步鼠标移动缩放
-	connect(t1Canva, &Canvas::syncCanvas, t2Canva, &Canvas::viewTranslate);
-	connect(t2Canva, &Canvas::syncCanvas, t1Canva, &Canvas::viewTranslate);
+	connect(t1Canva, &Canvas::syncViewRequest, t2Canva, &Canvas::syncViewTranslate);
+	connect(t2Canva, &Canvas::syncViewRequest, t1Canva, &Canvas::syncViewTranslate);
 	// 同步垂直和水平滑动条位置
 	connect(t1Canva, &Canvas::syncScroll, t2Canva, &Canvas::scroolTranslate);
 	connect(t2Canva, &Canvas::syncScroll, t1Canva, &Canvas::scroolTranslate);

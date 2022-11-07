@@ -51,7 +51,7 @@ void Canvas::resetZoom(int width, int height)
 		aView->setZoomAll(scrContWidth);
 	}
 	aView->scale(aView->getZoomAll(), aView->getZoomAll());
-	// aScene.scale = aView->getZoomAll();
+	aScene->setScaleRate(aView->getZoomAll());
 }
 
 void Canvas::loadImageFromPixmap(QPixmap pixmap)

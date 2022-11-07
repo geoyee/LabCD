@@ -1,4 +1,4 @@
-#include <QFile>
+﻿#include <QFile>
 #include "colormap.h"
 
 int* ColorMap::strToColor(std::string& str)

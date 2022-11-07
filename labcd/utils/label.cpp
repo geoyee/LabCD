@@ -1,4 +1,4 @@
-#include "label.h"
+﻿#include "label.h"
 
 Label::Label()
 {

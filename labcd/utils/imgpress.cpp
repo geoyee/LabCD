@@ -1,4 +1,4 @@
-#include "imgpress.h"
+﻿#include "imgpress.h"
 
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 {

@@ -1,19 +1,19 @@
-#include <QVBoxLayout>
+ï»¿#include <QVBoxLayout>
 #include "filelist.h"
 
 FileList::FileList(QWidget *parent)
 	: QWidget(parent)
 {
-	// ²¼¾Ö
+	// å¸ƒå±€
 	QVBoxLayout* vLayout = new QVBoxLayout(this);
 	fList = new QListWidget(this);
 	connect(fList, &QListWidget::itemDoubleClicked, [=](QListWidgetItem* item) {
 		QString t1Path = item->text();
 		QString t2Path = t2Files.at(fList->currentRow());
 		emit FileList::FileClickRequest(t1Path, t2Path);
-	});  // ·¢ËÍĞÅºÅ£¬µ±Ç°µã»÷µÄÎÄ¼şÃû
+	});  // å‘é€ä¿¡å·ï¼Œå½“å‰ç‚¹å‡»çš„æ–‡ä»¶å
 	vLayout->addWidget(fList);
-	// ¼ÓÔØ
+	// åŠ è½½
 	setLayout(vLayout);
 }
 
@@ -26,7 +26,7 @@ void FileList::addFileNames(QStringList t1List, QStringList t2List)
 {
 	QStringList t1Files = t1List;
 	t2Files = t2List;
-	// ÏÔÊ¾
+	// æ˜¾ç¤º
 	fList->addItems(t1Files);
-	fList->setCurrentRow(t1Files.size() - 1);  // ÒÆ¶¯Î»ÖÃ
+	fList->setCurrentRow(t1Files.size() - 1);  // ç§»åŠ¨ä½ç½®
 }

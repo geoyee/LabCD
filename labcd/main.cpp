@@ -1,4 +1,4 @@
-#include "labcd.h"
+﻿#include "labcd.h"
 #include <QtWidgets/QApplication>
 
 #include <QDebug>  // debug

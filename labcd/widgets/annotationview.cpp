@@ -103,7 +103,6 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 void AnnotationView::mouseMoveEvent(QMouseEvent* ev)
 {
 	QPointF mousePos = QPointF(this->mapToScene(ev->pos()));
-	emit mousePosChanged(mousePos.toPoint());
 	// 出现滚动条才能滚动
 	if (middleClicking && (this->horizontalScrollBar()->isVisible() || \
 		this->verticalScrollBar()->isVisible()))
@@ -130,12 +129,6 @@ void AnnotationView::mouseReleaseEvent(QMouseEvent* ev)
 {
 	middleClicking = false;
 	QGraphicsView::mouseReleaseEvent(ev);
-}
-
-void AnnotationView::leaveEvent(QEvent* ev)
-{
-	emit mousePosChanged(QPoint(-1, -1));
-	QGraphicsView::leaveEvent(ev);
 }
 
 void AnnotationView::scale(qreal sx, qreal sy)

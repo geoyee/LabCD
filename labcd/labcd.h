@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <QtWidgets/QMainWindow>
 #include "widgets/labeltable.h"
@@ -13,9 +13,9 @@ private:
     void openDir();
 
 public:
-    FileList* fListWidget = nullptr;  // Êı¾İÁĞ±í
-    LabelTable* labTableWidget = nullptr;  // ±êÇ©ÁĞ±í
-    MultCanvas* drawCanvas = nullptr;  // »æÍ¼½çÃæ
+    FileList* fListWidget = nullptr;  // æ•°æ®åˆ—è¡¨
+    LabelTable* labTableWidget = nullptr;  // æ ‡ç­¾åˆ—è¡¨
+    MultCanvas* drawCanvas = nullptr;  // ç»˜å›¾ç•Œé¢
 
     LabCD(QWidget *parent = nullptr);
     ~LabCD();

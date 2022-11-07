@@ -68,7 +68,8 @@
       <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalOptions>/utf-8</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -77,7 +78,8 @@
       <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalOptions>/utf-8</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -114,6 +116,9 @@
     <ClCompile Include="widgets\annotationscence.cpp" />
     <ClCompile Include="widgets\annotationview.cpp" />
     <ClCompile Include="widgets\canvas.cpp" />
+    <ClCompile Include="widgets\labgrid.cpp" />
+    <ClCompile Include="widgets\labline.cpp" />
+    <ClCompile Include="widgets\labpolygon.cpp" />
     <ClCompile Include="widgets\multcanvas.cpp" />
     <ClCompile Include="widgets\filelist.cpp" />
     <ClCompile Include="widgets\labeltable.cpp" />
@@ -138,6 +143,9 @@
     <ClInclude Include="utils\fileworker.h" />
     <ClInclude Include="utils\imgpress.h" />
     <ClInclude Include="utils\label.h" />
+    <ClInclude Include="widgets\labgrid.h" />
+    <ClInclude Include="widgets\labline.h" />
+    <ClInclude Include="widgets\labpolygon.h" />
     <QtMoc Include="widgets\annotationscence.h" />
     <QtMoc Include="widgets\annotationview.h" />
     <QtMoc Include="widgets\canvas.h" />

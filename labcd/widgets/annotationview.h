@@ -37,14 +37,12 @@ public:
 	void mouseMoveEvent(QMouseEvent* ev);
 	void mousePressEvent(QMouseEvent* ev);
 	void mouseReleaseEvent(QMouseEvent* ev);
-	void leaveEvent(QEvent* ev);
 	// 重写变换方法，发送信号
 	void scale(qreal sx, qreal sy);
 	void translate(qreal dx, qreal dy);
 
 signals:
-	void mousePosChanged(QPoint point);
 	void zoomRequest(double zoomAll);
-	// 同步信号
+	// 同步信号给另一个Canvas
 	void syncRequest(int hPos, int vPos, QTransform tf, double zoom);
 };

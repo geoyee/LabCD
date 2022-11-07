@@ -68,8 +68,7 @@
       <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalOptions>
-      </AdditionalOptions>
+      <AdditionalOptions>/utf-8</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -78,8 +77,7 @@
       <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalOptions>
-      </AdditionalOptions>
+      <AdditionalOptions>/utf-8</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">

@@ -2,11 +2,10 @@
 #include "labline.h"
 
 LabLine::LabLine(
-	QGraphicsPolygonItem* annItem,
+    LabPolygon* annItem,
 	int index,
 	QColor color
 )
-	: QGraphicsLineItem()
 {
     // 初始化
     annItem = annItem;
@@ -38,6 +37,16 @@ void LabLine::setColor(QColor c)
     color = c;
 }
 
+int LabLine::getIndex()
+{
+    return index;
+}
+
+void LabLine::setIndex(int index)
+{
+    index = index;
+}
+
 QPolygonF LabLine::boundingPolygon()
 {
     double w = minWidth * 1.5;
@@ -62,14 +71,14 @@ QPolygonF LabLine::boundingPolygon()
 void LabLine::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
     boundingPolygon();
-    // annItem->lineHovering = true;
+    annItem->lineHovering = true;
     setPen(QPen(color, minWidth * 1.4));
     QGraphicsLineItem::hoverEnterEvent(ev);
 }
 
 void LabLine::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
-    // annItem->lineHovering = false;
+    annItem->lineHovering = false;
     setPen(QPen(color, minWidth));
     QGraphicsLineItem::hoverLeaveEvent(ev);
 }
@@ -77,7 +86,7 @@ void LabLine::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 void LabLine::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
     setPen(QPen(color, minWidth));
-    // annItem->addPointMiddle(index, ev->pos());
+    annItem->addPointMiddle(index, ev->pos());
     QGraphicsLineItem::mouseDoubleClickEvent(ev);
 
 }

@@ -3,21 +3,20 @@
 #include "labgrid.h"
 
 LabGrid::LabGrid(
-	QGraphicsPolygonItem* annItem,
+	LabPolygon* annItem,
 	int index,
 	QColor color,
-	int imgWidth,
-	int imgHeight
+	int imgHeight,
+	int imgWidth
 )
-	: QGraphicsPathItem()
 {
 	// 初始化
 	annItem = annItem;
 	index = index;
 	color = color;
 	color.setAlphaF(1.0);
-	imgWidth = imgWidth;
 	imgHeight = imgHeight;
+	imgWidth = imgWidth;
 	// 设置
 	updateSize();
 	setPath(circle);
@@ -37,7 +36,7 @@ LabGrid::~LabGrid()
 
 }
 
-void LabGrid::updateSize(int s)
+void LabGrid::updateSize(int s = 2)
 {
 	double size = minSize;
 	circle = QPainterPath();
@@ -61,11 +60,21 @@ void LabGrid::setColor(QColor c)
 	color = c;
 }
 
+int LabGrid::getIndex()
+{
+	return index;
+}
+
+void LabGrid::setIndex(int index)
+{
+	index = index;
+}
+
 void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
 	setPath(square);
 	setBrush(QColor(0, 0, 0, 0));
-	// annItem.itemHovering = true;
+	annItem->itemHovering = true;
 	hovering = true;
 	QGraphicsPathItem::hoverEnterEvent(ev);
 }
@@ -74,7 +83,7 @@ void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
 	setPath(circle);
 	setBrush(color);
-	// annItem.itemHovering = false;
+	annItem->itemHovering = false;
 	hovering = false;
 	QGraphicsPathItem::hoverLeaveEvent(ev);
 }
@@ -87,7 +96,7 @@ void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 
 void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
-	// annItem->removeFocusPoint();
+	annItem->removeFocusPoint();
 }
 
 QVariant LabGrid::itemChange(
@@ -121,8 +130,8 @@ QVariant LabGrid::itemChange(
 			y = tmpVal.y();
 		}
 		tmpVal = QPointF(x, y);
-		// annItem.movePoint(index, tmpVal);
-		// annItem.setDirty(true);
+		annItem->movePoint(index, tmpVal);
+		// annItem->setDirty(true);
 	}
 	return QGraphicsPathItem::itemChange(change, (QVariant)tmpVal);
 }

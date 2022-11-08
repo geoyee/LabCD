@@ -64,12 +64,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalOptions>/utf-8 /NATVIS:"$(IntDir)\qt.natvis" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NATVIS:"$(IntDir)\qt.natvis" %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalOptions>
       </AdditionalOptions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -80,6 +81,7 @@
     <ClCompile>
       <AdditionalOptions>
       </AdditionalOptions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">

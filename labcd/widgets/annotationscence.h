@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <iostream>
-#include <vector>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include "labpolygon.h"
@@ -11,10 +9,11 @@ class AnnotationScence : public QGraphicsScene
 	Q_OBJECT
 
 private:
-	std::vector<LabPolygon> polygonItems;
 	double scaleRate;
 
 public:
+	QList<LabPolygon> polygonItems;
+
 	AnnotationScence();
 	~AnnotationScence();
 	void setScaleRate(double zoomAll);

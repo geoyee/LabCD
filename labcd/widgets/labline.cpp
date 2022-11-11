@@ -1,4 +1,5 @@
 ﻿#include <QPen>
+#include "labpolygon.h"
 #include "labline.h"
 
 LabLine::LabLine(

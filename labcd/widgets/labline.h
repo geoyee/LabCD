@@ -4,7 +4,8 @@
 #include <QPainterPath>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
-#include "labpolygon.h"
+
+class LabPolygon;
 
 class LabLine : public QGraphicsLineItem
 {

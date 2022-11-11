@@ -7,9 +7,9 @@ LabPolygon::LabPolygon(
 	int labelIndex,
 	int imgWidth,
 	int imgHeight,
-	QColor insideColor = QColor(255, 0, 0),
-	QColor borderColor = QColor(0, 255, 0),
-	double opacity = 0.5
+	QColor insideColor,
+	QColor borderColor,
+	double opacity
 )
 {
 	// 初始化
@@ -108,14 +108,14 @@ void LabPolygon::addPointMiddle(int lineIndex, QPointF point)
 	{
 		mLines.at(i)->setIndex(mLines.at(i)->getIndex() + 1);
 	}
-	QLineF line = QLineF(this->mapToScene(*(mPoints.at(lineIndex))), point);
-	mLines.at(lineIndex)->setLine(line);
+	QLineF line1 = QLineF(this->mapToScene(*(mPoints.at(lineIndex))), point);
+	mLines.at(lineIndex)->setLine(line1);
 	LabLine* lineItem = new LabLine(this, lineIndex + 1, borderColor);
-	QLineF line = QLineF(
+	QLineF line2 = QLineF(
 		point, 
 		this->mapToScene(*(mPoints.at((lineIndex + 2) % this->getLen())))
 	);
-	lineItem->setLine(line);
+	lineItem->setLine(line2);
 	mLines.insert(lineIndex + 1, lineItem);
 	this->scene()->addItem(lineItem);
 	lineItem->updateWidth();
@@ -144,7 +144,8 @@ void LabPolygon::addPointLast(QPointF point)
 		mLines.push_back(line);
 		line->setLine(QLineF(point, *mPoints.at(0)));
 	}
-	mPoints.push_back(&point.toPoint());
+	QPoint* nPoint = new QPoint(point.toPoint());
+	mPoints.push_back(nPoint);
 	this->setPolygon(QPolygonF(this->getPoints()));
 }
 
@@ -240,16 +241,16 @@ void LabPolygon::moveLine(int index)
 {
 	if (!noMove)
 	{
-		QLineF line = QLineF(
+		QLineF line1 = QLineF(
 			*mPoints.at(index),
 			*mPoints.at((index + 1) % this->getLen())
 		);
-		mLines.at(index)->setLine(line);
-		QLineF line = QLineF(
+		mLines.at(index)->setLine(line1);
+		QLineF line2 = QLineF(
 			*mPoints.at((index - 1) % this->getLen()),
 			*mPoints.at(index)
 		);
-		mLines.at((index - 1))->setLine(line);
+		mLines.at((index - 1))->setLine(line2);
 	}
 }
 
@@ -306,5 +307,5 @@ QVariant LabPolygon::itemChange(
 			this->moveItem(i, this->mapToScene(*(mPoints.at(i))));
 		}
 	}
-	QGraphicsItem::itemChange(change, value);
+	return QGraphicsItem::itemChange(change, value);
 }

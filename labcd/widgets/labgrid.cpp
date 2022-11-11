@@ -1,5 +1,6 @@
 ﻿#include <QPen>
 #include <QCursor>
+#include "labpolygon.h"
 #include "labgrid.h"
 
 LabGrid::LabGrid(
@@ -36,7 +37,7 @@ LabGrid::~LabGrid()
 
 }
 
-void LabGrid::updateSize(int s = 2)
+void LabGrid::updateSize(int s)
 {
 	double size = minSize;
 	circle = QPainterPath();

@@ -2,7 +2,7 @@
 
 ![test](https://user-images.githubusercontent.com/71769312/201467865-abce6a69-8fb4-4280-99b6-f536745dd6c8.gif)
 
-遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)。作为自己学习C++和Qt的练习项目（C++小白一枚）。
+遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)。该项目目前为自己（小白）学习C++和Qt的练习项目。
 
 ## 环境及依赖
 
@@ -28,6 +28,7 @@
 - [ ] 增加大图自动切块
 - [ ] 增加一个变化检测的参考图方便定位
 - [ ] 完善工具栏和快捷键
+- [ ] 编写qmake和打包
 - [ ] ...
 
 ## 资源

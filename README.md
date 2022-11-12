@@ -1,6 +1,8 @@
 # LabCD
 
-遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)，作为自己学习C++和Qt的练习项目。
+![test](https://user-images.githubusercontent.com/71769312/201467865-abce6a69-8fb4-4280-99b6-f536745dd6c8.gif)
+
+遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)。作为自己学习C++和Qt的练习项目（C++小白一枚）。
 
 ## 环境及依赖
 
@@ -8,9 +10,9 @@
 
 - Qt 6.4.0
 
-- OpenCV 4.5.5
+- ~~OpenCV 4.5.5~~
 
-- GDAL 3.5.3
+- ~~GDAL 3.5.3~~
 
 ## TODO
 

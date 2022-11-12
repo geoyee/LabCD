@@ -4,20 +4,20 @@
 #include "labgrid.h"
 
 LabGrid::LabGrid(
-	LabPolygon* annItem,
-	int index,
-	QColor color,
-	int imgHeight,
-	int imgWidth
+	LabPolygon* _annItem,
+	int _index,
+	QColor _color,
+	int _imgHeight,
+	int _imgWidth
 )
 {
 	// 初始化
-	annItem = annItem;
-	index = index;
-	color = color;
+	annItem = _annItem;
+	index = _index;
+	color = _color;
 	color.setAlphaF(1.0);
-	imgHeight = imgHeight;
-	imgWidth = imgWidth;
+	imgHeight = _imgHeight;
+	imgWidth = _imgWidth;
 	// 设置
 	updateSize();
 	setPath(circle);

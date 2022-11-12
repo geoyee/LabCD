@@ -65,6 +65,8 @@ LabCD::LabCD(QWidget *parent)
     labTableWidget = new LabelTable(this);
     labelsDock->setWidget(labTableWidget);
     addDockWidget(Qt::RightDockWidgetArea, labelsDock);
+    connect(
+        labTableWidget, &LabelTable::labelSelected, drawCanvas, &MultCanvas::getLabel);
     
     /* 界面设置 */
     resize(1000, 600);

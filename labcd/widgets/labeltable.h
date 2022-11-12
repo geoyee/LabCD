@@ -20,4 +20,8 @@ public:
 	LabelTable(QWidget *parent = nullptr);
 	~LabelTable();
 	void addLabelItem();
+
+signals:
+	void labelSelected(Label* nowLabel);
+	void colorChanged(QColor newColor);
 };

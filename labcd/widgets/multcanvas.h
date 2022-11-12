@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include "canvas.h"
+#include "../utils/label.h"
 
 class MultCanvas : public QWidget
 {
@@ -15,4 +16,8 @@ public:
 	MultCanvas(QWidget *parent = nullptr);
 	~MultCanvas();
 	void loadImages(QString t1Path, QString t2Path);
+
+signals:
+	void getLabel(Label* label);
+	void getImageSize(int imgWidth, int imgHeight);
 };

@@ -18,9 +18,9 @@ private:
 
 public:
 	LabLine(
-		LabPolygon* annItem,
-		int index,
-		QColor color
+		LabPolygon* _annItem,
+		int _index,
+		QColor _color
 	);
 	~LabLine();
 	void updateWidth();

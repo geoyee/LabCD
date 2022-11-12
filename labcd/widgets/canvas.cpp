@@ -24,6 +24,9 @@ Canvas::Canvas(QWidget *parent)
 	connect(aView->verticalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
 		emit syncScroll(aView->horizontalScrollBar()->value(), value);
 	});
+	// 标签同步和大小
+	connect(this, &Canvas::setLabel, aScene, &AnnotationScence::getNewLabel);
+	connect(this, &Canvas::setImageSize, aScene, &AnnotationScence::getImageSize);
 	// 加载
 	setWidget(aView);
 }

@@ -4,21 +4,22 @@
 #include "labpolygon.h"
 
 LabPolygon::LabPolygon(
-	int labelIndex,
-	int imgWidth,
-	int imgHeight,
-	QColor insideColor,
-	QColor borderColor,
-	double opacity
+	int _labelIndex,
+	int _imgWidth,
+	int _imgHeight,
+	QColor _insideColor,
+	QColor _borderColor,
+	double _opacity
 )
 {
 	// 初始化
-	labelIndex = labelIndex;
-	imgWidth = imgWidth;
-	imgHeight = imgHeight;
-	insideColor = insideColor;
-	borderColor = borderColor;
-	opacity = opacity;
+	labelIndex = _labelIndex;
+	imgWidth = _imgWidth;
+	imgHeight = _imgHeight;
+	insideColor = _insideColor;
+	halfInsideColor = _insideColor;
+	borderColor = _borderColor;
+	opacity = _opacity;
 	// 设置颜色
 	setZValue(10);
 	insideColor.setAlphaF(opacity);
@@ -55,14 +56,14 @@ int LabPolygon::getLen()
 	return mPoints.count();
 }
 
-void LabPolygon::setColor(QColor insideColor, QColor borderColor)
+void LabPolygon::setColor(QColor _insideColor, QColor _borderColor)
 {
-	insideColor = insideColor;
+	insideColor = _insideColor;
 	insideColor.setAlphaF(opacity);
 	halfInsideColor = QColor(insideColor);
 	halfInsideColor.setAlphaF(opacity / 2);
 	this->setBrush(halfInsideColor);
-	borderColor = borderColor;
+	borderColor = _borderColor;
 	borderColor.setAlphaF(0.8);
 	this->setPen(QPen(borderColor));
 	for (LabGrid* item : mItems)
@@ -84,6 +85,17 @@ QList<QPoint*> LabPolygon::getScenePos()
 		points.push_back(p);
 	}
 	return points;
+}
+
+QList<LabGrid*> LabPolygon::getItems()
+{
+	return mItems;
+}
+
+
+QList<LabLine*> LabPolygon::getLines()
+{
+	return mLines;
 }
 
 void LabPolygon::addPointMiddle(int lineIndex, QPointF point)

@@ -23,11 +23,11 @@ private:
 
 public:
 	LabGrid(
-		LabPolygon* annItem,
-		int index, 
-		QColor color, 
-		int imgHeight,
-		int imgWidth
+		LabPolygon* _annItem,
+		int _index, 
+		QColor _color, 
+		int _imgHeight,
+		int _imgWidth
 	);
 	~LabGrid();
 	void updateSize(int s = 2);

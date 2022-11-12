@@ -31,17 +31,19 @@ public:
 	bool PolyHovering = false;
 
 	LabPolygon(
-		int labelIndex,
-		int imgWidth,
-		int imgHeight,
-		QColor insideColor = QColor(255, 0, 0),
-		QColor borderColor = QColor(0, 255, 0),
-		double opacity = 0.5
+		int _labelIndex,
+		int _imgWidth,
+		int _imgHeight,
+		QColor _insideColor = QColor(255, 0, 0),
+		QColor _borderColor = QColor(0, 255, 0),
+		double _opacity = 0.5
 	);
 	~LabPolygon();
 	int getLen();
-	void setColor(QColor insideColor, QColor borderColor);
+	void setColor(QColor _insideColor, QColor _borderColor);
 	QList<QPoint*> getScenePos();
+	QList<LabGrid*> getItems();
+	QList<LabLine*> getLines();
 	void addPointMiddle(int lineIndex, QPointF point);
 	void addPointLast(QPointF point);
 	void remove();

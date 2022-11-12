@@ -3,15 +3,15 @@
 #include "labline.h"
 
 LabLine::LabLine(
-    LabPolygon* annItem,
-	int index,
-	QColor color
+    LabPolygon* _annItem,
+	int _index,
+	QColor _color
 )
 {
     // 初始化
-    annItem = annItem;
-    index = index;
-    color = color;
+    annItem = _annItem;
+    index = _index;
+    color = _color;
     // 设置
     setPen(QPen(color, minWidth));
     setZValue(11);

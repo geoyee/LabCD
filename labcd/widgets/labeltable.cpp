@@ -43,6 +43,7 @@ LabelTable::LabelTable(QWidget *parent)
 			{
 				labelTable->item(row, 2)->setBackground(newColor);
 				nowLabel->setColor(newColor);
+				emit colorChanged(newColor);
 			}
 		}
 		else if (column == 3)  // 删除
@@ -70,6 +71,7 @@ LabelTable::LabelTable(QWidget *parent)
 					QColor(48, 140, 198));
 				labelTable->item(row, 0)->setSelected(true);
 			}
+			emit labelSelected(nowLabel);
 		}
 	});
 	// 标签改变事件

@@ -20,7 +20,7 @@ LabGrid::LabGrid(
 	imgWidth = _imgWidth;
 	// 设置
 	updateSize();
-	setPath(*circle);
+	setPath(circlePath);
 	setBrush(color);
 	setPen(QPen(color, 1));
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -44,26 +44,24 @@ void LabGrid::setColor(QColor c)
 	color = c;
 }
 
-void LabGrid::updateSize(int s)
+void LabGrid::updateSize(double s)
 {
 	double size = minSize;
-	circle = new QPainterPath();
-	circle->addEllipse(QRectF(-size, -size, size * s, size * s));
-	square = new QPainterPath();
-	square->addRect(QRectF(-size, -size, size * s, size * s));
+	circlePath.addEllipse(QRectF(-size, -size, size * s, size * s));
+	squarePath.addRect(QRectF(-size, -size, size * s, size * s));
 	if (hovering)
 	{
-		setPath(*square);
+		setPath(squarePath);
 	}
 	else
 	{
-		setPath(*circle);
+		setPath(circlePath);
 	}
 }
 
 void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
-	setPath(*square);
+	setPath(squarePath);
 	setBrush(QColor(0, 0, 0, 0));
 	annItem->itemHovering = true;
 	hovering = true;
@@ -72,7 +70,7 @@ void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
-	setPath(*circle);
+	setPath(circlePath);
 	setBrush(color);
 	annItem->itemHovering = false;
 	hovering = false;
@@ -88,6 +86,7 @@ void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
 	annItem->removeFocusPoint();
+	QGraphicsPathItem::mouseDoubleClickEvent(ev);
 }
 
 QVariant LabGrid::itemChange(
@@ -132,6 +131,7 @@ QPainterPath LabGrid::shape()
 {
 	QPainterPath path;
 	QPointF p = mapFromScene(pos());
+	qDebug() << p;  // TODO: 为啥不显示
 	path.addEllipse(p, 2 * minSize, 2 * minSize);
 	return path;
 }

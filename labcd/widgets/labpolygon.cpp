@@ -104,7 +104,7 @@ void LabPolygon::addPointMiddle(int lineIndex, QPointF point)
 		mItems.at(i)->index += 1;
 	}
 	mItems.insert(lineIndex + 1, gripItem);
-	QPointF* gripPoint = new QPointF(mapToScene(point));
+	QPointF* gripPoint = new QPointF(mapFromScene(point));
 	mPoints.insert(lineIndex + 1, gripPoint);
 	setPolygon(QPolygonF(getPointsNotPtr()));
 	// 连线

@@ -12,8 +12,8 @@ class LabGrid : public QGraphicsPathItem
 private:
 	const double minSize = 0.8;
 	const double maxSize = 1.5;
-	QPainterPath* circle;
-	QPainterPath* square;
+	QPainterPath circlePath;
+	QPainterPath squarePath;
 
 public:
 	LabPolygon* annItem;
@@ -32,7 +32,7 @@ public:
 	);
 	~LabGrid();
 	void setColor(QColor c);
-	void updateSize(int s = 2);
+	void updateSize(double s = 2.0);
 	// 事件
 	void hoverEnterEvent(QGraphicsSceneHoverEvent* ev);
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent* ev);

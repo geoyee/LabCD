@@ -124,7 +124,6 @@ QVariant LabGrid::itemChange(
 		}
 		tmpVal = QPointF(x, y);
 		annItem->movePoint(index, tmpVal);
-		// annItem->setDirty(true);
 	}
 	return QGraphicsPathItem::itemChange(change, (QVariant)tmpVal);
 }
@@ -132,11 +131,7 @@ QVariant LabGrid::itemChange(
 QPainterPath LabGrid::shape()
 {
 	QPainterPath path;
-	double x, y;
 	QPointF p = mapFromScene(pos());
-	x = p.x();
-	y = p.y();
-	double size = minSize;
-	path.addEllipse(p, size + minSize, size + minSize);
+	path.addEllipse(p, 2 * minSize, 2 * minSize);
 	return path;
 }

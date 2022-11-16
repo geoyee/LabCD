@@ -137,7 +137,7 @@ void LabPolygon::addPointLast(QPointF point)
 		LabLine* line = new LabLine(this, getLen(), borderColor);
 		scene()->addItem(line);
 		mLines.push_back(line);
-		line->setLine(QLineF(point, point));
+		line->setLine(QLineF());
 	}
 	else
 	{

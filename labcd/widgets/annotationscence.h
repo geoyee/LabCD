@@ -37,7 +37,6 @@ public:
 	void doubleClickedFinshPolygon();
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
-	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* ev);
 
 signals:

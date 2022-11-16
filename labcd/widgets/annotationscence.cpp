@@ -111,6 +111,11 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 			PressedAddPoint(p);
 			drawing = true;
 		}
+		else if (ev->button() == Qt::RightButton && drawing)
+		{
+			emit iDoubleClicked();
+			doubleClickedFinshPolygon();
+		}
 	}
 	else
 	{
@@ -121,16 +126,6 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 				emit focusRequest(poly->labelIndex);
 			}
 		}
-	}
-	QGraphicsScene::mousePressEvent(ev);
-}
-
-void AnnotationScence::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
-{
-	if (drawing)
-	{
-		emit iDoubleClicked();
-		doubleClickedFinshPolygon();
 	}
 	QGraphicsScene::mousePressEvent(ev);
 }

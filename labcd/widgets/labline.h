@@ -12,21 +12,20 @@ class LabLine : public QGraphicsLineItem
 private:
 	const double minWidth = 0.5;
 	const double maxWidth = 1;
-	int index;
+	
+public:
 	LabPolygon* annItem;
+	int index;
 	QColor color;
 
-public:
 	LabLine(
 		LabPolygon* _annItem,
 		int _index,
 		QColor _color
 	);
 	~LabLine();
-	void updateWidth();
 	void setColor(QColor c);
-	int getIndex();
-	void setIndex(int index);
+	void updateWidth();
 	QPolygonF boundingPolygon();
 	// 事件
 	void hoverEnterEvent(QGraphicsSceneHoverEvent* ev);

@@ -11,13 +11,17 @@ class AnnotationScence : public QGraphicsScene
 
 private:
 	double scaleRate;
-	// 多边形
+	bool drawing = false;
 	int labelIndex = -1;
 	int imgWidth = 0;
 	int imgHeight = 0;
 	QColor insideColor;
 	QColor borderColor;
 	double opacity = 0.5;
+
+	bool getItemHovering();
+	bool getPolyHovering();
+	bool getLineHovering();
 
 public:
 	QList<LabPolygon*> polygonItems;
@@ -27,6 +31,7 @@ public:
 	~AnnotationScence();
 	void setScaleRate(double zoomAll);
 	void updatePolygonSize();
+	bool hovering();
 	// 同步方法
 	void PressedAddPoint(QPointF point);
 	void doubleClickedFinshPolygon();
@@ -38,8 +43,9 @@ public:
 signals:
 	void iPressed(QPointF point);
 	void iDoubleClicked();
+	void focusRequest(int labelIndex);
 
 public slots:
-	void getNewLabel(Label* label);
+	void getLabel(Label* label);
 	void getImageSize(int Width, int Height);
 };

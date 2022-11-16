@@ -6,31 +6,34 @@
 #include "labgrid.h"
 #include "labline.h"
 
+class AnnotationScence;
+
 class LabPolygon : public QGraphicsPolygonItem
 {
 private:
-    int labelIndex;
-	int imgWidth;
-	int imgHeight;
+	AnnotationScence* annScene;
 	double opacity = 0.5;
-	bool noMove = false;
-	bool lastFocse = false;
 	QColor insideColor = QColor(255, 0, 0);
 	QColor halfInsideColor = QColor(255, 0, 0);
 	QColor borderColor = QColor(0, 255, 0);
-	// 部件
-	QList<QPoint*> mPoints;
-	QList<LabGrid*> mItems;
-	QList<LabLine*> mLines;
 
-	QList<QPoint> getPoints();  // 将点的指针的list转为点的list
+	QList<QPointF> getPointsNotPtr();  // 将点的指针的list转为点的list
 
 public:
+	QList<QPointF*> mPoints;
+	QList<LabGrid*> mItems;
+	QList<LabLine*> mLines;
+	int labelIndex;
+	int imgWidth;
+	int imgHeight;
 	bool itemHovering = false;
 	bool lineHovering = false;
-	bool PolyHovering = false;
+	bool polyHovering = false;
+	bool noMove = false;
+	bool lastFocse = false;
 
 	LabPolygon(
+		AnnotationScence* _annScene,
 		int _labelIndex,
 		int _imgWidth,
 		int _imgHeight,
@@ -41,9 +44,7 @@ public:
 	~LabPolygon();
 	int getLen();
 	void setColor(QColor _insideColor, QColor _borderColor);
-	QList<QPoint*> getScenePos();
-	QList<LabGrid*> getItems();
-	QList<LabLine*> getLines();
+	QList<QPointF*> getScenePos();
 	void addPointMiddle(int lineIndex, QPointF point);
 	void addPointLast(QPointF point);
 	void remove();
@@ -60,4 +61,5 @@ public:
 	// 重写
 	QVariant itemChange(
 		QGraphicsItem::GraphicsItemChange change, const QVariant& value);
+	AnnotationScence* scene();
 };

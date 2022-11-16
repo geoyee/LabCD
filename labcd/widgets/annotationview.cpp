@@ -38,9 +38,9 @@ double AnnotationView::limitZoom(double min, double now, double max)
 void AnnotationView::sendSyncSignal()
 {
 	emit syncRequest(
-		this->horizontalScrollBar()->value(),
-		this->verticalScrollBar()->value(),
-		this->transform(),
+		horizontalScrollBar()->value(),
+		verticalScrollBar()->value(),
+		transform(),
 		zoomAll
 	);
 }
@@ -70,9 +70,9 @@ double AnnotationView::getZoomAll()
 void AnnotationView::syncTranslate(int hPos, int vPos, QTransform tf, double zoom)
 {
 	zoomAll = zoom;
-	this->setTransform(tf);
-	this->horizontalScrollBar()->setValue(hPos);
-	this->verticalScrollBar()->setValue(vPos);
+	setTransform(tf);
+	horizontalScrollBar()->setValue(hPos);
+	verticalScrollBar()->setValue(vPos);
 }
 
 void AnnotationView::wheelEvent(QWheelEvent* ev)
@@ -86,11 +86,11 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 		// 限制缩放
 		if (AnnotationView::checkZoomAll())
 		{
-			QPointF oldPos = this->mapToScene(ev->position().toPoint());
-			this->scale(zoom, zoom);
-			QPointF newPos = this->mapToScene(ev->position().toPoint());
+			QPointF oldPos = mapToScene(ev->position().toPoint());
+			scale(zoom, zoom);
+			QPointF newPos = mapToScene(ev->position().toPoint());
 			QPointF delta = newPos - oldPos;
-			this->translate(delta.x(), delta.y());
+			translate(delta.x(), delta.y());
 		}
 		ev->ignore();  // 忽略滚动条
 	}
@@ -102,15 +102,15 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 
 void AnnotationView::mouseMoveEvent(QMouseEvent* ev)
 {
-	QPointF mousePos = QPointF(this->mapToScene(ev->pos()));
+	QPointF mousePos = QPointF(mapToScene(ev->pos()));
 	// 出现滚动条才能滚动
-	if (middleClicking && (this->horizontalScrollBar()->isVisible() || \
-		this->verticalScrollBar()->isVisible()))
+	if (middleClicking && (horizontalScrollBar()->isVisible() || \
+		verticalScrollBar()->isVisible()))
 	{
 		endPos = new QPoint(ev->pos() / zoomAll - *startPos / zoomAll);
 		point = new QPoint(*point + *endPos);
 		startPos = new QPoint(ev->pos());
-		this->translate(endPos->x(), endPos->y());
+		translate(endPos->x(), endPos->y());
 	}
 	QGraphicsView::mouseMoveEvent(ev);
 }

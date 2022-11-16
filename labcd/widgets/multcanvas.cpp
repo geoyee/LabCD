@@ -14,33 +14,43 @@ MultCanvas::MultCanvas(QWidget *parent)
 	gLayout->addWidget(t2Canva, 0, 1);
 	/* 操作关联 */
 	// 同步鼠标移动缩放
-	connect(t1Canva, &Canvas::syncViewRequest, t2Canva, &Canvas::syncViewTranslate);
-	connect(t2Canva, &Canvas::syncViewRequest, t1Canva, &Canvas::syncViewTranslate);
+	connect(
+		t1Canva->aView, &AnnotationView::syncRequest, 
+		t2Canva->aView, &AnnotationView::syncTranslate
+	);
+	connect(
+		t2Canva->aView, &AnnotationView::syncRequest, 
+		t1Canva->aView, &AnnotationView::syncTranslate
+	);
 	// 同步垂直和水平滑动条位置
 	connect(t1Canva, &Canvas::syncScroll, t2Canva, &Canvas::scroolTranslate);
 	connect(t2Canva, &Canvas::syncScroll, t1Canva, &Canvas::scroolTranslate);
 	// 加载标签和图像大小的同步
-	connect(this, &MultCanvas::getLabel, [=](Label* label) {
-		t1Canva->setLabel(label);
-		t2Canva->setLabel(label);
+	connect(this, &MultCanvas::labelSelected, [=](Label* label) {
+		t1Canva->aScene->getLabel(label);
+		t2Canva->aScene->getLabel(label);
 	});
-	connect(this, &MultCanvas::getImageSize, [=](int imgWidth, int imgHeight) {
-		t1Canva->setImageSize(imgWidth, imgHeight);
-		t2Canva->setImageSize(imgWidth, imgHeight);
+	connect(this, &MultCanvas::imageLoaded, [=](int imgWidth, int imgHeight) {
+		t1Canva->aScene->getImageSize(imgWidth, imgHeight);
+		t2Canva->aScene->getImageSize(imgWidth, imgHeight);
 	});
 	// 同步画图
 	connect(
 		t1Canva->aScene, &AnnotationScence::iPressed,
-		t2Canva->aScene, &AnnotationScence::PressedAddPoint);
+		t2Canva->aScene, &AnnotationScence::PressedAddPoint
+	);
 	connect(
 		t1Canva->aScene, &AnnotationScence::iDoubleClicked,
-		t2Canva->aScene, &AnnotationScence::doubleClickedFinshPolygon);
+		t2Canva->aScene, &AnnotationScence::doubleClickedFinshPolygon
+	);
 	connect(
 		t2Canva->aScene, &AnnotationScence::iPressed,
-		t1Canva->aScene, &AnnotationScence::PressedAddPoint);
+		t1Canva->aScene, &AnnotationScence::PressedAddPoint
+	);
 	connect(
 		t2Canva->aScene, &AnnotationScence::iDoubleClicked,
-		t1Canva->aScene, &AnnotationScence::doubleClickedFinshPolygon);
+		t1Canva->aScene, &AnnotationScence::doubleClickedFinshPolygon
+	);
 	setLayout(gLayout);
 }
 
@@ -67,7 +77,7 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path)
 	{
 		t1Canva->loadImageFromPixmap(t1);
 		t2Canva->loadImageFromPixmap(t2);
-		emit getImageSize(t1.width(), t1.height());  // 发送大小
+		emit imageLoaded(t1.width(), t1.height());  // 发送大小
 		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);  // 鹰眼图
 	}
 }

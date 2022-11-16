@@ -16,7 +16,6 @@ Canvas::Canvas(QWidget *parent)
 	aView->setAlignment(Qt::AlignCenter);
 	aView->setAutoFillBackground(false);
 	aView->setStyleSheet("background-color: White");
-	connect(aView, &AnnotationView::syncRequest, this, &Canvas::syncViewRequest);
 	// 保持滑动滑块的时候也能同步
 	connect(aView->horizontalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
 		emit syncScroll(value, aView->verticalScrollBar()->value());
@@ -24,9 +23,6 @@ Canvas::Canvas(QWidget *parent)
 	connect(aView->verticalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
 		emit syncScroll(aView->horizontalScrollBar()->value(), value);
 	});
-	// 标签同步和大小
-	connect(this, &Canvas::setLabel, aScene, &AnnotationScence::getNewLabel);
-	connect(this, &Canvas::setImageSize, aScene, &AnnotationScence::getImageSize);
 	// 加载
 	setWidget(aView);
 }
@@ -63,11 +59,6 @@ void Canvas::loadImageFromPixmap(QPixmap pixmap)
 	QGraphicsPixmapItem* pixmapItem = new QGraphicsPixmapItem();
 	pixmapItem->setPixmap(pixmap);
 	aScene->addItem(pixmapItem);
-}
-
-void Canvas::syncViewTranslate(int hPos, int vPos, QTransform tf, double zoom)
-{
-	aView->syncTranslate(hPos, vPos, tf, zoom);
 }
 
 void Canvas::scroolTranslate(int hPos, int vPos)

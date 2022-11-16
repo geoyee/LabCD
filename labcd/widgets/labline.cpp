@@ -27,33 +27,23 @@ LabLine::~LabLine()
 
 }
 
-void LabLine::updateWidth()
-{
-    setPen(QPen(color, minWidth));
-}
-
 void LabLine::setColor(QColor c)
 {
     setPen(QPen(color, minWidth));
     color = c;
 }
 
-int LabLine::getIndex()
+void LabLine::updateWidth()
 {
-    return index;
-}
-
-void LabLine::setIndex(int index)
-{
-    index = index;
+    setPen(QPen(color, minWidth));
 }
 
 QPolygonF LabLine::boundingPolygon()
 {
     double w = minWidth * 1.5;
     w = w < 2 ? w : 2;
-    QPointF start = this->line().p1();
-    QPointF end = this->line().p2();
+    QPointF start = line().p1();
+    QPointF end = line().p2();
     QPointF dir = start - end;
     double dx, dy;
     dx = -dir.y();
@@ -64,7 +54,7 @@ QPolygonF LabLine::boundingPolygon()
     QPointF point(dx * w, dy * w);
     QList<QPointF> pointList = QList<QPointF>() << \
         start - point << start + point << \
-        end - point << end + point;
+        end + point << end - point;
     QPolygonF poly = QPolygonF(pointList);
     return poly;
 }

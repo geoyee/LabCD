@@ -20,7 +20,7 @@ LabGrid::LabGrid(
 	imgWidth = _imgWidth;
 	// 设置
 	updateSize();
-	setPath(circle);
+	setPath(*circle);
 	setBrush(color);
 	setPen(QPen(color, 1));
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -37,23 +37,6 @@ LabGrid::~LabGrid()
 
 }
 
-void LabGrid::updateSize(int s)
-{
-	double size = minSize;
-	circle = QPainterPath();
-	circle.addEllipse(QRectF(-size, -size, size * s, size * s));
-	square = QPainterPath();
-	square.addRect(QRectF(-size, -size, size * s, size * s));
-	if (hovering)
-	{
-		setPath(square);
-	}
-	else
-	{
-		setPath(circle);
-	}
-}
-
 void LabGrid::setColor(QColor c)
 {
 	setBrush(c);
@@ -61,19 +44,26 @@ void LabGrid::setColor(QColor c)
 	color = c;
 }
 
-int LabGrid::getIndex()
+void LabGrid::updateSize(int s)
 {
-	return index;
-}
-
-void LabGrid::setIndex(int index)
-{
-	index = index;
+	double size = minSize;
+	circle = new QPainterPath();
+	circle->addEllipse(QRectF(-size, -size, size * s, size * s));
+	square = new QPainterPath();
+	square->addRect(QRectF(-size, -size, size * s, size * s));
+	if (hovering)
+	{
+		setPath(*square);
+	}
+	else
+	{
+		setPath(*circle);
+	}
 }
 
 void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
-	setPath(square);
+	setPath(*square);
 	setBrush(QColor(0, 0, 0, 0));
 	annItem->itemHovering = true;
 	hovering = true;
@@ -82,7 +72,7 @@ void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
-	setPath(circle);
+	setPath(*circle);
 	setBrush(color);
 	annItem->itemHovering = false;
 	hovering = false;
@@ -101,34 +91,36 @@ void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 }
 
 QVariant LabGrid::itemChange(
-	QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+	QGraphicsItem::GraphicsItemChange change, const QVariant& value
+)
 {
 	double x, y;
-	QPointF tmpVal = value.toPointF();
-	if (change == QGraphicsItem::ItemPositionChange and this->isEnabled())
+	QPointF valuePoint = value.toPointF();
+	QPointF tmpVal = valuePoint;
+	if (change == QGraphicsItem::ItemPositionChange && isEnabled())
 	{
-		if (tmpVal.x() > imgHeight) {
+		if (valuePoint.x() > imgHeight) {
 			x = imgHeight;
 		}
-		else if (tmpVal.x() < 0)
+		else if (valuePoint.x() < 0)
 		{
 			x = 0;
 		}
 		else
 		{
-			x = tmpVal.x();
+			x = valuePoint.x();
 		}
-		if (tmpVal.y() > imgWidth)
+		if (valuePoint.y() > imgWidth)
 		{
 			y = imgWidth;
 		}
-		else if (tmpVal.y() < 0)
+		else if (valuePoint.y() < 0)
 		{
 			y = 0;
 		}
 		else
 		{
-			y = tmpVal.y();
+			y = valuePoint.y();
 		}
 		tmpVal = QPointF(x, y);
 		annItem->movePoint(index, tmpVal);
@@ -141,9 +133,10 @@ QPainterPath LabGrid::shape()
 {
 	QPainterPath path;
 	double x, y;
-	QPointF p = this->mapFromScene(this->pos());
+	QPointF p = mapFromScene(pos());
 	x = p.x();
 	y = p.y();
-	path.addEllipse(p, 2 * minSize, 2 * minSize);
+	double size = minSize;
+	path.addEllipse(p, size + minSize, size + minSize);
 	return path;
 }

@@ -2,8 +2,10 @@
 #include <QCursor>
 #include <QGraphicsScene>
 #include "labpolygon.h"
+#include "annotationscence.h"
 
 LabPolygon::LabPolygon(
+	AnnotationScence* _annScene,
 	int _labelIndex,
 	int _imgWidth,
 	int _imgHeight,
@@ -13,6 +15,7 @@ LabPolygon::LabPolygon(
 )
 {
 	// 初始化
+	annScene = _annScene;
 	labelIndex = _labelIndex;
 	imgWidth = _imgWidth;
 	imgHeight = _imgHeight;
@@ -41,10 +44,10 @@ LabPolygon::~LabPolygon()
 
 }
 
-QList<QPoint> LabPolygon::getPoints()
+QList<QPointF> LabPolygon::getPointsNotPtr()
 {
-	QList<QPoint> tmpPoints;
-	for (QPoint* p : mPoints)
+	QList<QPointF> tmpPoints;
+	for (QPointF* p : mPoints)
 	{
 		tmpPoints.push_back(*p);
 	}
@@ -62,10 +65,10 @@ void LabPolygon::setColor(QColor _insideColor, QColor _borderColor)
 	insideColor.setAlphaF(opacity);
 	halfInsideColor = QColor(insideColor);
 	halfInsideColor.setAlphaF(opacity / 2);
-	this->setBrush(halfInsideColor);
+	setBrush(halfInsideColor);
 	borderColor = _borderColor;
 	borderColor.setAlphaF(0.8);
-	this->setPen(QPen(borderColor));
+	setPen(QPen(borderColor));
 	for (LabGrid* item : mItems)
 	{
 		item->setColor(borderColor);
@@ -76,74 +79,63 @@ void LabPolygon::setColor(QColor _insideColor, QColor _borderColor)
 	}
 }
 
-QList<QPoint*> LabPolygon::getScenePos()
+QList<QPointF*> LabPolygon::getScenePos()
 {
-	QList<QPoint*> points;
-	for (QPoint* p : mPoints)
+	QList<QPointF*> points;
+	for (QPointF* p : mPoints)
 	{
-		p = new QPoint(this->mapToScene(*p).toPoint());
+		p = new QPointF(mapToScene(*p));
 		points.push_back(p);
 	}
 	return points;
 }
 
-QList<LabGrid*> LabPolygon::getItems()
-{
-	return mItems;
-}
-
-
-QList<LabLine*> LabPolygon::getLines()
-{
-	return mLines;
-}
-
 void LabPolygon::addPointMiddle(int lineIndex, QPointF point)
 {
 	// 添加点
-	LabGrid* gripItem = new LabGrid(this, lineIndex, borderColor, imgHeight, imgWidth);
+	LabGrid* gripItem = new LabGrid(this, lineIndex + 1, borderColor, imgHeight, imgWidth);
 	gripItem->setEnabled(false);
 	gripItem->setPos(point);
-	this->scene()->addItem(gripItem);
+	scene()->addItem(gripItem);
 	gripItem->updateSize();
 	gripItem->setEnabled(true);
 	for (int i = lineIndex + 1; i < mItems.count(); i++)
 	{
-		mItems.at(i)->setIndex(mItems.at(i)->getIndex() + 1);
+		mItems.at(i)->index += 1;
 	}
 	mItems.insert(lineIndex + 1, gripItem);
-	QPoint* gripPoint = new QPoint(this->mapToScene(point).toPoint());
+	QPointF* gripPoint = new QPointF(mapToScene(point));
 	mPoints.insert(lineIndex + 1, gripPoint);
-	this->setPolygon(QPolygonF(this->getPoints()));
+	setPolygon(QPolygonF(getPointsNotPtr()));
 	// 连线
 	for (int i = lineIndex + 1; i < mLines.count(); i++)
 	{
-		mLines.at(i)->setIndex(mLines.at(i)->getIndex() + 1);
+		mLines.at(i)->index += 1;
 	}
-	QLineF line1 = QLineF(this->mapToScene(*(mPoints.at(lineIndex))), point);
+	QLineF line1 = QLineF(mapToScene(*(mPoints.at(lineIndex))), point);
 	mLines.at(lineIndex)->setLine(line1);
 	LabLine* lineItem = new LabLine(this, lineIndex + 1, borderColor);
 	QLineF line2 = QLineF(
 		point, 
-		this->mapToScene(*(mPoints.at((lineIndex + 2) % this->getLen())))
+		mapToScene(*(mPoints.at((lineIndex + 2) % getLen())))
 	);
 	lineItem->setLine(line2);
 	mLines.insert(lineIndex + 1, lineItem);
-	this->scene()->addItem(lineItem);
+	scene()->addItem(lineItem);
 	lineItem->updateWidth();
 }
 
 void LabPolygon::addPointLast(QPointF point)
 {
-	LabGrid* grip = new LabGrid(this, this->getLen(), borderColor, imgHeight, imgWidth);
-	this->scene()->addItem(grip);
+	LabGrid* grip = new LabGrid(this, getLen(), borderColor, imgHeight, imgWidth);
+	scene()->addItem(grip);
 	mItems.push_back(grip);
 	grip->updateSize();
 	grip->setPos(point);
-	if (this->getLen() == 0)
+	if (getLen() == 0)
 	{
-		LabLine* line = new LabLine(this, this->getLen(), borderColor);
-		this->scene()->addItem(line);
+		LabLine* line = new LabLine(this, getLen(), borderColor);
+		scene()->addItem(line);
 		mLines.push_back(line);
 		line->setLine(QLineF(point, point));
 	}
@@ -151,25 +143,25 @@ void LabPolygon::addPointLast(QPointF point)
 	{
 		mLines.at(mLines.count() - 1)->setLine(
 			QLineF(*mPoints.at(mPoints.count() - 1), point));
-		LabLine* line = new LabLine(this, this->getLen(), borderColor);
-		this->scene()->addItem(line);
+		LabLine* line = new LabLine(this, getLen(), borderColor);
+		scene()->addItem(line);
 		mLines.push_back(line);
 		line->setLine(QLineF(point, *mPoints.at(0)));
 	}
-	QPoint* nPoint = new QPoint(point.toPoint());
+	QPointF* nPoint = new QPointF(point);
 	mPoints.push_back(nPoint);
-	this->setPolygon(QPolygonF(this->getPoints()));
+	setPolygon(QPolygonF(getPointsNotPtr()));
 }
 
 void LabPolygon::remove()
 {
 	for (LabGrid* grip : mItems)
 	{
-		this->scene()->removeItem(grip);
+		scene()->removeItem(grip);
 	}
 	for (LabLine* line : mLines)
 	{
-		this->scene()->removeItem(line);
+		scene()->removeItem(line);
 	}
 	while (mItems.count() != 0)
 	{
@@ -179,8 +171,8 @@ void LabPolygon::remove()
 	{
 		mLines.pop_back();
 	}
-	// this->scene()->polygonItems.remove(this);  // TODO: 需要在哪儿设置下scene为自定义
-	this->scene()->removeItem(this);
+	scene()->polygonItems.removeOne(this);
+	scene()->removeItem(this);
 	delete this;
 }
 
@@ -197,29 +189,29 @@ void LabPolygon::removeFocusPoint()
 	}
 	if (focusIndex != -1)
 	{
-		if (this->getLen() <= 3)
+		if (getLen() <= 3)
 		{
 			// this->delPolygon(this);  // TODO: 外部传入的删除多边形事件
 			return;
 		}
 		delete mPoints.at(focusIndex);
-		this->setPolygon(QPolygonF(this->getPoints()));
-		this->scene()->removeItem(mItems.at(focusIndex));
+		setPolygon(QPolygonF(getPointsNotPtr()));
+		scene()->removeItem(mItems.at(focusIndex));
 		delete mItems.at(focusIndex);
 		for (int i = focusIndex; i < mItems.count(); i++)
 		{
-			mItems.at(i)->setIndex(mItems.at(i)->getIndex() - 1);
+			mItems.at(i)->index -= 1;
 		}
-		this->scene()->removeItem(mLines.at(focusIndex));
+		scene()->removeItem(mLines.at(focusIndex));
 		delete mLines.at(focusIndex);
 		QLineF* line = new QLineF(
-			this->mapToScene(mPoints.at((focusIndex - 1) % this->getLen())->toPointF()),
-			this->mapToScene(mPoints.at(focusIndex % this->getLen())->toPointF())
+			mapToScene(*mPoints.at((focusIndex - 1) % getLen())),
+			mapToScene(*mPoints.at(focusIndex % getLen()))
 		);
-		mLines.at((focusIndex - 1) % this->getLen())->setLine(*line);
+		mLines.at((focusIndex - 1) % getLen())->setLine(*line);
 		for (int i = focusIndex; i < mLines.count(); i++)
 		{
-			mLines.at(i)->setIndex(mLines.at(i)->getIndex() - 1);
+			mLines.at(i)->index -= 1;
 		}
 	}
 }
@@ -227,25 +219,24 @@ void LabPolygon::removeFocusPoint()
 void LabPolygon::removeLastPoint()
 {
 	// 创建的时候需要删除line
-	if (this->getLen() == 0)
+	if (getLen() == 0)
 	{
 		mPoints.pop_back();
-		this->setPolygon(QPolygonF(this->getPoints()));
+		setPolygon(QPolygonF(getPointsNotPtr()));
 		LabGrid* it = mItems.at(mItems.count() - 1);
 		mItems.pop_back();
-		this->scene()->removeItem(it);
+		scene()->removeItem(it);
 		delete it;
 	}
 }
 
 void LabPolygon::movePoint(int index, QPointF point)
 {
-	for (QPoint* iPoint : mPoints)
+	for (QPointF* iPoint : mPoints)
 	{
-		QPoint p = this->mapFromScene(point).toPoint();
-		iPoint = new QPoint(p);
-		this->setPolygon(QPolygonF(this->getPoints()));
-		this->moveLine(index);
+		iPoint = new QPointF(mapFromScene(point));
+		setPolygon(QPolygonF(getPointsNotPtr()));
+		moveLine(index);
 	}
 }
 
@@ -255,14 +246,14 @@ void LabPolygon::moveLine(int index)
 	{
 		QLineF line1 = QLineF(
 			*mPoints.at(index),
-			*mPoints.at((index + 1) % this->getLen())
+			*mPoints.at((index + 1) % getLen())
 		);
 		mLines.at(index)->setLine(line1);
 		QLineF line2 = QLineF(
-			*mPoints.at((index - 1) % this->getLen()),
+			*mPoints.at((index - 1) % getLen()),
 			*mPoints.at(index)
 		);
-		mLines.at((index - 1))->setLine(line2);
+		mLines.at((index - 1) % getLen())->setLine(line2);
 	}
 }
 
@@ -273,38 +264,38 @@ void LabPolygon::moveItem(int index, QPointF point)
 		item->setEnabled(false);
 		item->setPos(point);
 		item->setEnabled(true);
-		this->moveLine(index);
+		moveLine(index);
 	}
 }
 
 void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
-	PolyHovering = true;
-	this->setBrush(insideColor);
+	polyHovering = true;
+	setBrush(insideColor);
 	QGraphicsItem::hoverEnterEvent(ev);
 }
 
 void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
-	PolyHovering = false;
-	if (!this->hasFocus())
+	polyHovering = false;
+	if (!hasFocus())
 	{
-		this->setBrush(halfInsideColor);
+		setBrush(halfInsideColor);
 	}
 	QGraphicsItem::hoverLeaveEvent(ev);
 }
 
 void LabPolygon::focusInEvent(QFocusEvent* ev)
 {
-	this->setBrush(insideColor);
+	setBrush(insideColor);
 	QGraphicsItem::focusInEvent(ev);
 }
 
 void LabPolygon::focusOutEvent(QFocusEvent* ev)
 {
-	if (!PolyHovering)
+	if (!polyHovering)
 	{
-		this->setBrush(halfInsideColor);
+		setBrush(halfInsideColor);
 	}
 	QGraphicsItem::focusOutEvent(ev);
 }
@@ -316,8 +307,13 @@ QVariant LabPolygon::itemChange(
 	{
 		for (int i = 0; i < mPoints.count(); i++)
 		{
-			this->moveItem(i, this->mapToScene(*(mPoints.at(i))));
+			this->moveItem(i, mapToScene(*(mPoints.at(i))));
 		}
 	}
 	return QGraphicsItem::itemChange(change, value);
+}
+
+AnnotationScence* LabPolygon::scene()
+{
+	return annScene;
 }

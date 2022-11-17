@@ -37,14 +37,13 @@ public:
 	void rightClickedFinshPolygon();
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
-	void mouseMoveEvent(QGraphicsSceneMouseEvent* ev);
 
 signals:
-	void iPressed(QPointF point);
-	void iRightClicked();
 	void focusRequest(int labelIndex);
+	void mouseOpt(QString type, QGraphicsSceneMouseEvent* ev);
 
 public slots:
 	void getLabel(Label* label);
 	void getImageSize(int Width, int Height);
+	void copyMouseOpt(QString type, QGraphicsSceneMouseEvent* ev);
 };

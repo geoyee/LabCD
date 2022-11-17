@@ -94,7 +94,7 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 
 void AnnotationScence::rightClickedFinshPolygon()
 {
-	// 双击释放
+	// 右键释放
 	polygonItems.push_back(nowItem);
 	nowItem = nullptr;
 	drawing = false;
@@ -107,13 +107,11 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 	{
 		if (ev->button() == Qt::LeftButton)
 		{
-			emit iPressed(p);
 			PressedAddPoint(p);
 			drawing = true;
 		}
 		else if (ev->button() == Qt::RightButton && drawing)
 		{
-			emit iRightClicked();
 			rightClickedFinshPolygon();
 		}
 	}
@@ -127,13 +125,8 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 			}
 		}
 	}
+	emit mouseOpt("mousePress", ev);
 	QGraphicsScene::mousePressEvent(ev);
-}
-
-void AnnotationScence::mouseMoveEvent(QGraphicsSceneMouseEvent* ev)
-{
-	// polygonItem->movePoint(polygonItems.count() - 1, ev->scenePos());
-	QGraphicsScene::mouseMoveEvent(ev);
 }
 
 void AnnotationScence::getLabel(Label* label)
@@ -147,4 +140,14 @@ void AnnotationScence::getImageSize(int Width, int Height)
 {
 	imgWidth = Width;
 	imgHeight = Height;
+}
+
+void AnnotationScence::copyMouseOpt(QString type, QGraphicsSceneMouseEvent* ev)
+{
+	if (type == "mousePress")
+	{
+		blockSignals(true);
+		mousePressEvent(ev);
+		blockSignals(false);
+	}
 }

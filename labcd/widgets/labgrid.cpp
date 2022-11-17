@@ -85,8 +85,8 @@ void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 
 void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
-	annItem->removeFocusPoint();
 	QGraphicsPathItem::mouseDoubleClickEvent(ev);
+	annItem->removeFocusPoint();
 }
 
 QVariant LabGrid::itemChange(
@@ -94,7 +94,7 @@ QVariant LabGrid::itemChange(
 )
 {
 	double x, y;
-	QVariant tmpVal = value;
+	QVariant tmpVal = QVariant(value);
 	if (change == QGraphicsItem::ItemPositionChange && isEnabled())
 	{
 		if (tmpVal.toPointF().x() > imgHeight) {

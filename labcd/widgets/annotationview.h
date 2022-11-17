@@ -43,6 +43,7 @@ public:
 
 signals:
 	void zoomRequest(double zoomAll);
+	void mousePosChanged(double x, double y);
 	// 同步信号给另一个Canvas
 	void syncRequest(int hPos, int vPos, QTransform tf, double zoom);
 };

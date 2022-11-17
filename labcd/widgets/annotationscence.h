@@ -41,7 +41,7 @@ public:
 
 signals:
 	void iPressed(QPointF point);
-	void iDoubleClicked();
+	void iRightClicked();
 	void focusRequest(int labelIndex);
 
 public slots:

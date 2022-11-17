@@ -1,4 +1,5 @@
-﻿#include <QMenuBar>
+﻿#include <iostream>
+#include <QMenuBar>
 #include <QToolBar>
 #include <QStatusBar>
 #include <QDockWidget>
@@ -8,13 +9,14 @@
 #include <QString>
 #include "labcd.h"
 #include "utils/fileworker.h"
+#include "widgets/annotationview.h"
 
 LabCD::LabCD(QWidget *parent)
     : QMainWindow(parent)
 {
     /* 状态栏 */
     QStatusBar* lcdStatusBar = statusBar();
-    QLabel* messageState = new QLabel("当前消息：", this);  // 用于显示消息
+    QLabel* messageState = new QLabel("", this);  // 用于显示消息
     lcdStatusBar->addWidget(messageState);
 
     /* 菜单栏 */
@@ -45,6 +47,20 @@ LabCD::LabCD(QWidget *parent)
 
     /* 绘图界面 */
     drawCanvas = new MultCanvas(this);
+    connect(drawCanvas->t1Canva->aView, &AnnotationView::mousePosChanged, [=](double x, double y) {
+        messageState->setText(
+            "当前坐标：" + \
+            QString::fromStdString(std::to_string(x)) + ", " + \
+            QString::fromStdString(std::to_string(y))
+        );
+    });
+    connect(drawCanvas->t2Canva->aView, &AnnotationView::mousePosChanged, [=](double x, double y) {
+        messageState->setText(
+            "当前坐标：" + \
+            QString::fromStdString(std::to_string(x)) + ", " + \
+            QString::fromStdString(std::to_string(y))
+        );
+    });
     setCentralWidget(drawCanvas);
 
     /* 图像文件列表 */

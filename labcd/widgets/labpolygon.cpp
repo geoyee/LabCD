@@ -5,7 +5,6 @@
 #include "annotationscence.h"
 
 LabPolygon::LabPolygon(
-	AnnotationScence* _annScene,
 	int _labelIndex,
 	int _imgWidth,
 	int _imgHeight,
@@ -15,7 +14,6 @@ LabPolygon::LabPolygon(
 )
 {
 	// 初始化
-	annScene = _annScene;
 	labelIndex = _labelIndex;
 	imgWidth = _imgWidth;
 	imgHeight = _imgHeight;
@@ -272,7 +270,7 @@ void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
 	polyHovering = true;
 	setBrush(insideColor);
-	QGraphicsItem::hoverEnterEvent(ev);
+	QGraphicsPolygonItem::hoverEnterEvent(ev);
 }
 
 void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
@@ -282,13 +280,13 @@ void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 	{
 		setBrush(halfInsideColor);
 	}
-	QGraphicsItem::hoverLeaveEvent(ev);
+	QGraphicsPolygonItem::hoverLeaveEvent(ev);
 }
 
 void LabPolygon::focusInEvent(QFocusEvent* ev)
 {
 	setBrush(insideColor);
-	QGraphicsItem::focusInEvent(ev);
+	QGraphicsPolygonItem::focusInEvent(ev);
 }
 
 void LabPolygon::focusOutEvent(QFocusEvent* ev)
@@ -297,7 +295,7 @@ void LabPolygon::focusOutEvent(QFocusEvent* ev)
 	{
 		setBrush(halfInsideColor);
 	}
-	QGraphicsItem::focusOutEvent(ev);
+	QGraphicsPolygonItem::focusOutEvent(ev);
 }
 
 QVariant LabPolygon::itemChange(
@@ -310,10 +308,10 @@ QVariant LabPolygon::itemChange(
 			this->moveItem(i, mapToScene(*(mPoints.at(i))));
 		}
 	}
-	return QGraphicsItem::itemChange(change, value);
+	return QGraphicsPolygonItem::itemChange(change, value);
 }
 
 AnnotationScence* LabPolygon::scene()
 {
-	return annScene;
+	return static_cast<AnnotationScence*>(QGraphicsPolygonItem::scene());
 }

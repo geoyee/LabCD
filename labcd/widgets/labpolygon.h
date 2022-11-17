@@ -11,7 +11,6 @@ class AnnotationScence;
 class LabPolygon : public QGraphicsPolygonItem
 {
 private:
-	AnnotationScence* annScene;
 	double opacity = 0.5;
 	QColor insideColor = QColor(255, 0, 0);
 	QColor halfInsideColor = QColor(255, 0, 0);
@@ -33,7 +32,6 @@ public:
 	bool lastFocse = false;
 
 	LabPolygon(
-		AnnotationScence* _annScene,
 		int _labelIndex,
 		int _imgWidth,
 		int _imgHeight,

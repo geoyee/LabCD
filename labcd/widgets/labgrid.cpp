@@ -94,32 +94,31 @@ QVariant LabGrid::itemChange(
 )
 {
 	double x, y;
-	QPointF valuePoint = value.toPointF();
-	QPointF tmpVal = valuePoint;
+	QPointF tmpVal = value.toPointF();
 	if (change == QGraphicsItem::ItemPositionChange && isEnabled())
 	{
-		if (valuePoint.x() > imgHeight) {
+		if (tmpVal.x() > imgHeight) {
 			x = imgHeight;
 		}
-		else if (valuePoint.x() < 0)
+		else if (tmpVal.x() < 0)
 		{
 			x = 0;
 		}
 		else
 		{
-			x = valuePoint.x();
+			x = tmpVal.x();
 		}
-		if (valuePoint.y() > imgWidth)
+		if (tmpVal.y() > imgWidth)
 		{
 			y = imgWidth;
 		}
-		else if (valuePoint.y() < 0)
+		else if (tmpVal.y() < 0)
 		{
 			y = 0;
 		}
 		else
 		{
-			y = valuePoint.y();
+			y = tmpVal.y();
 		}
 		tmpVal = QPointF(x, y);
 		annItem->movePoint(index, tmpVal);
@@ -129,9 +128,9 @@ QVariant LabGrid::itemChange(
 
 QPainterPath LabGrid::shape()
 {
-	QPainterPath path;
+	qDebug() << "set shape";
+	QPainterPath newPath;
 	QPointF p = mapFromScene(pos());
-	qDebug() << p;  // TODO: 为啥不显示
-	path.addEllipse(p, 2 * minSize, 2 * minSize);
-	return path;
+	newPath.addEllipse(p, 2 * minSize, 2 * minSize);
+	return newPath;
 }

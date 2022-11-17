@@ -40,7 +40,7 @@ MultCanvas::MultCanvas(QWidget *parent)
 		t2Canva->aScene, &AnnotationScence::PressedAddPoint
 	);
 	connect(
-		t1Canva->aScene, &AnnotationScence::iDoubleClicked,
+		t1Canva->aScene, &AnnotationScence::iRightClicked,
 		t2Canva->aScene, &AnnotationScence::doubleClickedFinshPolygon
 	);
 	connect(
@@ -48,7 +48,7 @@ MultCanvas::MultCanvas(QWidget *parent)
 		t1Canva->aScene, &AnnotationScence::PressedAddPoint
 	);
 	connect(
-		t2Canva->aScene, &AnnotationScence::iDoubleClicked,
+		t2Canva->aScene, &AnnotationScence::iRightClicked,
 		t1Canva->aScene, &AnnotationScence::doubleClickedFinshPolygon
 	);
 	setLayout(gLayout);

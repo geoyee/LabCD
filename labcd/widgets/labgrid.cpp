@@ -90,40 +90,40 @@ void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 }
 
 QVariant LabGrid::itemChange(
-	QGraphicsItem::GraphicsItemChange change, const QVariant& value
+	GraphicsItemChange change, const QVariant& value
 )
 {
 	double x, y;
-	QPointF tmpVal = value.toPointF();
+	QVariant tmpVal = value;
 	if (change == QGraphicsItem::ItemPositionChange && isEnabled())
 	{
-		if (tmpVal.x() > imgHeight) {
+		if (tmpVal.toPointF().x() > imgHeight) {
 			x = imgHeight;
 		}
-		else if (tmpVal.x() < 0)
+		else if (tmpVal.toPointF().x() < 0)
 		{
 			x = 0;
 		}
 		else
 		{
-			x = tmpVal.x();
+			x = tmpVal.toPointF().x();
 		}
-		if (tmpVal.y() > imgWidth)
+		if (tmpVal.toPointF().y() > imgWidth)
 		{
 			y = imgWidth;
 		}
-		else if (tmpVal.y() < 0)
+		else if (tmpVal.toPointF().y() < 0)
 		{
 			y = 0;
 		}
 		else
 		{
-			y = tmpVal.y();
+			y = tmpVal.toPointF().y();
 		}
 		tmpVal = QPointF(x, y);
-		annItem->movePoint(index, tmpVal);
+		annItem->movePoint(index, tmpVal.toPointF());
 	}
-	return QGraphicsPathItem::itemChange(change, (QVariant)tmpVal);
+	return QGraphicsPathItem::itemChange(change, tmpVal);
 }
 
 QPainterPath LabGrid::shape()

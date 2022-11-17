@@ -5,6 +5,7 @@
 #include "annotationscence.h"
 
 LabPolygon::LabPolygon(
+	AnnotationScence* _nSence,
 	int _labelIndex,
 	int _imgWidth,
 	int _imgHeight,
@@ -14,6 +15,7 @@ LabPolygon::LabPolygon(
 )
 {
 	// 初始化
+	nSence = _nSence;
 	labelIndex = _labelIndex;
 	imgWidth = _imgWidth;
 	imgHeight = _imgHeight;
@@ -230,9 +232,10 @@ void LabPolygon::removeLastPoint()
 
 void LabPolygon::movePoint(int index, QPointF point)
 {
-	for (QPointF* iPoint : mPoints)
+	if (0 <= index && index < mPoints.count())
 	{
-		iPoint = new QPointF(mapFromScene(point));
+		QPointF* iPoint = new QPointF(mapFromScene(point));
+		mPoints[index] = iPoint;
 		setPolygon(QPolygonF(getPointsNotPtr()));
 		moveLine(index);
 	}
@@ -299,7 +302,7 @@ void LabPolygon::focusOutEvent(QFocusEvent* ev)
 }
 
 QVariant LabPolygon::itemChange(
-	QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+	GraphicsItemChange change, const QVariant& value)
 {
 	if (change == QGraphicsItem::ItemPositionHasChanged) 
 	{
@@ -313,5 +316,5 @@ QVariant LabPolygon::itemChange(
 
 AnnotationScence* LabPolygon::scene()
 {
-	return static_cast<AnnotationScence*>(QGraphicsPolygonItem::scene());
+	return nSence;
 }

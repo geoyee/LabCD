@@ -40,6 +40,6 @@ public:
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);
 	// 重写方法
 	QVariant itemChange(
-		QGraphicsItem::GraphicsItemChange change, const QVariant &value);
+		GraphicsItemChange change, const QVariant &value);
 	QPainterPath shape();
 };

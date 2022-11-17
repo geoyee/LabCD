@@ -84,7 +84,7 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 		if (nowItem == nullptr)
 		{
 			nowItem = new LabPolygon(
-				labelIndex, imgWidth, imgHeight, insideColor, borderColor, opacity
+				this, labelIndex, imgWidth, imgHeight, insideColor, borderColor, opacity
 			);
 			addItem(nowItem);
 		}
@@ -92,7 +92,7 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 	}
 }
 
-void AnnotationScence::doubleClickedFinshPolygon()
+void AnnotationScence::rightClickedFinshPolygon()
 {
 	// 双击释放
 	polygonItems.push_back(nowItem);
@@ -114,7 +114,7 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 		else if (ev->button() == Qt::RightButton && drawing)
 		{
 			emit iRightClicked();
-			doubleClickedFinshPolygon();
+			rightClickedFinshPolygon();
 		}
 	}
 	else

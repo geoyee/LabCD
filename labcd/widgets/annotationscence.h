@@ -34,7 +34,7 @@ public:
 	bool hovering();
 	// 同步方法
 	void PressedAddPoint(QPointF point);
-	void doubleClickedFinshPolygon();
+	void rightClickedFinshPolygon();
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* ev);

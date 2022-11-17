@@ -11,6 +11,7 @@ class AnnotationScence;
 class LabPolygon : public QGraphicsPolygonItem
 {
 private:
+	AnnotationScence* nSence;
 	double opacity = 0.5;
 	QColor insideColor = QColor(255, 0, 0);
 	QColor halfInsideColor = QColor(255, 0, 0);
@@ -32,6 +33,7 @@ public:
 	bool lastFocse = false;
 
 	LabPolygon(
+		AnnotationScence* _nSence,
 		int _labelIndex,
 		int _imgWidth,
 		int _imgHeight,
@@ -58,6 +60,6 @@ public:
 	void focusOutEvent(QFocusEvent* ev);
 	// 重写
 	QVariant itemChange(
-		QGraphicsItem::GraphicsItemChange change, const QVariant& value);
+		GraphicsItemChange change, const QVariant& value);
 	AnnotationScence* scene();
 };

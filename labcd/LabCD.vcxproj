@@ -148,6 +148,7 @@
     <ClInclude Include="widgets\labgrid.h" />
     <ClInclude Include="widgets\labline.h" />
     <ClInclude Include="widgets\labpolygon.h" />
+    <ClInclude Include="widgets\opttypes.h" />
     <QtMoc Include="widgets\annotationscence.h" />
     <QtMoc Include="widgets\annotationview.h" />
     <QtMoc Include="widgets\canvas.h" />

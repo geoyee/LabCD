@@ -30,6 +30,8 @@ public:
 	// 事件
 	void hoverEnterEvent(QGraphicsSceneHoverEvent* ev);
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent* ev);
+	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);
 	// 重写方法
 	QPainterPath shape();

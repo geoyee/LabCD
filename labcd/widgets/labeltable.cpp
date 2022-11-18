@@ -29,13 +29,15 @@ LabelTable::LabelTable(QWidget *parent)
 	labTabHHeader->setSectionResizeMode(3, QHeaderView::Fixed);
 	auto labTabVHeader = labelTable->verticalHeader();
 	labTabVHeader->hide();
+	// 初始标签
+	addLabelItem(true);
 	// 切换颜色和删除事件
 	connect(labelTable, &QTableWidget::cellClicked, [=](int row, int column) {
 		int nowIndex = labelTable->item(row, 0)->text().toInt();
 		QString nowName = labelTable->item(row, 1)->text();
 		QColor nowColor = labelTable->item(row, 2)->background().color();
 		nowLabel->reSet(nowIndex, nowName, nowColor);
-		if (column == 2)  // 换颜色
+		if (column == 2 && row != 0)  // 换颜色
 		{
 			QColor newColor = QColorDialog::getColor(
 				nowColor, this, "标签颜色选择");
@@ -46,7 +48,7 @@ LabelTable::LabelTable(QWidget *parent)
 				emit colorChanged(newColor);
 			}
 		}
-		else if (column == 3)  // 删除
+		else if (column == 3 && row != 0)  // 删除
 		{
 			if (nowLabel->getIndex() == row)
 			{
@@ -96,26 +98,36 @@ LabelTable::~LabelTable()
 
 }
 
-void LabelTable::addLabelItem()
+void LabelTable::addLabelItem(bool init)
 {	
 	int idx = labelTable->rowCount();
 	
 	// 添加行
 	labelTable->insertRow(labelTable->rowCount());  // 插入行
 	QTableWidgetItem* indexItem = new QTableWidgetItem();
-	indexItem->setText(QString::number(idx + 1));
-	indexItem->setFlags(Qt::ItemIsEnabled);
+	indexItem->setText(QString::number(idx));
 	indexItem->setTextAlignment(Qt::AlignCenter);
 	labelTable->setItem(idx, 0, indexItem);  // 序号
 	QTableWidgetItem* nameItem = new QTableWidgetItem();
-	nameItem->setText("");
 	labelTable->setItem(idx, 1, nameItem);  // 名称
 	QTableWidgetItem* colorItem = new QTableWidgetItem();
 	colorItem->setFlags(Qt::ItemIsEnabled);
-	colorItem->setBackground(cMap->getColor());
 	labelTable->setItem(idx, 2, colorItem);  // 颜色
 	QTableWidgetItem* delItem = new QTableWidgetItem();
 	delItem->setFlags(Qt::ItemIsEnabled);
-	delItem->setIcon(QIcon(":/docks/resources/Delete.png"));
 	labelTable->setItem(idx, 3, delItem);  // 删除按钮
+	if (!init)
+	{
+		nameItem->setText("");
+		nameItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		colorItem->setBackground(cMap->getColor());
+		delItem->setIcon(QIcon(":/docks/resources/Delete.png"));
+	}
+	else
+	{
+		nameItem->setText("背景");
+		nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
+		colorItem->setBackground(QColor(0, 0, 0));
+		delItem->setIcon(QIcon(":/docks/resources/CantDelete.png"));
+	}
 }

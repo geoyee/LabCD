@@ -19,7 +19,7 @@ private:
 public:
 	LabelTable(QWidget *parent = nullptr);
 	~LabelTable();
-	void addLabelItem();
+	void addLabelItem(bool init = false);
 
 signals:
 	void labelSelected(Label* nowLabel);

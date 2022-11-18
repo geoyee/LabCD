@@ -1,6 +1,8 @@
 ﻿#include <QPen>
 #include "labpolygon.h"
 #include "labline.h"
+#include "annotationscence.h"
+#include "opttypes.h"
 
 LabLine::LabLine(
     LabPolygon* _annItem,
@@ -64,6 +66,9 @@ void LabLine::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
     boundingPolygon();
     annItem->lineHovering = true;
     setPen(QPen(color, minWidth * 1.4));
+    emit annItem->scene()->mouseOptRequest(
+        annItem->index, index, OptTypes::LineHoverEnter, ev
+    );
     QGraphicsLineItem::hoverEnterEvent(ev);
 }
 
@@ -71,13 +76,37 @@ void LabLine::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
     annItem->lineHovering = false;
     setPen(QPen(color, minWidth));
+    emit annItem->scene()->mouseOptRequest(
+        annItem->index, index, OptTypes::LineHoverLeave, ev
+    );
     QGraphicsLineItem::hoverLeaveEvent(ev);
+}
+
+void LabLine::mousePressEvent(QGraphicsSceneMouseEvent* ev)
+{
+    setSelected(true);
+    emit annItem->scene()->mouseOptRequest(
+        annItem->index, index, OptTypes::LineMousePress, ev
+    );
+    QGraphicsLineItem::mousePressEvent(ev);
+}
+
+void LabLine::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
+{
+    setSelected(false);
+    emit annItem->scene()->mouseOptRequest(
+        annItem->index, index, OptTypes::LineMouseRelease, ev
+    );
+    QGraphicsLineItem::mouseReleaseEvent(ev);
 }
 
 void LabLine::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
     setPen(QPen(color, minWidth));
     annItem->addPointMiddle(index, ev->pos());
+    emit annItem->scene()->mouseOptRequest(
+        annItem->index, index, OptTypes::LineMouseDoubleClick, ev
+    );
     QGraphicsLineItem::mouseDoubleClickEvent(ev);
 
 }

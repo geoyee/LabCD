@@ -2,6 +2,8 @@
 #include <QCursor>
 #include "labpolygon.h"
 #include "labgrid.h"
+#include "annotationscence.h"
+#include "opttypes.h"
 
 LabGrid::LabGrid(
 	LabPolygon* _annItem,
@@ -65,6 +67,9 @@ void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 	setBrush(QColor(0, 0, 0, 0));
 	annItem->itemHovering = true;
 	hovering = true;
+	emit annItem->scene()->mouseOptRequest(
+		annItem->index, index, OptTypes::GridHoverEnter, ev
+	);
 	QGraphicsPathItem::hoverEnterEvent(ev);
 }
 
@@ -74,19 +79,45 @@ void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 	setBrush(color);
 	annItem->itemHovering = false;
 	hovering = false;
+	emit annItem->scene()->mouseOptRequest(
+		annItem->index, index, OptTypes::GridHoverLeave, ev
+	);
 	QGraphicsPathItem::hoverLeaveEvent(ev);
+}
+
+void LabGrid::mousePressEvent(QGraphicsSceneMouseEvent* ev)
+{
+	setSelected(true);
+	emit annItem->scene()->mouseOptRequest(
+		annItem->index, index, OptTypes::GridMousePress, ev
+	);
+	QGraphicsPathItem::mousePressEvent(ev);
 }
 
 void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 {
 	setSelected(false);
+	emit annItem->scene()->mouseOptRequest(
+		annItem->index, index, OptTypes::GridMouseRelease, ev
+	);
 	QGraphicsPathItem::mouseReleaseEvent(ev);
 }
 
 void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
-	QGraphicsPathItem::mouseDoubleClickEvent(ev);
+	emit annItem->scene()->mouseOptRequest(
+		annItem->index, index, OptTypes::GridMouseDoubleClick, ev
+	);
 	annItem->removeFocusPoint();
+	QGraphicsPathItem::mouseDoubleClickEvent(ev);
+}
+
+void LabGrid::mouseMoveEvent(QGraphicsSceneMouseEvent* ev)
+{
+	emit annItem->scene()->mouseOptRequest(
+		annItem->index, index, OptTypes::GridMouseMove, ev
+	);
+	QGraphicsPathItem::mouseMoveEvent(ev);
 }
 
 QVariant LabGrid::itemChange(

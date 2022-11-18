@@ -1,11 +1,13 @@
 ﻿#include <QPen>
 #include <QCursor>
 #include <QGraphicsScene>
-#include "labpolygon.h"
 #include "annotationscence.h"
+#include "labpolygon.h"
+#include "opttypes.h"
 
 LabPolygon::LabPolygon(
 	AnnotationScence* _nSence,
+	int _index,
 	int _labelIndex,
 	int _imgWidth,
 	int _imgHeight,
@@ -16,6 +18,7 @@ LabPolygon::LabPolygon(
 {
 	// 初始化
 	nSence = _nSence;
+	index = _index;
 	labelIndex = _labelIndex;
 	imgWidth = _imgWidth;
 	imgHeight = _imgHeight;
@@ -172,7 +175,7 @@ void LabPolygon::remove()
 	{
 		mLines.pop_back();
 	}
-	scene()->polygonItems.removeAll(this);
+	scene()->polygonItems.removeAt(index);
 	scene()->removeItem(this);
 	delete this;
 }
@@ -203,33 +206,32 @@ void LabPolygon::removeFocusPoint()
 			for (int i = focusIndex; i < mItems.count(); i++)
 			{
 				mItems.at(i)->index -= 1;
+				if (mItems.at(i)->index < 0)
+				{
+					mItems.at(i)->index += mItems.count();
+				}
 			}
 			scene()->removeItem(mLines.at(focusIndex));
 			mLines.removeAt(focusIndex);
+			int lastIndex = focusIndex - 1;
+			if (lastIndex < 0)
+			{
+				lastIndex += mItems.count();
+			}
 			QLineF line(
-				mapToScene(*mPoints.at((focusIndex - 1) % getLen())),
+				mapToScene(*mPoints.at(lastIndex % getLen())),
 				mapToScene(*mPoints.at(focusIndex % getLen()))
 			);
-			mLines.at((static_cast<qsizetype>(focusIndex) - 1) % getLen())->setLine(line);
+			mLines.at(lastIndex % getLen())->setLine(line);
 			for (int i = focusIndex; i < mLines.count(); i++)
 			{
 				mLines.at(i)->index -= 1;
+				if (mLines.at(i)->index < 0)
+				{
+					mLines.at(i)->index += mLines.count();
+				}
 			}
 		}
-	}
-}
-
-void LabPolygon::removeLastPoint()
-{
-	// 创建的时候需要删除line
-	if (getLen() == 0)
-	{
-		mPoints.pop_back();
-		setPolygon(QPolygonF(getPointsNotPtr()));
-		LabGrid* it = mItems.at(mItems.count() - 1);
-		mItems.pop_back();
-		scene()->removeItem(it);
-		delete it;
 	}
 }
 
@@ -252,11 +254,16 @@ void LabPolygon::moveLine(int index)
 			mapToScene(*mPoints.at((index + 1) % getLen()))
 		);
 		mLines[index]->setLine(line1);
+		int lastIndex = index - 1;
+		if (lastIndex < 0)
+		{
+			lastIndex += mPoints.count();
+		}
 		QLineF line2 = QLineF(
-			mapToScene(*mPoints.at((index - 1) % getLen())),
+			mapToScene(*mPoints.at(lastIndex % getLen())),
 			mapToScene(*mPoints.at(index))
 		);
-		mLines[(static_cast<qsizetype>(index) - 1) % getLen()]->setLine(line2);
+		mLines[lastIndex % getLen()]->setLine(line2);
 	}
 }
 
@@ -275,6 +282,7 @@ void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
 	polyHovering = true;
 	setBrush(insideColor);
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverEnter, ev);
 	QGraphicsPolygonItem::hoverEnterEvent(ev);
 }
 
@@ -285,12 +293,28 @@ void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 	{
 		setBrush(halfInsideColor);
 	}
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverLeave, ev);
 	QGraphicsPolygonItem::hoverLeaveEvent(ev);
+}
+
+void LabPolygon::mousePressEvent(QGraphicsSceneMouseEvent* ev)
+{
+	setSelected(true);
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyMousePress, ev);
+	QGraphicsPolygonItem::mousePressEvent(ev);
+}
+
+void LabPolygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
+{
+	setSelected(false);
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyMouseRelease, ev);
+	QGraphicsPolygonItem::mouseReleaseEvent(ev);
 }
 
 void LabPolygon::focusInEvent(QFocusEvent* ev)
 {
 	setBrush(insideColor);
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusIn, ev);
 	QGraphicsPolygonItem::focusInEvent(ev);
 }
 
@@ -300,6 +324,7 @@ void LabPolygon::focusOutEvent(QFocusEvent* ev)
 	{
 		setBrush(halfInsideColor);
 	}
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusOut, ev);
 	QGraphicsPolygonItem::focusOutEvent(ev);
 }
 

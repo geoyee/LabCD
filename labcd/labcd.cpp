@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QLabel>
 #include <QString>
+#include <QDesktopServices>
 #include "labcd.h"
 #include "utils/fileworker.h"
 #include "widgets/annotationview.h"
@@ -27,10 +28,23 @@ LabCD::LabCD(QWidget *parent)
     connect(opensAct, &QAction::triggered, this, &LabCD::openDir);
     lcdMenuBar->addMenu(fileMenu);
     QMenu* aboutMenu = new QMenu("关于", this);
+    QAction* githubAct = aboutMenu->addAction(
+        QIcon(":/menu/resources/Github.png"), "github主页");
+    connect(githubAct, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl("https://github.com/geoyee/LabCD"));
+    });
     lcdMenuBar->addMenu(aboutMenu);
 
     /* 工具栏 */
     QToolBar* lcdToolBar = new QToolBar(this);
+    QAction* saveAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Save.png"), "保存");
+    lcdToolBar->addSeparator();
+    QAction* lastAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Last.png"), "上一张");
+    QAction* nextAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Next.png"), "下一张");
+    lcdToolBar->addSeparator();
     QAction* enlargeAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Enlarge.png"), "放大");
     QAction* narrowAct = lcdToolBar->addAction(

@@ -3,6 +3,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include "labpolygon.h"
+#include "opttypes.h"
 #include "../utils/label.h"
 
 class AnnotationScence : public QGraphicsScene
@@ -40,10 +41,10 @@ public:
 
 signals:
 	void focusRequest(int labelIndex);
-	void mouseOpt(QString type, QGraphicsSceneMouseEvent* ev);
+	void mouseOptRequest(int polyIndex, int subIndex, OptTypes optType, QEvent* ev);
 
 public slots:
 	void getLabel(Label* label);
 	void getImageSize(int Width, int Height);
-	void copyMouseOpt(QString type, QGraphicsSceneMouseEvent* ev);
+	void copyMouseOpt(int polyIndex, int subIndex, OptTypes optType, QEvent* ev);
 };

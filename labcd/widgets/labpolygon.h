@@ -3,8 +3,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
 #include <QFocusEvent>
-#include "labgrid.h"
 #include "labline.h"
+#include "labgrid.h"
 
 class AnnotationScence;
 
@@ -23,6 +23,7 @@ public:
 	QList<QPointF*> mPoints;
 	QList<LabGrid*> mItems;
 	QList<LabLine*> mLines;
+	int index;
 	int labelIndex;
 	int imgWidth;
 	int imgHeight;
@@ -34,6 +35,7 @@ public:
 
 	LabPolygon(
 		AnnotationScence* _nSence,
+		int _index,
 		int _labelIndex,
 		int _imgWidth,
 		int _imgHeight,
@@ -49,13 +51,14 @@ public:
 	void addPointLast(QPointF point);
 	void remove();
 	void removeFocusPoint();
-	void removeLastPoint();
 	void movePoint(int index, QPointF point);
 	void moveLine(int index);
 	void moveItem(int index, QPointF point);
 	// 事件
 	void hoverEnterEvent(QGraphicsSceneHoverEvent* ev);
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent* ev);
+	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev);
 	void focusInEvent(QFocusEvent* ev);
 	void focusOutEvent(QFocusEvent* ev);
 	// 重写

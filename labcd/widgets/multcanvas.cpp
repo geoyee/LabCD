@@ -36,11 +36,11 @@ MultCanvas::MultCanvas(QWidget *parent)
 	});
 	// 同步画图
 	connect(
-		t1Canva->aScene, &AnnotationScence::mouseOpt,
+		t1Canva->aScene, &AnnotationScence::mouseOptRequest,
 		t2Canva->aScene, &AnnotationScence::copyMouseOpt
 	);
 	connect(
-		t2Canva->aScene, &AnnotationScence::mouseOpt,
+		t2Canva->aScene, &AnnotationScence::mouseOptRequest,
 		t1Canva->aScene, &AnnotationScence::copyMouseOpt
 	);
 	setLayout(gLayout);

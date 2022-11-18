@@ -1,6 +1,6 @@
 # LabCD
 
-
+https://user-images.githubusercontent.com/71769312/202726343-c4606caa-ce4a-4832-a854-e6205644f31a.mp4
 
 遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)。该项目目前为自己（小白）学习C++和Qt的练习项目。
 

@@ -1,6 +1,6 @@
 # LabCD
 
-
+https://user-images.githubusercontent.com/71769312/202726343-c4606caa-ce4a-4832-a854-e6205644f31a.mp4
 
 遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)。该项目目前为自己（小白）学习C++和Qt的练习项目。
 
@@ -13,6 +13,16 @@
 - OpenCV 4.5.5
 
 - ~~GDAL 3.5.3~~
+
+## 文件组织
+
+```
+testimgs
+   ├-- A
+   |   └-- 01.jpg
+   └-- B
+       └-- 01.jpg
+```
 
 ## TODO
 
@@ -40,5 +50,5 @@
 
 ## 资源
 
-- 图标：[SuperMap GIS产品彩色系功能图标库](https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=32519)
+- 部分图标：[SuperMap GIS产品彩色系功能图标库](https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=32519)
 - 标签预定义颜色：[色板 | AntV](https://antv.vision/zh/docs/specification/language/palette)

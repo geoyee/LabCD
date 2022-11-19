@@ -112,7 +112,7 @@ LabCD::LabCD(QWidget *parent)
         drawCanvas->labelSelected(nowLabel);
         messageState->setText("当前标签：[" + \
             QString::fromStdString(std::to_string(nowLabel->getIndex())) + \
-            "]" + nowLabel->getName());
+            "] " + nowLabel->getName());
     });
     
     /* 界面设置 */

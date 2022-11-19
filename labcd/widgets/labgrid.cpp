@@ -163,7 +163,6 @@ QVariant LabGrid::itemChange(
 
 QPainterPath LabGrid::shape()
 {
-	qDebug() << "set shape";
 	QPainterPath newPath;
 	QPointF p = mapFromScene(pos());
 	newPath.addEllipse(p, 2 * minSize, 2 * minSize);

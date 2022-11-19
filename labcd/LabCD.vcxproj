@@ -159,6 +159,11 @@
   <ItemGroup>
     <Text Include="configs\colormap.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
+    <None Include="LabCD.pri" />
+    <None Include="LabCD.pro" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />

@@ -45,7 +45,7 @@ LabelTable::LabelTable(QWidget *parent)
 			{
 				labelTable->item(row, 2)->setBackground(newColor);
 				nowLabel->setColor(newColor);
-				emit colorChanged(newColor);
+				emit colorChanged(row, newColor);
 			}
 		}
 		else if (column == 3 && row != 0)  // 删除

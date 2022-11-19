@@ -33,6 +33,7 @@ void LabLine::setColor(QColor c)
 {
     setPen(QPen(color, minWidth));
     color = c;
+    updateWidth();
 }
 
 void LabLine::updateWidth()

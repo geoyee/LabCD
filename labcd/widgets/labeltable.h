@@ -23,5 +23,5 @@ public:
 
 signals:
 	void labelSelected(Label* nowLabel);
-	void colorChanged(QColor newColor);
+	void colorChanged(int labelIndex, QColor newColor);
 };

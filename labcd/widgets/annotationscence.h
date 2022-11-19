@@ -32,6 +32,7 @@ public:
 	~AnnotationScence();
 	void setScaleRate(double zoomAll);
 	void updatePolygonSize();
+	void setColor(QColor _insideColor, QColor _borderColor);
 	bool hovering();
 	// 同步方法
 	void PressedAddPoint(QPointF point);

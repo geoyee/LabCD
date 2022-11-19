@@ -68,6 +68,12 @@ void AnnotationScence::updatePolygonSize()
 	}
 }
 
+void AnnotationScence::setColor(QColor _insideColor, QColor _borderColor)
+{
+	insideColor = _insideColor;
+	borderColor = _borderColor;
+}
+
 bool AnnotationScence::hovering()
 {
 	if (getItemHovering() || getPolyHovering() || getLineHovering())

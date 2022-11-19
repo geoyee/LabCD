@@ -107,16 +107,29 @@ LabCD::LabCD(QWidget *parent)
     labelsDock->setAllowedAreas(Qt::RightDockWidgetArea);
     labTableWidget = new LabelTable(this);
     labelsDock->setWidget(labTableWidget);
-    addDockWidget(Qt::RightDockWidgetArea, labelsDock);
     connect(labTableWidget, &LabelTable::labelSelected, [=](Label* nowLabel) {
         drawCanvas->labelSelected(nowLabel);
         messageState->setText("当前标签：[" + \
             QString::fromStdString(std::to_string(nowLabel->getIndex())) + \
             "] " + nowLabel->getName());
     });
+    connect(labTableWidget, &LabelTable::colorChanged, [=](int labelIndex, QColor newColor) {
+        // 更新界面上的多边形
+        for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); i++)
+        {
+            if (drawCanvas->t1Canva->aScene->polygonItems[i]->labelIndex == labelIndex)
+            {
+                drawCanvas->t1Canva->aScene->polygonItems[i]->setColor(newColor, newColor);
+                drawCanvas->t2Canva->aScene->polygonItems[i]->setColor(newColor, newColor);
+            }
+            drawCanvas->t1Canva->aScene->setColor(newColor, newColor);
+            drawCanvas->t2Canva->aScene->setColor(newColor, newColor);
+        }
+    });
+    addDockWidget(Qt::RightDockWidgetArea, labelsDock);
     
     /* 界面设置 */
-    resize(1000, 600);
+    resize(1200, 600);
     setWindowTitle("LabCD - 遥感变化检测标注工具");
     setWindowIcon(QIcon(":/main/resources/Icon.png"));
 }

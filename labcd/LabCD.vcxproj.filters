@@ -155,4 +155,9 @@
   <ItemGroup>
     <Text Include="configs\colormap.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
+    <None Include="LabCD.pri" />
+    <None Include="LabCD.pro" />
+  </ItemGroup>
 </Project>

@@ -87,11 +87,15 @@ void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabGrid::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-	setSelected(true);
-	emit annItem->scene()->mouseOptRequest(
-		annItem->index, index, OptTypes::GridMousePress, ev
-	);
-	QGraphicsPathItem::mousePressEvent(ev);
+	if (ev->button() == Qt::LeftButton)
+	{
+		annItem->scene()->clearSelection();
+		setSelected(true);
+		emit annItem->scene()->mouseOptRequest(
+			annItem->index, index, OptTypes::GridMousePress, ev
+		);
+		QGraphicsPathItem::mousePressEvent(ev);
+	}
 }
 
 void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)

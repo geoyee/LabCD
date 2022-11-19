@@ -84,11 +84,15 @@ void LabLine::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabLine::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-    setSelected(true);
-    emit annItem->scene()->mouseOptRequest(
-        annItem->index, index, OptTypes::LineMousePress, ev
-    );
-    QGraphicsLineItem::mousePressEvent(ev);
+    if (ev->button() == Qt::LeftButton)
+    {
+        annItem->scene()->clearSelection();
+        setSelected(true);
+        emit annItem->scene()->mouseOptRequest(
+            annItem->index, index, OptTypes::LineMousePress, ev
+        );
+        QGraphicsLineItem::mousePressEvent(ev);
+    }
 }
 
 void LabLine::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)

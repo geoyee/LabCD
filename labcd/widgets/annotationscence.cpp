@@ -101,7 +101,6 @@ void AnnotationScence::rightClickedFinshPolygon()
 
 void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-	clearSelection();
 	QPointF p = ev->scenePos();
 	if (!hovering())
 	{
@@ -116,6 +115,7 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 		{
 			rightClickedFinshPolygon();
 			drawing = false;
+			clearSelection();
 		}
 	}
 	else

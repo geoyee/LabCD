@@ -299,9 +299,13 @@ void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabPolygon::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-	setSelected(true);
-	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyMousePress, ev);
-	QGraphicsPolygonItem::mousePressEvent(ev);
+	if (ev->button() == Qt::LeftButton)
+	{
+		scene()->clearSelection();
+		setSelected(true);
+		emit scene()->mouseOptRequest(index, -1, OptTypes::PolyMousePress, ev);
+		QGraphicsPolygonItem::mousePressEvent(ev);
+	}
 }
 
 void LabPolygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)

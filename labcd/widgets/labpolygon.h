@@ -50,7 +50,7 @@ public:
 	void addPointMiddle(int lineIndex, QPointF point);
 	void addPointLast(QPointF point);
 	void remove();
-	void removeFocusPoint();
+	void removeFocusPoint(int preFocusIndex = -1);
 	void movePoint(int index, QPointF point);
 	void moveLine(int index);
 	void moveItem(int index, QPointF point);

@@ -112,7 +112,7 @@ void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 	emit annItem->scene()->mouseOptRequest(
 		annItem->index, index, OptTypes::GridMouseDoubleClick, ev
 	);
-	annItem->removeFocusPoint();
+	annItem->removeFocusPoint(index);
 	QGraphicsPathItem::mouseDoubleClickEvent(ev);
 }
 

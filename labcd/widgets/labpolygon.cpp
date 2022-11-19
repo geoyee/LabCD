@@ -180,16 +180,23 @@ void LabPolygon::remove()
 	delete this;
 }
 
-void LabPolygon::removeFocusPoint()
+void LabPolygon::removeFocusPoint(int preFocusIndex)
 {
 	int focusIndex = -1;
-	for (int i = 0; i < mItems.count(); i++)
+	if (preFocusIndex == -1)
 	{
-		if (mItems.at(i)->hasFocus())
+		for (int i = 0; i < mItems.count(); i++)
 		{
-			focusIndex = i;
-			break;
+			if (mItems.at(i)->hasFocus())
+			{
+				focusIndex = i;
+				break;
+			}
 		}
+	}
+	else
+	{
+		focusIndex = preFocusIndex;
 	}
 	if (focusIndex != -1)
 	{

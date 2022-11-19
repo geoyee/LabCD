@@ -10,4 +10,6 @@ public:
 		QStringList* t2List,
 		QWidget* parent = nullptr
 	);
+
+	static bool createFolder(QString path);
 };

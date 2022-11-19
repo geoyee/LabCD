@@ -62,3 +62,16 @@ bool FileWorker::openImageDir(
         return true;
     }
 }
+
+bool FileWorker::createFolder(QString path)
+{
+    QDir* folder = new QDir(path);
+    if (!folder->exists())
+    {
+        if (folder->mkpath(path))
+        {
+            return true;
+        }
+    }
+    return false;
+}

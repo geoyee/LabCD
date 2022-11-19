@@ -8,6 +8,8 @@
 #include <QLabel>
 #include <QString>
 #include <QDesktopServices>
+#include <QFileInfo>
+#include <QMessageBox>
 #include "labcd.h"
 #include "utils/fileworker.h"
 #include "widgets/annotationview.h"
@@ -146,5 +148,19 @@ void LabCD::openDir()
     if (FileWorker::openImageDir(&t1List, &t2List, this))
     {
         fListWidget->addFileNames(t1List, t2List);
+    }
+    // 新建保存目录
+    QFileInfo fileInfo(t1List.at(0));
+    QString path = fileInfo.path();
+    path = path.replace("\\", "/");
+    path = path.section("/", 0, -2);
+    path += "/GT";
+    if (!FileWorker::createFolder(path))
+    {
+        QMessageBox::critical(
+            this,
+            "错误",
+            "无法创建保存标签的文件夹。"
+        );
     }
 }

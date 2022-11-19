@@ -105,6 +105,27 @@
     <Image Include="resources\Delete.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\CantDelete.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\DeleteAllPolygons.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\DeletePolygon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Github.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Last.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Next.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Save.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">

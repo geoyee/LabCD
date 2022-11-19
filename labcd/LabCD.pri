@@ -14,6 +14,7 @@ HEADERS += ./utils/colormap.h \
     ./widgets/labgrid.h \
     ./widgets/labline.h \
     ./widgets/labpolygon.h \
+    ./widgets/opttypes.h \
     ./labcd.h \
     ./widgets/annotationscence.h \
     ./widgets/annotationview.h \

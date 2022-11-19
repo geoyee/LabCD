@@ -15,3 +15,13 @@ cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 	cv::Mat cva = (diff - min) / (max - min + 1e-12);
 	return cva;
 }
+
+bool ImagePress::saveMaskFromPolygon(
+		QString savePath,
+		int imageWidth,
+		int imageHight,
+		QList<LabPolygon*> polygons
+)
+{
+	// TODO: 保存图像
+}

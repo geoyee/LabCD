@@ -23,17 +23,18 @@ bool FileWorker::openImageDir(
     QDir dir(dirPath);
     QStringList subDirList;
     subDirList = dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs, QDir::Name);
-    if (subDirList.size() != 2)
+    if (subDirList.size() != 2 && subDirList.size() != 3)
     {
         QMessageBox::critical(
             parent, 
             "错误", 
-            "文件组织格式错误，请确保数据文件夹下仅存在两个子文件夹，分别存放时段一和时段二的数据。"
+            "文件组织格式错误，请确保数据文件夹下仅存在两个（或三个）子文件夹，分别存放时段一和时段二的数据（以及自动生成用于存放标注结果）。"
         );
         return false;
     }
     else  // 获取所有图像
     {
+        subDirList.removeOne("GT");
         QStringList nameFilters;
         nameFilters << "*.jpg" << "*.jpeg" << "*.png";
         // nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
@@ -73,5 +74,5 @@ bool FileWorker::createFolder(QString path)
             return true;
         }
     }
-    return false;
+    return true;
 }

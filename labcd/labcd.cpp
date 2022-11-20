@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include "labcd.h"
 #include "utils/fileworker.h"
+#include "utils/imgpress.h"
 #include "widgets/annotationview.h"
 
 LabCD::LabCD(QWidget *parent)
@@ -39,40 +40,6 @@ LabCD::LabCD(QWidget *parent)
     });
     lcdMenuBar->addMenu(aboutMenu);
 
-    /* 工具栏 */
-    QToolBar* lcdToolBar = new QToolBar(this);
-    QAction* saveAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Save.png"), "保存");
-    saveAct->setShortcut(tr("Ctrl+S"));
-    lcdToolBar->addSeparator();
-    QAction* lastAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Last.png"), "上一张");
-    lastAct->setShortcut(tr("S"));
-    QAction* nextAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Next.png"), "下一张");
-    nextAct->setShortcut(tr("F"));
-    lcdToolBar->addSeparator();
-    QAction* enlargeAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Enlarge.png"), "放大");
-    QAction* narrowAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Narrow.png"), "缩小");
-    QAction* fullAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Full.png"), "全幅缩放");
-    lcdToolBar->addSeparator();
-    QAction* delPolyAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/DeletePolygon.png"), "删除多边形");
-    delPolyAct->setShortcut(tr("Backspace"));
-    QAction* delAllPolysAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/DeleteAllPolygons.png"), "删除所有多边形");
-    delAllPolysAct->setShortcut(tr("Delete"));
-    lcdToolBar->addSeparator();
-    QAction* undoAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Undo.png"), "撤销");
-    QAction* redoAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Redo.png"), "重做");
-    lcdToolBar->setMovable(false);
-    addToolBar(Qt::LeftToolBarArea, lcdToolBar);
-
     /* 绘图界面 */
     drawCanvas = new MultCanvas(this);
     connect(drawCanvas->t1Canva->aView, &AnnotationView::mousePosChanged, [=](double x, double y) {
@@ -97,7 +64,10 @@ LabCD::LabCD(QWidget *parent)
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
     fListWidget = new FileList(this);
     connect(fListWidget, &FileList::FileClickRequest, [=](QString t1Path, QString t2Path) {
+
         drawCanvas->loadImages(t1Path, t2Path); 
+        QFileInfo fileInfo(t1Path);
+        fileName = fileInfo.fileName();
         messageState->setText("加载图像：" + t1Path);
     });  // 加载图像
     filesDock->setWidget(fListWidget);
@@ -129,6 +99,52 @@ LabCD::LabCD(QWidget *parent)
         }
     });
     addDockWidget(Qt::RightDockWidgetArea, labelsDock);
+
+    /* 工具栏 */
+    QToolBar* lcdToolBar = new QToolBar(this);
+    QAction* saveAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Save.png"), "保存");
+    saveAct->setShortcut(tr("Ctrl+S"));
+    connect(saveAct, &QAction::triggered, [=]() {
+        QString saveImgPath = savePath + "/" + fileName;
+        int labNum = labTableWidget->getLen();
+        ImagePress::saveMaskFromPolygon(
+            saveImgPath, 
+            labNum,
+            drawCanvas->imageHeight, 
+            drawCanvas->imageWidth, 
+            drawCanvas->t1Canva->aScene->polygonItems
+        );
+        messageState->setText("保存图像：" + saveImgPath);
+    });
+    lcdToolBar->addSeparator();
+    QAction* lastAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Last.png"), "上一张");
+    lastAct->setShortcut(tr("S"));
+    QAction* nextAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Next.png"), "下一张");
+    nextAct->setShortcut(tr("F"));
+    lcdToolBar->addSeparator();
+    QAction* enlargeAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Enlarge.png"), "放大");
+    QAction* narrowAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Narrow.png"), "缩小");
+    QAction* fullAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Full.png"), "全幅缩放");
+    lcdToolBar->addSeparator();
+    QAction* delPolyAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/DeletePolygon.png"), "删除多边形");
+    delPolyAct->setShortcut(tr("Backspace"));
+    QAction* delAllPolysAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/DeleteAllPolygons.png"), "删除所有多边形");
+    delAllPolysAct->setShortcut(tr("Delete"));
+    lcdToolBar->addSeparator();
+    QAction* undoAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Undo.png"), "撤销");
+    QAction* redoAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Redo.png"), "重做");
+    lcdToolBar->setMovable(false);
+    addToolBar(Qt::LeftToolBarArea, lcdToolBar);
     
     /* 界面设置 */
     resize(1200, 600);
@@ -151,11 +167,11 @@ void LabCD::openDir()
     }
     // 新建保存目录
     QFileInfo fileInfo(t1List.at(0));
-    QString path = fileInfo.path();
-    path = path.replace("\\", "/");
-    path = path.section("/", 0, -2);
-    path += "/GT";
-    if (!FileWorker::createFolder(path))
+    savePath = fileInfo.path();
+    savePath = savePath.replace("\\", "/");
+    savePath = savePath.section("/", 0, -2);
+    savePath += "/GT";
+    if (!FileWorker::createFolder(savePath))
     {
         QMessageBox::critical(
             this,

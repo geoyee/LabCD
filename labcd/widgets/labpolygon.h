@@ -46,6 +46,7 @@ public:
 	~LabPolygon();
 	int getLen();
 	void setColor(QColor _insideColor, QColor _borderColor);
+	QColor getColor();
 	QList<QPointF*> getScenePos();
 	void addPointMiddle(int lineIndex, QPointF point);
 	void addPointLast(QPointF point);

@@ -98,6 +98,11 @@ LabelTable::~LabelTable()
 
 }
 
+int LabelTable::getLen()
+{
+	return labelTable->rowCount();
+}
+
 void LabelTable::addLabelItem(bool init)
 {	
 	int idx = labelTable->rowCount();

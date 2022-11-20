@@ -10,6 +10,9 @@ class LabCD : public QMainWindow
     Q_OBJECT
 
 private:
+    QString savePath;
+    QString fileName;
+
     void openDir();
 
 public:

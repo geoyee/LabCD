@@ -19,6 +19,7 @@ private:
 public:
 	LabelTable(QWidget *parent = nullptr);
 	~LabelTable();
+	int getLen();
 	void addLabelItem(bool init = false);
 
 signals:

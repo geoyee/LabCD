@@ -69,7 +69,9 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path)
 	{
 		t1Canva->loadImageFromPixmap(t1);
 		t2Canva->loadImageFromPixmap(t2);
-		emit imageLoaded(t1.width(), t1.height());  // 发送大小
+		imageWidth = t1.width();
+		imageHeight = t1.height();
+		emit imageLoaded(imageWidth, imageHeight);  // 发送大小
 		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);  // 鹰眼图
 	}
 }

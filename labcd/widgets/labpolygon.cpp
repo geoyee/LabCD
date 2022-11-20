@@ -82,6 +82,11 @@ void LabPolygon::setColor(QColor _insideColor, QColor _borderColor)
 	}
 }
 
+QColor LabPolygon::getColor()
+{
+	return borderColor;
+}
+
 QList<QPointF*> LabPolygon::getScenePos()
 {
 	QList<QPointF*> points;

@@ -171,13 +171,13 @@ void LabCD::openDir()
     savePath = savePath.replace("\\", "/");
     savePath = savePath.section("/", 0, -2);
     QString saveImgPath = savePath + "/GT";
-    if (!FileWorker::createFolder(saveImgPath))
+    FileWorker::createFolder(saveImgPath);
+    // 加载已有标签
+    QString jsonPath = savePath + "/label.json";
+    QFileInfo jsonFileInfo(jsonPath);
+    if (jsonFileInfo.isFile())
     {
-        QMessageBox::critical(
-            this,
-            "错误",
-            "无法创建保存标签的文件夹。"
-        );
+        labTableWidget->importLabelFromFile(jsonPath);
     }
 }
 

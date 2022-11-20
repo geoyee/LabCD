@@ -20,7 +20,6 @@ int* ColorMap::strToColor(std::string& str)
 ColorMap::ColorMap()
 {
 	index = 0;
-
 	QFile file(":/configs/configs/colormap.txt");
 	file.open(QIODevice::ReadOnly);
 	while (!file.atEnd())
@@ -36,6 +35,11 @@ ColorMap::ColorMap()
 ColorMap::~ColorMap()
 {
 
+}
+
+void ColorMap::setIndex(int _index)
+{
+	index = _index;
 }
 
 QColor ColorMap::getColor()

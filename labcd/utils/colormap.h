@@ -16,5 +16,6 @@ private:
 public:
 	ColorMap();
 	~ColorMap();
+	void setIndex(int _index);
 	QColor getColor();
 };

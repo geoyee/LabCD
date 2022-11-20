@@ -105,60 +105,89 @@ int LabelTable::getLen()
 	return labelTable->rowCount();
 }
 
-void LabelTable::addLabelItem(bool init)
-{	
-	int idx = labelTable->rowCount();
-	
-	// 添加行
+void LabelTable::createLabelItem(int _index, QString _name, QColor _color)
+{
 	labelTable->insertRow(labelTable->rowCount());  // 插入行
 	QTableWidgetItem* indexItem = new QTableWidgetItem();
-	indexItem->setText(QString::number(idx));
+	indexItem->setText(QString::number(_index));
 	indexItem->setTextAlignment(Qt::AlignCenter);
-	labelTable->setItem(idx, 0, indexItem);  // 序号
+	labelTable->setItem(_index, 0, indexItem);  // 序号
 	QTableWidgetItem* nameItem = new QTableWidgetItem();
-	labelTable->setItem(idx, 1, nameItem);  // 名称
+	nameItem->setText(_name);
+	nameItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+	labelTable->setItem(_index, 1, nameItem);  // 名称
 	QTableWidgetItem* colorItem = new QTableWidgetItem();
+	colorItem->setBackground(_color);
 	colorItem->setFlags(Qt::ItemIsEnabled);
-	labelTable->setItem(idx, 2, colorItem);  // 颜色
+	labelTable->setItem(_index, 2, colorItem);  // 颜色
 	QTableWidgetItem* delItem = new QTableWidgetItem();
+	delItem->setIcon(QIcon(":/docks/resources/Delete.png"));
 	delItem->setFlags(Qt::ItemIsEnabled);
-	labelTable->setItem(idx, 3, delItem);  // 删除按钮
-	if (!init)
+	labelTable->setItem(_index, 3, delItem);  // 删除按钮
+}
+
+void LabelTable::addLabelItem(bool init)
+{	
+	if (init)
 	{
-		nameItem->setText("");
-		nameItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
-		colorItem->setBackground(cMap->getColor());
-		delItem->setIcon(QIcon(":/docks/resources/Delete.png"));
+		createLabelItem(0, "背景", QColor(0, 0, 0));
+		labelTable->item(0, 1)->setFlags(labelTable->item(0, 1)->flags() & ~Qt::ItemIsEditable);
+		labelTable->item(0, 3)->setIcon(QIcon(":/docks/resources/CantDelete.png"));
 	}
 	else
 	{
-		nameItem->setText("背景");
-		nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
-		colorItem->setBackground(QColor(0, 0, 0));
-		delItem->setIcon(QIcon(":/docks/resources/CantDelete.png"));
+		int idx = labelTable->rowCount();
+		createLabelItem(idx, "", cMap->getColor());
 	}
 }
 
 void LabelTable::exportLabelToFile(QString path)
 {
 	Json::StyledWriter writer;
+	Json::Value root;
 	std::ofstream os;
 	os.open(path.toStdString());
+	// 写入json内容
 	for (int i = 1; i < labelTable->rowCount(); i++)
 	{
-		Json::Value root;
-		root["index"] = labelTable->item(i, 0)->text().toInt();
-		root["classname"] = labelTable->item(i, 1)->text().toStdString();
+		Json::Value leaf;
+		leaf["index"] = labelTable->item(i, 0)->text().toInt();
+		leaf["classname"] = labelTable->item(i, 1)->text().toStdString();
 		QColor c = labelTable->item(i, 2)->background().color();
-		root["color"]["R"] = c.red();
-		root["color"]["G"] = c.green();
-		root["color"]["B"] = c.blue();
-		os << writer.write(root);
+		leaf["color"]["R"] = c.red();
+		leaf["color"]["G"] = c.green();
+		leaf["color"]["B"] = c.blue();
+		root.append(leaf);
 	}
+	os << writer.write(root);
 	os.close();
 }
 
 bool LabelTable::importLabelFromFile(QString path)
 {
+	std::ifstream ifs(path.toStdString(), std::ios::binary);
+	if (!ifs.is_open())
+	{
+		return false;
+	}
+	Json::Reader reader;
+	Json::Value root;
+	// 解析json内容
+	if (reader.parse(ifs, root))
+	{
+		for (int i = 0; i < root.size(); i++)
+		{
+			int jIndex = root[i]["index"].asInt();
+			QString jClassName = QString(root[i]["classname"].asCString());
+			QColor jColor = QColor(
+				root[i]["color"]["R"].asInt(),
+				root[i]["color"]["G"].asInt(),
+				root[i]["color"]["B"].asInt()
+			);
+			createLabelItem(jIndex, jClassName, jColor);  // 恢复标签
+		}
+	}
+	ifs.close();
+	cMap->setIndex(root.size());  // 移动色表
 	return true;
 }

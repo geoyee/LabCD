@@ -12,6 +12,8 @@ https://user-images.githubusercontent.com/71769312/202847705-eaa97c8b-5a1d-45dc-
 
 - OpenCV 4.5.5
 
+- JsonCpp 1.9.5
+
 - ~~GDAL 3.5.3~~
 
 ## 文件组织
@@ -35,7 +37,7 @@ testimgs
 - [x] 增加选择标签画多边形
 - [x] 增加保存标注结果
 - [x] 添加qmake
-- [ ] 增加标签的导入导出
+- [x] 增加标签的导入导出
 - [ ] 完善工具栏和快捷键
 - [ ] 测试和修复明显的bug
 - [ ] 打包

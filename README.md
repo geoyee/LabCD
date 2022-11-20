@@ -20,10 +20,14 @@ https://user-images.githubusercontent.com/71769312/202847705-eaa97c8b-5a1d-45dc-
 
 ```
 testimgs
-   ├-- A
-   |   └-- 01.jpg
-   └-- B
-       └-- 01.jpg
+   ├-- A					# 用于存放时段一的图像
+   |   └-- 01.jpg				# 时段一图像
+   ├-- B					# 用于存放时段二的图像
+   |   └-- 01.jpg				# 时段二图像
+   ├-- GT					# 自动生成，用于存放标注结果
+   |   ├-- 01_pseudo.jpg		# 伪彩色图
+   |   └-- 01.bmp				# 单波段标签图
+   └-- label.json			# 自动生成，用于自动标签导入
 ```
 
 ## TODO

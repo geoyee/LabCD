@@ -55,17 +55,17 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>E:\dataFiles\opencv\opencv\build\include;E:\dataFiles\gdal\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\opencv\opencv\build\x64\vc15\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\dataFiles\opencv\opencv\build\include;E:\dataFiles\gdal\include;E:\dataFiles\jsoncpp\jsoncpp-1.9.5\build\install\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\opencv\opencv\build\x64\vc15\lib;E:\dataFiles\jsoncpp\jsoncpp-1.9.5\build\install\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>E:\dataFiles\opencv\opencv\build\include;E:\dataFiles\gdal\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\opencv\opencv\build\x64\vc15\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\dataFiles\opencv\opencv\build\include;E:\dataFiles\gdal\include;E:\dataFiles\jsoncpp\jsoncpp-1.9.5\build\install\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\opencv\opencv\build\x64\vc15\lib;E:\dataFiles\jsoncpp\jsoncpp-1.9.5\build\install\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalOptions>/NATVIS:"$(IntDir)\qt.natvis" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;jsoncpp_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalOptions>
@@ -76,7 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalOptions>/utf-8 /NATVIS:"$(IntDir)\qt.natvis" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;opencv_world455d.lib;jsoncpp_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalOptions>

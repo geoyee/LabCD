@@ -4,6 +4,8 @@
 #include <QHeaderView>
 #include <QColorDialog>
 #include <QLabel>
+#include <fstream>
+#include <json/json.h>
 #include "labeltable.h"
 
 LabelTable::LabelTable(QWidget *parent)
@@ -135,4 +137,28 @@ void LabelTable::addLabelItem(bool init)
 		colorItem->setBackground(QColor(0, 0, 0));
 		delItem->setIcon(QIcon(":/docks/resources/CantDelete.png"));
 	}
+}
+
+void LabelTable::exportLabelToFile(QString path)
+{
+	Json::StyledWriter writer;
+	std::ofstream os;
+	os.open(path.toStdString());
+	for (int i = 1; i < labelTable->rowCount(); i++)
+	{
+		Json::Value root;
+		root["index"] = labelTable->item(i, 0)->text().toInt();
+		root["classname"] = labelTable->item(i, 1)->text().toStdString();
+		QColor c = labelTable->item(i, 2)->background().color();
+		root["color"]["R"] = c.red();
+		root["color"]["G"] = c.green();
+		root["color"]["B"] = c.blue();
+		os << writer.write(root);
+	}
+	os.close();
+}
+
+bool LabelTable::importLabelFromFile(QString path)
+{
+	return true;
 }

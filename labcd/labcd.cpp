@@ -106,7 +106,7 @@ LabCD::LabCD(QWidget *parent)
         QIcon(":/tools/resources/Save.png"), "保存");
     saveAct->setShortcut(tr("Ctrl+S"));
     connect(saveAct, &QAction::triggered, [=]() {
-        QString saveImgPath = savePath + "/" + fileName;
+        QString saveImgPath = savePath + "/GT/" + fileName;
         int labNum = labTableWidget->getLen();
         ImagePress::saveMaskFromPolygon(
             saveImgPath, 
@@ -170,8 +170,8 @@ void LabCD::openDir()
     savePath = fileInfo.path();
     savePath = savePath.replace("\\", "/");
     savePath = savePath.section("/", 0, -2);
-    savePath += "/GT";
-    if (!FileWorker::createFolder(savePath))
+    QString saveImgPath = savePath + "/GT";
+    if (!FileWorker::createFolder(saveImgPath))
     {
         QMessageBox::critical(
             this,
@@ -179,4 +179,12 @@ void LabCD::openDir()
             "无法创建保存标签的文件夹。"
         );
     }
+}
+
+void LabCD::closeEvent(QCloseEvent* ev)
+{
+    // 保存标签
+    QString jsonPath = savePath + "/label.json";
+    labTableWidget->exportLabelToFile(jsonPath);
+    QMainWindow::closeEvent(ev);
 }

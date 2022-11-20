@@ -21,6 +21,8 @@ public:
 	~LabelTable();
 	int getLen();
 	void addLabelItem(bool init = false);
+	void exportLabelToFile(QString path);
+	bool importLabelFromFile(QString path);
 
 signals:
 	void labelSelected(Label* nowLabel);

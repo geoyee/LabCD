@@ -22,4 +22,5 @@ public:
 
     LabCD(QWidget *parent = nullptr);
     ~LabCD();
+    void closeEvent(QCloseEvent* ev);
 };

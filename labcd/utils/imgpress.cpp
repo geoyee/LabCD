@@ -16,7 +16,6 @@ cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 	return cva;
 }
 
-// TODO: 保存带调色板的单通道图像
 void ImagePress::saveMaskFromPolygon(
 		QString savePath,
 		int labNum,
@@ -25,7 +24,8 @@ void ImagePress::saveMaskFromPolygon(
 		QList<LabPolygon*> polygons
 )
 {
-	cv::Mat result = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_8UC3);
+	cv::Mat pseudoResult = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_8UC3);
+	cv::Mat result = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_8UC1);
 	// 标号小的覆盖标号大的
 	for (int labIndex = labNum - 1; labIndex >= 0; labIndex--)
 	{
@@ -46,13 +46,20 @@ void ImagePress::saveMaskFromPolygon(
 				}
 				const cv::Point* ppt[1] = { cvPoints[0] };
 				int npt[] = { numPoint };
-				cv::fillPoly(result, ppt, npt, 1, color);
+				cv::fillPoly(pseudoResult, ppt, npt, 1, color);
+				cv::fillPoly(result, ppt, npt, 1, cv::Scalar(labIndex));
 				// 清除数组
 				delete[] cvPoints[0];
 				delete[] cvPoints;
 			}
 		}
 	}
-	cv::String cvSavaPath = savePath.toStdString();
-	cv::imwrite(cvSavaPath, result);
+	// 保存
+	QStringList pathAndName = savePath.split(".");
+	std::string iPath = pathAndName[0].toStdString();
+	std::string iExt = pathAndName[1].toStdString();
+	cv::String pseudoSavaPath = iPath + "_pseudo." + iExt;
+	cv::String baseSavaPath = iPath + ".bmp";  // 保存二值
+	cv::imwrite(pseudoSavaPath, pseudoResult);
+	cv::imwrite(baseSavaPath, result);
 }

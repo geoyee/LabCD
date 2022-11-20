@@ -30,3 +30,31 @@ void FileList::addFileNames(QStringList t1List, QStringList t2List)
 	fList->addItems(t1Files);
 	fList->setCurrentRow(t1Files.size() - 1);  // 移动位置
 }
+
+bool FileList::gotoLastItem()
+{
+	int currentIndex = fList->currentIndex().row();
+	if (currentIndex == 0)
+	{
+		return false;
+	}
+	fList->setCurrentRow(currentIndex - 1);
+	QString t1Path = fList->currentItem()->text();
+	QString t2Path = t2Files.at(fList->currentRow());
+	emit FileList::FileClickRequest(t1Path, t2Path);
+	return true;
+}
+
+bool FileList::gotoNextItem()
+{
+	int currentIndex = fList->currentIndex().row();
+	if (currentIndex == fList->count() - 1)
+	{
+		return false;
+	}
+	fList->setCurrentRow(currentIndex + 1);
+	QString t1Path = fList->currentItem()->text();
+	QString t2Path = t2Files.at(fList->currentRow());
+	emit FileList::FileClickRequest(t1Path, t2Path);
+	return true;
+}

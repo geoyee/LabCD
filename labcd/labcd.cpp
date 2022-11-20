@@ -64,7 +64,6 @@ LabCD::LabCD(QWidget *parent)
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
     fListWidget = new FileList(this);
     connect(fListWidget, &FileList::FileClickRequest, [=](QString t1Path, QString t2Path) {
-
         drawCanvas->loadImages(t1Path, t2Path); 
         QFileInfo fileInfo(t1Path);
         fileName = fileInfo.fileName();
@@ -120,10 +119,12 @@ LabCD::LabCD(QWidget *parent)
     lcdToolBar->addSeparator();
     QAction* lastAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Last.png"), "上一张");
+    connect(lastAct, &QAction::triggered, fListWidget, &FileList::gotoLastItem);
     lastAct->setShortcut(tr("S"));
     QAction* nextAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Next.png"), "下一张");
     nextAct->setShortcut(tr("F"));
+    connect(nextAct, &QAction::triggered, fListWidget, &FileList::gotoNextItem);
     lcdToolBar->addSeparator();
     QAction* enlargeAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Enlarge.png"), "放大");

@@ -129,15 +129,20 @@ LabCD::LabCD(QWidget *parent)
     QAction* enlargeAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Enlarge.png"), "放大");
     connect(enlargeAct, &QAction::triggered, [=]() {
-        drawCanvas->t1Canva->aView->scaleZoom(1.1);
+        drawCanvas->t1Canva->aView->scaleZoom(1.1);  // 自动同步t2
     });
     QAction* narrowAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Narrow.png"), "缩小");
     connect(narrowAct, &QAction::triggered, [=]() {
-        drawCanvas->t1Canva->aView->scaleZoom(0.9);
+        drawCanvas->t1Canva->aView->scaleZoom(0.9);  // 自动同步t2
     });
     QAction* fullAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Full.png"), "全幅缩放");
+    connect(fullAct, &QAction::triggered, [=]() {
+        drawCanvas->t1Canva->resetZoom(
+            drawCanvas->imageWidth, drawCanvas->imageHeight
+        );  // 自动同步t2
+    });
     lcdToolBar->addSeparator();
     QAction* delPolyAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/DeletePolygon.png"), "删除多边形");

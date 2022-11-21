@@ -30,6 +30,7 @@ LabCD::LabCD(QWidget *parent)
     QMenu* fileMenu = new QMenu("文件", this);
     QAction* opensAct = fileMenu->addAction(
         QIcon(":/menu/resources/Folder.png"), "打开文件夹");
+    opensAct->setShortcut(tr("Ctrl+O"));
     connect(opensAct, &QAction::triggered, this, &LabCD::openDir);
     lcdMenuBar->addMenu(fileMenu);
     QMenu* aboutMenu = new QMenu("关于", this);
@@ -138,6 +139,7 @@ LabCD::LabCD(QWidget *parent)
     });
     QAction* fullAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Full.png"), "全幅缩放");
+    fullAct->setShortcut(tr("Ctrl+F"));
     connect(fullAct, &QAction::triggered, [=]() {
         drawCanvas->t1Canva->resetZoom(
             drawCanvas->imageWidth, drawCanvas->imageHeight
@@ -161,8 +163,10 @@ LabCD::LabCD(QWidget *parent)
     lcdToolBar->addSeparator();
     QAction* undoAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Undo.png"), "撤销");
+    undoAct->setShortcut(tr("Ctrl+Z"));
     QAction* redoAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Redo.png"), "重做");
+    undoAct->setShortcut(tr("Ctrl+R"));
     lcdToolBar->setMovable(false);
     addToolBar(Qt::LeftToolBarArea, lcdToolBar);
     
@@ -184,20 +188,20 @@ void LabCD::openDir()
     if (FileWorker::openImageDir(&t1List, &t2List, this))
     {
         fListWidget->addFileNames(t1List, t2List);
-    }
-    // 新建保存目录
-    QFileInfo fileInfo(t1List.at(0));
-    savePath = fileInfo.path();
-    savePath = savePath.replace("\\", "/");
-    savePath = savePath.section("/", 0, -2);
-    QString saveImgPath = savePath + "/GT";
-    FileWorker::createFolder(saveImgPath);
-    // 加载已有标签
-    QString jsonPath = savePath + "/label.json";
-    QFileInfo jsonFileInfo(jsonPath);
-    if (jsonFileInfo.isFile())
-    {
-        labTableWidget->importLabelFromFile(jsonPath);
+        // 新建保存目录
+        QFileInfo fileInfo(t1List.at(0));
+        savePath = fileInfo.path();
+        savePath = savePath.replace("\\", "/");
+        savePath = savePath.section("/", 0, -2);
+        QString saveImgPath = savePath + "/GT";
+        FileWorker::createFolder(saveImgPath);
+        // 加载已有标签
+        QString jsonPath = savePath + "/label.json";
+        QFileInfo jsonFileInfo(jsonPath);
+        if (jsonFileInfo.isFile())
+        {
+            labTableWidget->importLabelFromFile(jsonPath);
+        }
     }
 }
 

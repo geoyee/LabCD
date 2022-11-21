@@ -35,6 +35,7 @@ public:
 	void setColor(QColor _insideColor, QColor _borderColor);
 	bool hovering();
 	void removeFocusPolygon(int preFocusIndex = -1);
+	void removeAllPolygons();
 	// 同步方法
 	void PressedAddPoint(QPointF point);
 	void rightClickedFinshPolygon();

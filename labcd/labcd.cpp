@@ -153,6 +153,10 @@ LabCD::LabCD(QWidget *parent)
     delPolyAct->setShortcut(tr("Backspace"));
     QAction* delAllPolysAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/DeleteAllPolygons.png"), "删除所有多边形");
+    connect(delAllPolysAct, &QAction::triggered, [=]() {
+        drawCanvas->t1Canva->aScene->removeAllPolygons();
+        drawCanvas->t2Canva->aScene->removeAllPolygons();
+    });
     delAllPolysAct->setShortcut(tr("Delete"));
     lcdToolBar->addSeparator();
     QAction* undoAct = lcdToolBar->addAction(

@@ -108,6 +108,15 @@ void AnnotationScence::removeFocusPolygon(int preFocusIndex)
 	}
 }
 
+void AnnotationScence::removeAllPolygons()
+{
+	int numPoly = polygonItems.count();
+	for (int i = numPoly - 1; i >= 0; i--)
+	{
+		polygonItems[i]->remove();
+	}
+}
+
 void AnnotationScence::PressedAddPoint(QPointF point)
 {
 	if (labelIndex != -1 && imgWidth != 0)

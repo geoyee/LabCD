@@ -32,6 +32,7 @@ public:
 	void setZoomAll(double value);
 	double getZoomAll();
 	void syncTranslate(int hPos, int vPos, QTransform tf, double zoom);
+	void scaleZoom(double _zoom);
 	// 重写鼠标事件
 	void wheelEvent(QWheelEvent* ev);
 	void mouseMoveEvent(QMouseEvent* ev);

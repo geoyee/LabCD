@@ -128,8 +128,14 @@ LabCD::LabCD(QWidget *parent)
     lcdToolBar->addSeparator();
     QAction* enlargeAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Enlarge.png"), "放大");
+    connect(enlargeAct, &QAction::triggered, [=]() {
+        drawCanvas->t1Canva->aView->scaleZoom(1.1);
+    });
     QAction* narrowAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Narrow.png"), "缩小");
+    connect(narrowAct, &QAction::triggered, [=]() {
+        drawCanvas->t1Canva->aView->scaleZoom(0.9);
+    });
     QAction* fullAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Full.png"), "全幅缩放");
     lcdToolBar->addSeparator();

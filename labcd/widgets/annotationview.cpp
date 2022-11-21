@@ -75,6 +75,18 @@ void AnnotationView::syncTranslate(int hPos, int vPos, QTransform tf, double zoo
 	verticalScrollBar()->setValue(vPos);
 }
 
+void AnnotationView::scaleZoom(double _zoom)
+{
+	zoomAll *= _zoom;
+	zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
+	emit zoomRequest(zoomAll);
+	// 限制缩放
+	if (AnnotationView::checkZoomAll())
+	{
+		scale(_zoom, _zoom);
+	}
+}
+
 void AnnotationView::wheelEvent(QWheelEvent* ev)
 {
 	if (ev->modifiers() && Qt::ControlModifier)

@@ -9,7 +9,8 @@ CONFIG += debug
 LIBS += -L"." \
     -lgdal_i \
     -lopencv_world455 \
-    -lopencv_world455d
+    -lopencv_world455d \
+    -ljsoncpp_static
 DEPENDPATH += .
 MOC_DIR += .
 OBJECTS_DIR += debug

@@ -93,12 +93,6 @@
     <Image Include="resources\Narrow.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\Redo.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\Undo.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\AddLabel.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -124,6 +118,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\Save.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Help.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

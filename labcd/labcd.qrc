@@ -5,13 +5,12 @@
     <qresource prefix="/menu">
         <file>resources/Folder.png</file>
         <file>resources/Github.png</file>
+        <file>resources/Help.png</file>
     </qresource>
     <qresource prefix="/tools">
         <file>resources/Enlarge.png</file>
         <file>resources/Full.png</file>
         <file>resources/Narrow.png</file>
-        <file>resources/Redo.png</file>
-        <file>resources/Undo.png</file>
         <file>resources/Last.png</file>
         <file>resources/Next.png</file>
         <file>resources/Save.png</file>

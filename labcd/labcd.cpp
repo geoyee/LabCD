@@ -39,6 +39,14 @@ LabCD::LabCD(QWidget *parent)
     connect(githubAct, &QAction::triggered, [=]() {
         QDesktopServices::openUrl(QUrl("https://github.com/geoyee/LabCD"));
     });
+    QAction* helpAct = aboutMenu->addAction(
+        QIcon(":/menu/resources/Help.png"), "使用帮助");
+    connect(helpAct, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl(
+            "https://github.com/geoyee/LabCD/wiki/%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%88%97%E8%A1%A8"
+        ));
+    });
+    helpAct->setShortcut(tr("Ctrl+H"));
     lcdMenuBar->addMenu(aboutMenu);
 
     /* 绘图界面 */
@@ -160,13 +168,6 @@ LabCD::LabCD(QWidget *parent)
         drawCanvas->t2Canva->aScene->removeAllPolygons();
     });
     delAllPolysAct->setShortcut(tr("Delete"));
-    lcdToolBar->addSeparator();
-    QAction* undoAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Undo.png"), "撤销");
-    undoAct->setShortcut(tr("Ctrl+Z"));
-    QAction* redoAct = lcdToolBar->addAction(
-        QIcon(":/tools/resources/Redo.png"), "重做");
-    undoAct->setShortcut(tr("Ctrl+R"));
     lcdToolBar->setMovable(false);
     addToolBar(Qt::LeftToolBarArea, lcdToolBar);
     

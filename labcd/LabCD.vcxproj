@@ -139,13 +139,12 @@
     <Image Include="resources\Folder.png" />
     <Image Include="resources\Full.png" />
     <Image Include="resources\Github.png" />
+    <Image Include="resources\Help.png" />
     <Image Include="resources\Icon.png" />
     <Image Include="resources\Last.png" />
     <Image Include="resources\Narrow.png" />
     <Image Include="resources\Next.png" />
-    <Image Include="resources\Redo.png" />
     <Image Include="resources\Save.png" />
-    <Image Include="resources\Undo.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\colormap.h" />

@@ -43,6 +43,15 @@ MultCanvas::MultCanvas(QWidget *parent)
 		t2Canva->aScene, &AnnotationScence::mouseOptRequest,
 		t1Canva->aScene, &AnnotationScence::copyMouseOpt
 	);
+	// 同步删除
+	connect(
+		t1Canva->aScene, &AnnotationScence::delPolyRequest,
+		t2Canva->aScene, &AnnotationScence::syncDelPoly
+	);
+	connect(
+		t2Canva->aScene, &AnnotationScence::delPolyRequest,
+		t1Canva->aScene, &AnnotationScence::syncDelPoly
+	);
 	setLayout(gLayout);
 }
 

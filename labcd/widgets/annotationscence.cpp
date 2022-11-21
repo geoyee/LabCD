@@ -83,6 +83,31 @@ bool AnnotationScence::hovering()
 	return false;
 }
 
+void AnnotationScence::removeFocusPolygon(int preFocusIndex)
+{
+	int focusIndex = -1;
+	if (preFocusIndex == -1)
+	{
+		for (int i = 0; i < polygonItems.count(); i++)
+		{
+			if (polygonItems.at(i)->hasFocus())
+			{
+				focusIndex = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		focusIndex = preFocusIndex;
+	}
+	if (focusIndex != -1)
+	{
+		polygonItems[focusIndex]->remove();
+		emit delPolyRequest(focusIndex);
+	}
+}
+
 void AnnotationScence::PressedAddPoint(QPointF point)
 {
 	if (labelIndex != -1 && imgWidth != 0)
@@ -149,6 +174,11 @@ void AnnotationScence::getImageSize(int Width, int Height)
 {
 	imgWidth = Width;
 	imgHeight = Height;
+}
+
+void AnnotationScence::syncDelPoly(int preFocusIndex)
+{
+	polygonItems[preFocusIndex]->remove();
 }
 
 void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optType, QEvent* ev)

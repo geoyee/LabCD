@@ -34,6 +34,7 @@ public:
 	void updatePolygonSize();
 	void setColor(QColor _insideColor, QColor _borderColor);
 	bool hovering();
+	void removeFocusPolygon(int preFocusIndex = -1);
 	// 同步方法
 	void PressedAddPoint(QPointF point);
 	void rightClickedFinshPolygon();
@@ -43,9 +44,11 @@ public:
 signals:
 	void focusRequest(int labelIndex);
 	void mouseOptRequest(int polyIndex, int subIndex, OptTypes optType, QEvent* ev);
+	void delPolyRequest(int preFocusIndex);
 
 public slots:
 	void getLabel(Label* label);
 	void getImageSize(int Width, int Height);
+	void syncDelPoly(int preFocusIndex);
 	void copyMouseOpt(int polyIndex, int subIndex, OptTypes optType, QEvent* ev);
 };

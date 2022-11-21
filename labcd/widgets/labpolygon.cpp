@@ -180,7 +180,7 @@ void LabPolygon::remove()
 	{
 		mLines.pop_back();
 	}
-	scene()->polygonItems.removeAt(index);
+	scene()->polygonItems.removeAll(this);
 	scene()->removeItem(this);
 	delete this;
 }

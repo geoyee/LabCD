@@ -111,6 +111,7 @@ void LabelTable::createLabelItem(int _index, QString _name, QColor _color)
 	QTableWidgetItem* indexItem = new QTableWidgetItem();
 	indexItem->setText(QString::number(_index));
 	indexItem->setTextAlignment(Qt::AlignCenter);
+	indexItem->setFlags(indexItem->flags() & ~Qt::ItemIsEditable);
 	labelTable->setItem(_index, 0, indexItem);  // 序号
 	QTableWidgetItem* nameItem = new QTableWidgetItem();
 	nameItem->setText(_name);

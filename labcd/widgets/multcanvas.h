@@ -11,8 +11,8 @@ class MultCanvas : public QWidget
 public:
 	Canvas* t1Canva = nullptr;
 	Canvas* t2Canva = nullptr;
-	int imageWidth;
-	int imageHeight;
+	int imageWidth = 0;
+	int imageHeight = 0;
 
 	MultCanvas(QWidget *parent = nullptr);
 	~MultCanvas();

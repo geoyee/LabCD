@@ -11,6 +11,21 @@ AnnotationScence::~AnnotationScence()
 
 }
 
+void AnnotationScence::finished()
+{
+	if (nowItem->getLen() >= 3)
+	{
+		rightClickedFinshPolygon();
+	}
+	else  // 三个点以下不构成多边形
+	{
+		nowItem->remove();
+		nowItem = nullptr;
+	}
+	drawing = false;
+	clearSelection();
+}
+
 bool AnnotationScence::getItemHovering()
 {
 	for (LabPolygon* poly : polygonItems)
@@ -153,17 +168,7 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 		// 右键释放
 		else if (ev->button() == Qt::RightButton && drawing)
 		{
-			if (nowItem->getLen() >= 3)
-			{
-				rightClickedFinshPolygon();
-			}
-			else  // 三个点以下不构成多边形
-			{
-				nowItem->remove();
-				nowItem = nullptr;
-			}
-			drawing = false;
-			clearSelection();
+			finished();
 		}
 	}
 	else
@@ -182,6 +187,12 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 
 void AnnotationScence::getLabel(Label* label)
 {
+	// 完成之前的
+	if (drawing)
+	{
+		finished();
+	}
+	// 新设定
 	labelIndex = label->getIndex();
 	insideColor = label->getColor();
 	borderColor = label->getColor();

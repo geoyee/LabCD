@@ -20,6 +20,7 @@ private:
 	QColor borderColor;
 	double opacity = 0.5;
 
+	void finished();
 	bool getItemHovering();
 	bool getPolyHovering();
 	bool getLineHovering();

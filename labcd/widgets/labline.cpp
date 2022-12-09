@@ -112,8 +112,6 @@ void LabLine::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
     emit annItem->scene()->mouseOptRequest(
         annItem->index, index, OptTypes::LineMouseDoubleClick, ev
     );
-    QGraphicsLineItem::mouseDoubleClickEvent(ev);
-
 }
 
 QPainterPath LabLine::shape()

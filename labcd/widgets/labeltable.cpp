@@ -59,7 +59,11 @@ LabelTable::LabelTable(QWidget *parent)
 			labelTable->removeRow(row);
 			for (int r = 0; r < labelTable->rowCount(); r++)
 			{
-				labelTable->item(r, 0)->setText(QString::number(r + 1));
+				labelTable->item(r, 0)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+				labelTable->item(r, 0)->setText(QString::number(r));
+				labelTable->item(r, 0)->setFlags(
+					labelTable->item(r, 0)->flags() & ~Qt::ItemIsEditable
+				);
 			}
 		}
 		else  // 点击特效

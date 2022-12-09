@@ -153,7 +153,15 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 		// 右键释放
 		else if (ev->button() == Qt::RightButton && drawing)
 		{
-			rightClickedFinshPolygon();
+			if (nowItem->getLen() >= 3)
+			{
+				rightClickedFinshPolygon();
+			}
+			else  // 三个点以下不构成多边形
+			{
+				nowItem->remove();
+				nowItem = nullptr;
+			}
 			drawing = false;
 			clearSelection();
 		}

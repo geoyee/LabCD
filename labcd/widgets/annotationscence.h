@@ -43,6 +43,7 @@ public:
 	void rightClickedFinshPolygon();
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);
 
 signals:
 	void focusRequest(int labelIndex);

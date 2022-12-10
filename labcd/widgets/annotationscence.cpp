@@ -62,7 +62,6 @@ bool AnnotationScence::getLineHovering()
 	return false;
 }
 
-
 void AnnotationScence::setScaleRate(double zoomAll)
 {
 	scaleRate = zoomAll;
@@ -132,7 +131,7 @@ void AnnotationScence::removeAllPolygons()
 
 void AnnotationScence::PressedAddPoint(QPointF point)
 {
-	if (labelIndex != -1 && imgWidth != 0)
+	if (imgWidth != 0)
 	{
 		if (nowItem == nullptr)
 		{
@@ -157,6 +156,10 @@ void AnnotationScence::rightClickedFinshPolygon()
 
 void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
+	if (labelIndex == -1)  // 无效点击
+	{
+		return;
+	}
 	QPointF p = ev->scenePos();
 	if (!hovering())
 	{
@@ -197,6 +200,19 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 			QGraphicsScene::mousePressEvent(ev);
 		}
 		emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
+	}
+}
+
+void AnnotationScence::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
+{
+	QGraphicsItem* nowObj = itemAt(ev->scenePos(), QTransform());
+	switch ((int)nowObj->zValue())
+	{
+	case 10:  // 使双击对多边形无效
+		break;
+	default:
+		QGraphicsScene::mouseDoubleClickEvent(ev);
+		break;
 	}
 }
 

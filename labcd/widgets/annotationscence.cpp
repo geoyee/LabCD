@@ -118,6 +118,7 @@ void AnnotationScence::delPoly(int index)
 	{
 		polygonItems[index]->remove();
 	}
+	update();
 }
 
 void AnnotationScence::removeAllPolygons()
@@ -125,7 +126,7 @@ void AnnotationScence::removeAllPolygons()
 	int numPoly = polygonItems.count();
 	for (int i = numPoly - 1; i >= 0; i--)
 	{
-		polygonItems[i]->remove();
+		delPoly(i);
 	}
 }
 
@@ -143,6 +144,9 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 			polygonItems.push_back(nowItem);
 		}
 		nowItem->addPointLast(point);
+		// 选择
+		clearSelection();
+		nowItem->mItems[nowItem->mItems.count() - 1]->setSelected(true);
 	}
 }
 
@@ -161,11 +165,22 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 		{
 			PressedAddPoint(p);
 			drawing = true;
+			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 		}
 		// 右键释放
-		else if (ev->button() == Qt::RightButton && drawing)
+		else if ((ev->button() == Qt::RightButton) && drawing)
 		{
 			finished();
+			if (drawing)  // 避免无效同步释放
+			{
+				return;
+			}
+			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
+		}
+		else
+		{
+			// 基础操作
+			QGraphicsScene::mousePressEvent(ev);
 		}
 	}
 	else
@@ -177,9 +192,12 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 				emit focusRequest(poly->labelIndex);
 			}
 		}
+		if (!drawing)
+		{
+			QGraphicsScene::mousePressEvent(ev);
+		}
+		emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 	}
-	emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
-	QGraphicsScene::mousePressEvent(ev);
 }
 
 void AnnotationScence::getLabel(Label* label)

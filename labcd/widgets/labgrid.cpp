@@ -32,18 +32,11 @@ LabGrid::LabGrid(
 	setAcceptHoverEvents(true);
 	setZValue(12);
 	setCursor(QCursor(Qt::PointingHandCursor));
-	// 地址
-	objAddress.insert((address_t)this);
 }
 
 LabGrid::~LabGrid()
 {
-	objAddress.erase((address_t)this);
-}
-
-inline const bool LabGrid::isDestroy() const
-{
-	return objAddress.find((address_t)this) != objAddress.end();
+	
 }
 
 void LabGrid::setColor(QColor c)
@@ -94,7 +87,7 @@ void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabGrid::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-	if (ev->button() == Qt::LeftButton && isDestroy())
+	if (ev->button() == Qt::LeftButton)
 	{
 		annItem->scene()->clearSelection();
 		setSelected(true);
@@ -116,10 +109,14 @@ void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 
 void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
-	emit annItem->scene()->mouseOptRequest(
+	// 创建中无法删除
+	if (!annItem->scene()->drawing)
+	{
+		emit annItem->scene()->mouseOptRequest(
 		annItem->index, index, OptTypes::GridMouseDoubleClick, ev
-	);
-	annItem->removeFocusPoint(index);
+		);
+		annItem->removeFocusPoint(index);
+	}
 }
 
 void LabGrid::mouseMoveEvent(QGraphicsSceneMouseEvent* ev)

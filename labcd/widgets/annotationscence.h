@@ -12,7 +12,6 @@ class AnnotationScence : public QGraphicsScene
 
 private:
 	double scaleRate;
-	bool drawing = false;
 	int labelIndex = -1;
 	int imgWidth = 0;
 	int imgHeight = 0;
@@ -26,6 +25,7 @@ private:
 	bool getLineHovering();
 
 public:
+	bool drawing = false;
 	QList<LabPolygon*> polygonItems;
 	LabPolygon* nowItem = nullptr;
 

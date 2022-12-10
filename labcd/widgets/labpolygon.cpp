@@ -181,6 +181,11 @@ void LabPolygon::remove()
 		mLines.pop_back();
 	}
 	scene()->polygonItems.removeAll(this);
+	// 重排序
+	for (int i = 0; i < scene()->polygonItems.count(); i++)
+	{
+		scene()->polygonItems[i]->index = i;
+	}
 	scene()->removeItem(this);
 	delete this;
 }

@@ -1,33 +1,9 @@
 ﻿#pragma once
 
-#include <iostream>
-#include <unordered_set>
 #include <QGraphicsItem>
 #include <QPainterPath>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
-
-#if __GNUC__
-#   if __x86_64__ || __ppc64__
-#       define ENVIRONMENT64
-#   else
-#       define ENVIRONMENT32
-#   endif
-#else
-#   if _WIN32 || _WIN64
-#       if _WIN64
-#           define ENVIRONMENT64
-#       else
-#           define ENVIRONMENT32
-#       endif
-#   endif
-#endif
-
-#ifdef ENVIRONMENT32
-using address_t = unsigned int;
-#else
-using address_t = unsigned long long;
-#endif
 
 class LabPolygon;
 
@@ -38,9 +14,6 @@ private:
 	const double maxSize = 1.5;
 	QPainterPath circlePath;
 	QPainterPath squarePath;
-	std::unordered_set<unsigned int> objAddress;
-
-	inline const bool isDestroy() const;
 
 public:
 	LabPolygon* annItem;

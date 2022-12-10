@@ -157,8 +157,17 @@ LabCD::LabCD(QWidget *parent)
     QAction* delPolyAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/DeletePolygon.png"), "删除多边形");
     connect(delPolyAct, &QAction::triggered, [=]() {
-        drawCanvas->t1Canva->aScene->removeFocusPolygon();
-        drawCanvas->t2Canva->aScene->removeFocusPolygon();
+        int f1Index = drawCanvas->t1Canva->aScene->findFocusPolygon();
+        int f2Index = drawCanvas->t2Canva->aScene->findFocusPolygon();
+        int delIndex = f1Index > f2Index ? f1Index : f2Index;
+        drawCanvas->t1Canva->aScene->delPoly(delIndex);
+        drawCanvas->t2Canva->aScene->delPoly(delIndex);
+        // 重排序
+        for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); i++)
+        {
+            drawCanvas->t1Canva->aScene->polygonItems[i]->index = i;
+            drawCanvas->t2Canva->aScene->polygonItems[i]->index = i;
+        }
     });
     delPolyAct->setShortcut(tr("Backspace"));
     QAction* delAllPolysAct = lcdToolBar->addAction(

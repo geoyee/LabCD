@@ -290,6 +290,7 @@ void LabPolygon::moveItem(int index, QPointF point)
 	}
 }
 
+// hover指鼠标放在多边形上
 void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
 	polyHovering = true;
@@ -304,8 +305,8 @@ void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 	if (!hasFocus())
 	{
 		setBrush(halfInsideColor);
+		emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverLeave, ev);
 	}
-	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverLeave, ev);
 	QGraphicsPolygonItem::hoverLeaveEvent(ev);
 }
 
@@ -327,6 +328,7 @@ void LabPolygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 	QGraphicsPolygonItem::mouseReleaseEvent(ev);
 }
 
+// focus指鼠标点击多边形上
 void LabPolygon::focusInEvent(QFocusEvent* ev)
 {
 	setBrush(insideColor);
@@ -339,8 +341,8 @@ void LabPolygon::focusOutEvent(QFocusEvent* ev)
 	if (!polyHovering)
 	{
 		setBrush(halfInsideColor);
+		emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusOut, ev);
 	}
-	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusOut, ev);
 	QGraphicsPolygonItem::focusOutEvent(ev);
 }
 

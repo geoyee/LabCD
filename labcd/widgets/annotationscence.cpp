@@ -13,17 +13,20 @@ AnnotationScence::~AnnotationScence()
 
 void AnnotationScence::finished()
 {
-	if (nowItem->getLen() >= 3)
+	if (drawing == true)
 	{
-		rightClickedFinshPolygon();
+		if (nowItem->getLen() >= 3)
+		{
+			rightClickedFinshPolygon();
+		}
+		else  // 三个点以下不构成多边形
+		{
+			nowItem->remove();
+			nowItem = nullptr;
+		}
+		drawing = false;
 	}
-	else  // 三个点以下不构成多边形
-	{
-		nowItem->remove();
-		nowItem = nullptr;
-	}
-	drawing = false;
-	clearSelection();
+	clearFocusAndSelected();
 }
 
 bool AnnotationScence::getItemHovering()
@@ -129,6 +132,23 @@ void AnnotationScence::removeAllPolygons()
 	}
 }
 
+void AnnotationScence::clearAllFocus()
+{
+	for (QGraphicsItem* obj : items())
+	{
+		if (obj->hasFocus())
+		{
+			obj->clearFocus();
+		}
+	}
+}
+
+void AnnotationScence::clearFocusAndSelected()
+{
+	clearAllFocus();
+	clearSelection();
+}
+
 void AnnotationScence::PressedAddPoint(QPointF point)
 {
 	if (imgWidth != 0)
@@ -144,7 +164,7 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 		}
 		nowItem->addPointLast(point);
 		// 选择
-		clearSelection();
+		clearFocusAndSelected();
 		nowItem->mItems[nowItem->mItems.count() - 1]->setSelected(true);
 	}
 }
@@ -156,10 +176,18 @@ void AnnotationScence::rightClickedFinshPolygon()
 
 void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-	if (labelIndex == -1)  // 无效点击
+	// 没有选择标签视为无效点击
+	if (labelIndex == -1)
 	{
 		return;
 	}
+	// 右键一定清理
+	if (ev->button() == Qt::RightButton)
+	{
+		clearFocusAndSelected();
+		emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
+	}
+	// 进一步操作
 	QPointF p = ev->scenePos();
 	if (!hovering())
 	{
@@ -180,9 +208,8 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 			}
 			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 		}
-		else
+		else  // 基础操作
 		{
-			// 基础操作
 			QGraphicsScene::mousePressEvent(ev);
 		}
 	}
@@ -195,11 +222,20 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 				emit focusRequest(poly->labelIndex);
 			}
 		}
-		if (!drawing)
+		// 避免一边创建点一边激活多边形引起的顺序问题，目前将在激活多边形时强制结束绘制状态
+		if (drawing)
+		{
+			finished();
+			if (drawing)  // 避免无效同步释放
+			{
+				return;
+			}
+			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
+		}
+		else
 		{
 			QGraphicsScene::mousePressEvent(ev);
 		}
-		emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 	}
 }
 
@@ -219,14 +255,13 @@ void AnnotationScence::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 void AnnotationScence::getLabel(Label* label)
 {
 	// 完成之前的
-	if (drawing)
-	{
-		finished();
-	}
+	finished();
 	// 新设定
 	labelIndex = label->getIndex();
 	insideColor = label->getColor();
 	borderColor = label->getColor();
+	// 清理
+	clearFocusAndSelected();
 }
 
 void AnnotationScence::getImageSize(int Width, int Height)
@@ -242,6 +277,9 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 	{
 	case OptTypes::SceneMousePress:
 		mousePressEvent((QGraphicsSceneMouseEvent*)ev);
+		break;
+	case OptTypes::SceneMouseDoubleClick:
+		mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev);
 		break;
 	case OptTypes::PolyHoverEnter:
 		if (nowItem != nullptr)

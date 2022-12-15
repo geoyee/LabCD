@@ -38,6 +38,8 @@ public:
 	int findFocusPolygon();
 	void delPoly(int preFocusIndex);
 	void removeAllPolygons();
+	void clearAllFocus();
+	void clearFocusAndSelected();
 	// 同步方法
 	void PressedAddPoint(QPointF point);
 	void rightClickedFinshPolygon();

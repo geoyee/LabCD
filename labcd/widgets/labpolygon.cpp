@@ -298,7 +298,12 @@ void LabPolygon::moveItem(int index, QPointF point)
 // hover指鼠标放在多边形上
 void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
+	if (scene()->drawing)
+	{
+		return;
+	}
 	polyHovering = true;
+	scene()->clearAllFocus();
 	setBrush(insideColor);
 	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverEnter, ev);
 	QGraphicsPolygonItem::hoverEnterEvent(ev);
@@ -306,24 +311,34 @@ void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 
 void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
+	if (scene()->drawing)
+	{
+		return;
+	}
 	polyHovering = false;
 	if (!hasFocus())
 	{
 		setBrush(halfInsideColor);
-		emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverLeave, ev);
 	}
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverLeave, ev);
 	QGraphicsPolygonItem::hoverLeaveEvent(ev);
+
 }
 
 void LabPolygon::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
+	scene()->clearFocusAndSelected();
+	if (scene()->drawing)
+	{
+		return;
+	}
 	if (ev->button() == Qt::LeftButton)
 	{
-		scene()->clearSelection();
 		setSelected(true);
-		emit scene()->mouseOptRequest(index, -1, OptTypes::PolyMousePress, ev);
-		QGraphicsPolygonItem::mousePressEvent(ev);
+		setFocus();
 	}
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyMousePress, ev);
+	QGraphicsPolygonItem::mousePressEvent(ev);
 }
 
 void LabPolygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
@@ -336,19 +351,25 @@ void LabPolygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 // focus指鼠标点击多边形上
 void LabPolygon::focusInEvent(QFocusEvent* ev)
 {
+	if (scene()->drawing)
+	{
+		return;
+	}
 	setBrush(insideColor);
 	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusIn, ev);
-	QGraphicsPolygonItem::focusInEvent(ev);
 }
 
 void LabPolygon::focusOutEvent(QFocusEvent* ev)
 {
+	if (scene()->drawing)
+	{
+		return;
+	}
 	if (!polyHovering)
 	{
 		setBrush(halfInsideColor);
-		emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusOut, ev);
 	}
-	QGraphicsPolygonItem::focusOutEvent(ev);
+	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusOut, ev);
 }
 
 QVariant LabPolygon::itemChange(

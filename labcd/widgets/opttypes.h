@@ -3,6 +3,7 @@
 enum class OptTypes
 {
 	SceneMousePress,
+	SceneMouseDoubleClick,
 	PolyHoverEnter,
 	PolyHoverLeave,
 	PolyMousePress,

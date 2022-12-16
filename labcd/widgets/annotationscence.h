@@ -12,12 +12,8 @@ class AnnotationScence : public QGraphicsScene
 
 private:
 	double scaleRate;
-	int labelIndex = -1;
-	int imgWidth = 0;
-	int imgHeight = 0;
 	QColor insideColor;
 	QColor borderColor;
-	double opacity = 0.5;
 
 	void finished();
 	bool getItemHovering();
@@ -25,6 +21,10 @@ private:
 	bool getLineHovering();
 
 public:
+	int labelIndex = -1;
+	int imgWidth = 0;
+	int imgHeight = 0;
+	double opacity = 0.5;
 	bool drawing = false;
 	QList<LabPolygon*> polygonItems;
 	LabPolygon* nowItem = nullptr;

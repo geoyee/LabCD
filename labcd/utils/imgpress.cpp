@@ -67,7 +67,7 @@ void ImagePress::saveResultFromPolygon(
 						poly->mPoints.at(i)->x(), poly->mPoints.at(i)->y()
 					);
 					points.append(poly->mPoints.at(i)->x());
-					points.append(poly->mPoints.at(i)->x());
+					points.append(poly->mPoints.at(i)->y());
 				}
 				const cv::Point* ppt[1] = { cvPoints[0] };
 				int npt[] = { numPoint };

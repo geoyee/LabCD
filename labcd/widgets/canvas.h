@@ -23,6 +23,7 @@ public:
 	~Canvas();
 	void resetZoom(int width, int height);
 	void loadImageFromPixmap(QPixmap pixmap);
+	void loadJSONFromFile(QString jsonPath);
 	void scroolTranslate(int hPos, int vPos);
 
 signals:

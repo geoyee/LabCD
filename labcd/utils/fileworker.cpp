@@ -23,12 +23,14 @@ bool FileWorker::openImageDir(
     QDir dir(dirPath);
     QStringList subDirList;
     subDirList = dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs, QDir::Name);
-    if (subDirList.size() != 2 && subDirList.size() != 3)
+    if ((subDirList.size() != 2 && subDirList.size() != 3) || 
+        (subDirList.size() == 2 && subDirList.at(0) != "A" && subDirList.at(1) != "B") || 
+        (subDirList.size() == 3 && subDirList.at(0) != "A" && subDirList.at(1) != "B" && subDirList.at(2) != "GT"))
     {
         QMessageBox::critical(
             parent, 
             "错误", 
-            "文件组织格式错误，请确保数据文件夹下仅存在两个（或三个）子文件夹，分别存放时段一和时段二的数据（以及自动生成用于存放标注结果）。"
+            "文件组织格式错误，请确保数据文件夹下仅存在两个（或三个）子文件夹，分别为A、B（以及GT）。"
         );
         return false;
     }

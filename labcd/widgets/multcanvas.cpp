@@ -51,7 +51,7 @@ MultCanvas::~MultCanvas()
 
 }
 
-void MultCanvas::loadImages(QString t1Path, QString t2Path)
+void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 {
 	QPixmap t1;
 	t1.load(t1Path);
@@ -72,6 +72,13 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path)
 		imageWidth = t1.width();
 		imageHeight = t1.height();
 		emit imageLoaded(imageWidth, imageHeight);  // 发送大小
-		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);  // 鹰眼图
+		// 加载已标注过的数据
+		if (jsonPath != "")
+		{
+			t1Canva->loadJSONFromFile(jsonPath);
+			t2Canva->loadJSONFromFile(jsonPath);
+		}
+		// 鹰眼图
+		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
 	}
 }

@@ -2,7 +2,10 @@
 #include <QGraphicsPixmapItem>
 #include <QSizePolicy>
 #include <QScrollBar>
+#include <fstream>
+#include <json/json.h>
 #include "canvas.h"
+#include "labpolygon.h"
 
 Canvas::Canvas(QWidget *parent)
 	: QScrollArea(parent)
@@ -59,6 +62,48 @@ void Canvas::loadImageFromPixmap(QPixmap pixmap)
 	QGraphicsPixmapItem* pixmapItem = new QGraphicsPixmapItem();
 	pixmapItem->setPixmap(pixmap);
 	aScene->addItem(pixmapItem);
+}
+
+void Canvas::loadJSONFromFile(QString jsonPath)
+{
+	std::ifstream ifs(jsonPath.toStdString(), std::ios::binary);
+	if (!ifs.is_open())
+	{
+		return;
+	}
+	Json::Reader reader;
+	Json::Value root;
+	// 解析json内容
+	if (reader.parse(ifs, root))
+	{
+		for (int i = 0; i < root.size(); i++)
+		{
+			QColor jColor = QColor(
+				root[i]["color"]["R"].asInt(),
+				root[i]["color"]["G"].asInt(),
+				root[i]["color"]["B"].asInt()
+			);
+			int jIndex = root[i]["labelIndex"].asInt();
+			int jPointNumber = root[i]["polygon"]["pointNumber"].asInt();
+			// 新建多边形
+			LabPolygon* nowItem = new LabPolygon(
+				aScene, i, jIndex, aScene->imgWidth, aScene->imgHeight, \
+				jColor, jColor, aScene->opacity
+			);
+			aScene->addItem(nowItem);
+			aScene->polygonItems.push_back(nowItem);
+			// 添加点
+			for (int j = 0; j < jPointNumber; j++)
+			{
+				QPointF* point = new QPointF(
+					root[i]["polygon"]["points"][2 * j].asFloat(),
+					root[i]["polygon"]["points"][2 * j + 1].asFloat()
+				);
+				nowItem->addPointLast(*point);
+			}
+		}
+	}
+	ifs.close();
 }
 
 void Canvas::scroolTranslate(int hPos, int vPos)

@@ -11,6 +11,8 @@ private:
 	QListWidget* fList = nullptr;  // t1Files
 	QStringList t2Files;
 
+	QString getGTJsonPath(QString t1Path);
+
 public:
 	FileList(QWidget *parent = nullptr);
 	~FileList();
@@ -19,5 +21,5 @@ public:
 	bool gotoNextItem();
 
 signals:
-	void FileClickRequest(QString t1Path, QString t2Path);
+	void FileClickRequest(QString t1Path, QString t2Path, QString jsonPath);
 };

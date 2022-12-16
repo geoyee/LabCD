@@ -16,7 +16,7 @@ public:
 
 	MultCanvas(QWidget *parent = nullptr);
 	~MultCanvas();
-	void loadImages(QString t1Path, QString t2Path);
+	void loadImages(QString t1Path, QString t2Path, QString jsonPath);
 
 signals:
 	void labelSelected(Label* label);

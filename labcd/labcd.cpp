@@ -72,11 +72,12 @@ LabCD::LabCD(QWidget *parent)
     filesDock->setMinimumWidth(200);
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
     fListWidget = new FileList(this);
-    connect(fListWidget, &FileList::FileClickRequest, [=](QString t1Path, QString t2Path) {
-        drawCanvas->loadImages(t1Path, t2Path); 
-        QFileInfo fileInfo(t1Path);
-        fileName = fileInfo.fileName();
-        messageState->setText("加载图像：" + t1Path);
+    connect(fListWidget, &FileList::FileClickRequest, 
+        [=](QString t1Path, QString t2Path, QString jsonPath) {
+            drawCanvas->loadImages(t1Path, t2Path, jsonPath);
+            QFileInfo fileInfo(t1Path);
+            fileName = fileInfo.fileName();
+            messageState->setText("加载图像：" + t1Path);
     });  // 加载图像
     filesDock->setWidget(fListWidget);
     addDockWidget(Qt::RightDockWidgetArea, filesDock);

@@ -9,7 +9,7 @@ class ImagePress
 public:
 	static cv::Mat CVA(cv::Mat t1, cv::Mat t2);
 
-	static void saveMaskFromPolygon(
+	static void saveResultFromPolygon(
 		QString savePath,
 		int labNum,
 		int imgHeight,

@@ -116,7 +116,7 @@ LabCD::LabCD(QWidget *parent)
     connect(saveAct, &QAction::triggered, [=]() {
         QString saveImgPath = savePath + "/GT/" + fileName;
         int labNum = labTableWidget->getLen();
-        ImagePress::saveMaskFromPolygon(
+        ImagePress::saveResultFromPolygon(
             saveImgPath, 
             labNum,
             drawCanvas->imageHeight, 

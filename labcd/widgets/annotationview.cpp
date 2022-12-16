@@ -47,13 +47,13 @@ void AnnotationView::sendSyncSignal()
 
 bool AnnotationView::checkZoomAll()
 {
-	if (zoomAll != minRange and zoomAll != maxRange)
+	if (zoomAll < minRange || zoomAll > maxRange)
 	{
-		return true;
+		return false;
 	}
 	else
 	{
-		return false;
+		return true;
 	}
 }
 
@@ -117,7 +117,7 @@ void AnnotationView::mouseMoveEvent(QMouseEvent* ev)
 	QPointF mousePos = QPointF(mapToScene(ev->pos()));
 	emit mousePosChanged(mousePos.x(), mousePos.y());
 	// 出现滚动条才能滚动
-	if (middleClicking && (horizontalScrollBar()->isVisible() || \
+	if ((middleClicking && (horizontalScrollBar()->isVisible()) || \
 		verticalScrollBar()->isVisible()))
 	{
 		endPos = new QPoint(ev->pos() / zoomAll - *startPos / zoomAll);

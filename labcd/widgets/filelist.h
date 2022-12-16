@@ -17,6 +17,7 @@ public:
 	FileList(QWidget *parent = nullptr);
 	~FileList();
 	void addFileNames(QStringList t1List, QStringList t2List);
+	bool gotoItem(int index);
 	bool gotoLastItem();
 	bool gotoNextItem();
 

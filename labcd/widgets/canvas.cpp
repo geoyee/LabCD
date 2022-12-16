@@ -58,6 +58,7 @@ void Canvas::resetZoom(int width, int height)
 
 void Canvas::loadImageFromPixmap(QPixmap pixmap)
 {
+	aScene->removeAllPolygons();
 	Canvas::resetZoom(pixmap.width(), pixmap.height());
 	QGraphicsPixmapItem* pixmapItem = new QGraphicsPixmapItem();
 	pixmapItem->setPixmap(pixmap);

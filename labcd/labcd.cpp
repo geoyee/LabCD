@@ -5,7 +5,6 @@
 #include <QDockWidget>
 #include <QGraphicsView>
 #include <QAction>
-#include <QLabel>
 #include <QString>
 #include <QDesktopServices>
 #include <QFileInfo>
@@ -20,7 +19,7 @@ LabCD::LabCD(QWidget *parent)
 {
     /* 状态栏 */
     QStatusBar* lcdStatusBar = statusBar();
-    QLabel* messageState = new QLabel("", this);  // 用于显示消息
+    messageState = new QLabel("", this);  // 用于显示消息
     QLabel* messageLocal = new QLabel("", this);  // 用于显示坐标
     lcdStatusBar->addWidget(messageState);
     lcdStatusBar->addPermanentWidget(messageLocal);
@@ -74,6 +73,7 @@ LabCD::LabCD(QWidget *parent)
     fListWidget = new FileList(this);
     connect(fListWidget, &FileList::FileClickRequest, 
         [=](QString t1Path, QString t2Path, QString jsonPath) {
+            save();
             drawCanvas->loadImages(t1Path, t2Path, jsonPath);
             QFileInfo fileInfo(t1Path);
             fileName = fileInfo.fileName();
@@ -114,27 +114,22 @@ LabCD::LabCD(QWidget *parent)
     QAction* saveAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Save.png"), "保存");
     saveAct->setShortcut(tr("Ctrl+S"));
-    connect(saveAct, &QAction::triggered, [=]() {
-        QString saveImgPath = savePath + "/GT/" + fileName;
-        int labNum = labTableWidget->getLen();
-        ImagePress::saveResultFromPolygon(
-            saveImgPath, 
-            labNum,
-            drawCanvas->imageHeight, 
-            drawCanvas->imageWidth, 
-            drawCanvas->t1Canva->aScene->polygonItems
-        );
-        messageState->setText("保存图像：" + saveImgPath);
-    });
+    connect(saveAct, &QAction::triggered, this, &LabCD::save);
     lcdToolBar->addSeparator();
     QAction* lastAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Last.png"), "上一张");
-    connect(lastAct, &QAction::triggered, fListWidget, &FileList::gotoLastItem);
+    connect(lastAct, &QAction::triggered, [=]() {
+        save();
+        fListWidget->gotoLastItem();
+    });
     lastAct->setShortcut(tr("S"));
     QAction* nextAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Next.png"), "下一张");
     nextAct->setShortcut(tr("F"));
-    connect(nextAct, &QAction::triggered, fListWidget, &FileList::gotoNextItem);
+    connect(nextAct, &QAction::triggered, [=]() {
+        save();
+        fListWidget->gotoNextItem();
+    });
     lcdToolBar->addSeparator();
     QAction* enlargeAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Enlarge.png"), "放大");
@@ -150,9 +145,12 @@ LabCD::LabCD(QWidget *parent)
         QIcon(":/tools/resources/Full.png"), "全幅缩放");
     fullAct->setShortcut(tr("Ctrl+F"));
     connect(fullAct, &QAction::triggered, [=]() {
-        drawCanvas->t1Canva->resetZoom(
-            drawCanvas->imageWidth, drawCanvas->imageHeight
-        );  // 自动同步t2
+        if (drawCanvas->imageWidth != 0 && drawCanvas->imageHeight != 0)
+        {
+            drawCanvas->t1Canva->resetZoom(
+                drawCanvas->imageWidth, drawCanvas->imageHeight
+            );  // 自动同步t2
+        }
     });
     lcdToolBar->addSeparator();
     QAction* delPolyAct = lcdToolBar->addAction(
@@ -193,6 +191,7 @@ void LabCD::openDir()
     if (FileWorker::openImageDir(&t1List, &t2List, this))
     {
         fListWidget->addFileNames(t1List, t2List);
+        fListWidget->gotoItem(0);
         // 新建保存目录
         QFileInfo fileInfo(t1List.at(0));
         savePath = fileInfo.path();
@@ -207,6 +206,24 @@ void LabCD::openDir()
         {
             labTableWidget->importLabelFromFile(jsonPath);
         }
+    }
+}
+
+void LabCD::save()
+{
+    if (drawCanvas->imageWidth != 0 && drawCanvas->imageHeight != 0)
+    {
+        QString saveImgPath = savePath + "/GT/" + fileName;
+        int labNum = labTableWidget->getLen();
+        drawCanvas->clearFocusAndSelected();
+        ImagePress::saveResultFromPolygon(
+            saveImgPath,
+            labNum,
+            drawCanvas->imageHeight,
+            drawCanvas->imageWidth,
+            drawCanvas->t1Canva->aScene->polygonItems
+        );
+        messageState->setText("保存图像：" + saveImgPath);
     }
 }
 

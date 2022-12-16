@@ -48,30 +48,25 @@ void FileList::addFileNames(QStringList t1List, QStringList t2List)
 	fList->setCurrentRow(t1Files.size() - 1);  // 移动位置
 }
 
-bool FileList::gotoLastItem()
+bool FileList::gotoItem(int index)
 {
-	int currentIndex = fList->currentIndex().row();
-	if (currentIndex == 0)
+	if (index < 0 || index > fList->count() - 1)
 	{
 		return false;
 	}
-	fList->setCurrentRow(currentIndex - 1);
+	fList->setCurrentRow(index);
 	QString t1Path = fList->currentItem()->text();
 	QString t2Path = t2Files.at(fList->currentRow());
 	emit FileList::FileClickRequest(t1Path, t2Path, getGTJsonPath(t1Path));
 	return true;
 }
 
+bool FileList::gotoLastItem()
+{
+	return gotoItem(fList->currentIndex().row() - 1);
+}
+
 bool FileList::gotoNextItem()
 {
-	int currentIndex = fList->currentIndex().row();
-	if (currentIndex == fList->count() - 1)
-	{
-		return false;
-	}
-	fList->setCurrentRow(currentIndex + 1);
-	QString t1Path = fList->currentItem()->text();
-	QString t2Path = t2Files.at(fList->currentRow());
-	emit FileList::FileClickRequest(t1Path, t2Path, getGTJsonPath(t1Path));
-	return true;
+	return gotoItem(fList->currentIndex().row() + 1);
 }

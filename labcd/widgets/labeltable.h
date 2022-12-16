@@ -16,6 +16,7 @@ private:
 	Label* nowLabel = nullptr;
 	ColorMap* cMap = nullptr;
 
+	void clickItem(int row, int column);
 	void createLabelItem(int _index, QString _name, QColor _color);
 
 public:

@@ -82,3 +82,9 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
 	}
 }
+
+void MultCanvas::clearFocusAndSelected()
+{
+	t1Canva->aScene->clearFocusAndSelected();
+	t2Canva->aScene->clearFocusAndSelected();
+}

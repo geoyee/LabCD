@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Test
 testimgs/
+
+# setup
+setup/

@@ -15,7 +15,6 @@ private:
 	QColor insideColor;
 	QColor borderColor;
 
-	void finished();
 	bool getItemHovering();
 	bool getPolyHovering();
 	bool getLineHovering();
@@ -31,6 +30,8 @@ public:
 
 	AnnotationScence();
 	~AnnotationScence();
+	void resetScence();
+	void finished();
 	void setScaleRate(double zoomAll);
 	void updatePolygonSize();
 	void setColor(QColor _insideColor, QColor _borderColor);
@@ -42,7 +43,6 @@ public:
 	void clearFocusAndSelected();
 	// 同步方法
 	void PressedAddPoint(QPointF point);
-	void rightClickedFinshPolygon();
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);

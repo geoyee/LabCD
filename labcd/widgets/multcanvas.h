@@ -18,6 +18,7 @@ public:
 	~MultCanvas();
 	void loadImages(QString t1Path, QString t2Path, QString jsonPath);
 	void clearFocusAndSelected();
+	void finished();
 
 signals:
 	void labelSelected(Label* label);

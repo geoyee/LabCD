@@ -215,7 +215,7 @@ void LabCD::save()
     {
         QString saveImgPath = savePath + "/GT/" + fileName;
         int labNum = labTableWidget->getLen();
-        drawCanvas->clearFocusAndSelected();
+        drawCanvas->finished();
         ImagePress::saveResultFromPolygon(
             saveImgPath,
             labNum,

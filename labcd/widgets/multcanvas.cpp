@@ -78,6 +78,8 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 			t1Canva->loadJSONFromFile(jsonPath);
 			t2Canva->loadJSONFromFile(jsonPath);
 		}
+		t1Canva->aScene->resetScence();
+		t2Canva->aScene->resetScence();
 		// 鹰眼图
 		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
 	}
@@ -87,4 +89,10 @@ void MultCanvas::clearFocusAndSelected()
 {
 	t1Canva->aScene->clearFocusAndSelected();
 	t2Canva->aScene->clearFocusAndSelected();
+}
+
+void MultCanvas::finished()
+{
+	t1Canva->aScene->finished();
+	t1Canva->aScene->finished();
 }

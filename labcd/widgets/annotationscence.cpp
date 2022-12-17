@@ -11,19 +11,6 @@ AnnotationScence::~AnnotationScence()
 
 }
 
-void AnnotationScence::finished()
-{
-	if (nowItem != nullptr)
-	{
-		if (drawing == true && nowItem->getLen() < 3)
-		{
-			nowItem->remove();
-		}
-	}
-	rightClickedFinshPolygon();
-	clearFocusAndSelected();
-}
-
 bool AnnotationScence::getItemHovering()
 {
 	for (LabPolygon* poly : polygonItems)
@@ -58,6 +45,25 @@ bool AnnotationScence::getLineHovering()
 		}
 	}
 	return false;
+}
+
+void AnnotationScence::resetScence()
+{
+	nowItem = nullptr;
+	drawing = false;
+	clearFocusAndSelected();
+}
+
+void AnnotationScence::finished()
+{
+	if (nowItem != nullptr)
+	{
+		if (drawing == true && nowItem->getLen() < 3)
+		{
+			nowItem->remove();
+		}
+	}
+	resetScence();  // 清理和置零
 }
 
 void AnnotationScence::setScaleRate(double zoomAll)
@@ -163,22 +169,12 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 	}
 }
 
-void AnnotationScence::rightClickedFinshPolygon()
-{
-	nowItem = nullptr;
-	drawing = false;
-}
-
 void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
 	// 右键或点击多边形激活则完成
 	if (ev->button() == Qt::RightButton || (hovering() && drawing))
 	{
 		finished();
-		if (drawing)  // 避免无效同步释放
-		{
-			return;
-		}
 		emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 	}
 	// 其他操作

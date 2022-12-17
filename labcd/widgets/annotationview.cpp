@@ -117,8 +117,8 @@ void AnnotationView::mouseMoveEvent(QMouseEvent* ev)
 	QPointF mousePos = QPointF(mapToScene(ev->pos()));
 	emit mousePosChanged(mousePos.x(), mousePos.y());
 	// 出现滚动条才能滚动
-	if ((middleClicking && (horizontalScrollBar()->isVisible()) || \
-		verticalScrollBar()->isVisible()))
+	if (middleClicking && \
+		(horizontalScrollBar()->isVisible() || verticalScrollBar()->isVisible()))
 	{
 		endPos = new QPoint(ev->pos() / zoomAll - *startPos / zoomAll);
 		point = new QPoint(*point + *endPos);

@@ -13,19 +13,14 @@ AnnotationScence::~AnnotationScence()
 
 void AnnotationScence::finished()
 {
-	if (drawing == true)
+	if (nowItem != nullptr)
 	{
-		if (nowItem->getLen() >= 3)
-		{
-			rightClickedFinshPolygon();
-		}
-		else  // 三个点以下不构成多边形
+		if (drawing == true && nowItem->getLen() < 3)
 		{
 			nowItem->remove();
-			nowItem = nullptr;
 		}
-		drawing = false;
 	}
+	rightClickedFinshPolygon();
 	clearFocusAndSelected();
 }
 
@@ -171,65 +166,46 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 void AnnotationScence::rightClickedFinshPolygon()
 {
 	nowItem = nullptr;
+	drawing = false;
 }
 
 void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
-	// 右键一定清理
-	if (ev->button() == Qt::RightButton)
+	// 右键或点击多边形激活则完成
+	if (ev->button() == Qt::RightButton || (hovering() && drawing))
 	{
-		clearFocusAndSelected();
+		finished();
+		if (drawing)  // 避免无效同步释放
+		{
+			return;
+		}
 		emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 	}
-	// 进一步操作
-	QPointF p = ev->scenePos();
-	if (!hovering())
-	{
-		// 左键添加
-		if (ev->button() == Qt::LeftButton && labelIndex != -1)
-		{
-			PressedAddPoint(p);
-			drawing = true;
-			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
-		}
-		// 右键释放
-		else if ((ev->button() == Qt::RightButton) && drawing)
-		{
-			finished();
-			if (drawing)  // 避免无效同步释放
-			{
-				return;
-			}
-			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
-		}
-		else  // 基础操作
-		{
-			QGraphicsScene::mousePressEvent(ev);
-		}
-	}
+	// 其他操作
 	else
 	{
-		for (LabPolygon* poly : polygonItems)
+		QPointF p = ev->scenePos();
+		if (!hovering())  // 非激活状态
 		{
-			if (poly->polyHovering)
+			// 当选择有标签的时候，左键添加
+			if (ev->button() == Qt::LeftButton && labelIndex != -1)
 			{
-				emit focusRequest(poly->labelIndex);
+				PressedAddPoint(p);
+				drawing = true;
+				emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 			}
-		}
-		// 避免一边创建点一边激活多边形引起的顺序问题，目前将在激活多边形时强制结束绘制状态
-		if (drawing)
-		{
-			finished();
-			if (drawing)  // 避免无效同步释放
-			{
-				return;
-			}
-			emit mouseOptRequest(-1, -1, OptTypes::SceneMousePress, ev);
 		}
 		else
 		{
-			QGraphicsScene::mousePressEvent(ev);
+			for (LabPolygon* poly : polygonItems)
+			{
+				if (poly->polyHovering)
+				{
+					emit focusRequest(poly->labelIndex);
+				}
+			}
 		}
+		QGraphicsScene::mousePressEvent(ev);
 	}
 }
 
@@ -250,8 +226,6 @@ void AnnotationScence::getLabel(Label* label)
 {
 	// 完成之前的
 	finished();
-	// 清理
-	clearFocusAndSelected();
 	// 新设定
 	labelIndex = label->getIndex();
 	insideColor = label->getColor();

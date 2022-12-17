@@ -1,8 +1,8 @@
 # LabCD
 
-https://user-images.githubusercontent.com/71769312/202847705-eaa97c8b-5a1d-45dc-b6b3-a740cef743b9.mp4
+https://user-images.githubusercontent.com/71769312/208237021-7da8c1c2-0d9a-4dbd-9f7d-a41b6dc6202a.mp4
 
-遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)，通过左右同步的两张画布来方便快捷地标注两个时段影像的变化信息。
+遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)，可以分别在左右两张画布中标注两个时段影像的变化信息，将自动同步在另一画布进行显示，[快捷键](https://github.com/geoyee/LabCD/wiki/%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%88%97%E8%A1%A8)更方便。
 
 ## 环境及依赖
 
@@ -31,11 +31,14 @@ testimgs
    └-- label.json	 		        # 自动生成，用于自动标签导入
 ```
 
+## 使用帮助
+
+1. 需要点击标签后才能在画布进行绘制
+2. 绘制以鼠标左键开始，鼠标右键结束，最好每次绘制完一个多边形都在画布上点一下鼠标右键
+3. 切换图像自动保存
+4. 偶见无法绘制，暂时可以拖动一下另一个多边形的顶点，然后就可以绘制了，还没找到问题
+
 ## TODO
-
-基础功能完成
-
-增强：
 
 - [ ] 添加标注进程
 - [ ] 添加左右画布的定位十字丝
@@ -44,11 +47,12 @@ testimgs
 - [ ] 翻译支持
 - [ ] 增加一个变化检测的参考图方便定位
 
-## 参考资源
+## 参考与辅助资源
 
 - 部分图标：[SuperMap GIS产品彩色系功能图标库](https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=32519)
 - 标签预定义颜色：[色板 | AntV](https://antv.vision/zh/docs/specification/language/palette)
+- 打包：[Inno Setup](https://jrsoftware.org/)
 
 ## 说明
 
-作为一个C++小白，该项目为个人的第一个C++项目，目前也是一个学习练习项目，因此该项目仍存在较多问题，使用体验不佳，需要慢慢研究，其中写的不好的部分如有机会也希望得到大佬们的一二指点。
+作为一个C++小白，该项目为个人的第一个C++项目，目前也是一个学习练习项目，因此该项目仍存在较多问题，使用体验不佳，需要慢慢研究，其中写的不好的部分如有机会也希望得到大佬们的一二指点。欢迎大佬们提issue或者pr。

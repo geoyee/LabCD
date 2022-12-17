@@ -59,8 +59,8 @@
     <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\github\LabCD\labcd\depends\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>E:\dataFiles\gdal\include;E:\dataFiles\github\LabCD\labcd\depends\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\github\LabCD\labcd\depends\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)depends\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)depends\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
@@ -76,7 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalOptions>/utf-8 /NATVIS:"$(IntDir)\qt.natvis" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;jsoncpp_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world455.lib;jsoncpp_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalOptions>

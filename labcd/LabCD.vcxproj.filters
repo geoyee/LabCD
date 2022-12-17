@@ -1199,7 +1199,6 @@
     <Library Include="depends\lib\jsoncpp_static.lib" />
     <Library Include="depends\lib\opencv_world455.lib" />
     <Library Include="depends\lib\opencv_world455d.lib" />
-    <Library Include="depends\jsoncpp_static.lib" />
     <Library Include="depends\lib\jsoncpp_staticd.lib" />
     <Library Include="depends\lib\jsoncpp.lib" />
     <Library Include="depends\lib\jsoncppd.lib" />

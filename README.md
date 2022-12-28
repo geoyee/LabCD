@@ -4,7 +4,7 @@ https://user-images.githubusercontent.com/71769312/208237021-7da8c1c2-0d9a-4dbd-
 
 遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)，可以分别在左右两张画布中标注两个时段影像的变化信息，将自动同步在另一画布进行显示，[快捷键](https://github.com/geoyee/LabCD/wiki/%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%88%97%E8%A1%A8)更方便。
 
-**下载：[Windows exe](https://github.com/geoyee/LabCD/releases/download/0.1beta/LabCD-0.1beta-setup.exe)**
+**下载：[Windows x64 exe](https://github.com/geoyee/LabCD/releases/download/0.1beta/LabCD-0.1beta-setup.exe)**
 
 ## 环境及依赖
 

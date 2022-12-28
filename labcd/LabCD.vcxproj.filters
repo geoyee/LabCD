@@ -123,6 +123,12 @@
     <Image Include="resources\Help.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\Chinese.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\English.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">
@@ -1194,6 +1200,7 @@
     <None Include="depends\lib\jsoncpp.exp" />
     <None Include="depends\lib\jsoncpp_staticd.pdb" />
     <None Include="depends\lib\jsoncppd.exp" />
+    <None Include="i18\English.qm" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="depends\lib\jsoncpp_static.lib" />
@@ -1202,5 +1209,10 @@
     <Library Include="depends\lib\jsoncpp_staticd.lib" />
     <Library Include="depends\lib\jsoncpp.lib" />
     <Library Include="depends\lib\jsoncppd.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtTranslation Include="i18\English.ts">
+      <Filter>Translation Files</Filter>
+    </QtTranslation>
   </ItemGroup>
 </Project>

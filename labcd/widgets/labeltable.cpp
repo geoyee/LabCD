@@ -44,7 +44,7 @@ LabelTable::LabelTable(QWidget *parent)
 	addLabelItem(true);
 	vLayout->addWidget(labelTable);
 	// 添加标签按钮
-	QPushButton* btnAddLabel = new QPushButton("添加标签", this);
+	QPushButton* btnAddLabel = new QPushButton(tr("添加标签"), this);
 	btnAddLabel->setIcon(QIcon(":/docks/resources/AddLabel.png"));
 	connect(btnAddLabel, &QPushButton::clicked, this, &LabelTable::addLabelItem);
 	vLayout->addWidget(btnAddLabel);
@@ -66,7 +66,7 @@ void LabelTable::clickItem(int row, int column)
 	if (column == 2 && row != 0)  // 换颜色
 	{
 		QColor newColor = QColorDialog::getColor(
-			nowColor, this, "标签颜色选择");
+			nowColor, this, tr("标签颜色选择"));
 		if (newColor.isValid())
 		{
 			labelTable->item(row, 2)->setBackground(newColor);
@@ -138,7 +138,7 @@ void LabelTable::addLabelItem(bool init)
 {	
 	if (init)
 	{
-		createLabelItem(0, "背景", QColor(0, 0, 0));
+		createLabelItem(0, tr("背景"), QColor(0, 0, 0));
 		labelTable->item(0, 1)->setFlags(labelTable->item(0, 1)->flags() & ~Qt::ItemIsEditable);
 		labelTable->item(0, 3)->setIcon(QIcon(":/docks/resources/CantDelete.png"));
 	}

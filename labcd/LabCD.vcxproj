@@ -132,9 +132,11 @@
   <ItemGroup>
     <Image Include="resources\AddLabel.png" />
     <Image Include="resources\CantDelete.png" />
+    <Image Include="resources\Chinese.png" />
     <Image Include="resources\Delete.png" />
     <Image Include="resources\DeleteAllPolygons.png" />
     <Image Include="resources\DeletePolygon.png" />
+    <Image Include="resources\English.png" />
     <Image Include="resources\Enlarge.png" />
     <Image Include="resources\Folder.png" />
     <Image Include="resources\Full.png" />
@@ -508,6 +510,7 @@
     <None Include="depends\lib\jsoncpp.exp" />
     <None Include="depends\lib\jsoncppd.exp" />
     <None Include="depends\lib\jsoncpp_staticd.pdb" />
+    <None Include="i18\English.qm" />
     <None Include="LabCD.pri" />
     <None Include="LabCD.pro" />
   </ItemGroup>
@@ -518,6 +521,9 @@
     <Library Include="depends\lib\jsoncpp_staticd.lib" />
     <Library Include="depends\lib\opencv_world455.lib" />
     <Library Include="depends\lib\opencv_world455d.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtTranslation Include="i18\English.ts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

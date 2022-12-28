@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QLabel>
+#include <QSettings>
 #include "widgets/labeltable.h"
 #include "widgets/filelist.h"
 #include "widgets/multcanvas.h"
@@ -11,8 +12,10 @@ class LabCD : public QMainWindow
     Q_OBJECT
 
 private:
+    QSettings* setting;
     QString savePath;
     QString fileName;
+    bool isCN;
 
     void openDir();
     void save();

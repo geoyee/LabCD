@@ -6,6 +6,8 @@
         <file>resources/Folder.png</file>
         <file>resources/Github.png</file>
         <file>resources/Help.png</file>
+        <file>resources/Chinese.png</file>
+        <file>resources/English.png</file>
     </qresource>
     <qresource prefix="/tools">
         <file>resources/Enlarge.png</file>
@@ -24,5 +26,8 @@
     </qresource>
     <qresource prefix="/configs">
         <file>configs/colormap.txt</file>
+    </qresource>
+    <qresource prefix="/translate">
+        <file>i18/English.qm</file>
     </qresource>
 </RCC>

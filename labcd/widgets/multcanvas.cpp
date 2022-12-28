@@ -61,8 +61,8 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 	{
 		QMessageBox::critical(
 			this,
-			"错误",
-			"两个时段的数据大小不一致。"
+			tr("错误"),
+			tr("两个时段的数据大小不一致。")
 		);
 	}
 	else

@@ -510,7 +510,7 @@
     <None Include="depends\lib\jsoncpp.exp" />
     <None Include="depends\lib\jsoncppd.exp" />
     <None Include="depends\lib\jsoncpp_staticd.pdb" />
-    <None Include="i18\English.qm" />
+    <None Include="i18n\English.qm" />
     <None Include="LabCD.pri" />
     <None Include="LabCD.pro" />
   </ItemGroup>
@@ -523,7 +523,7 @@
     <Library Include="depends\lib\opencv_world455d.lib" />
   </ItemGroup>
   <ItemGroup>
-    <QtTranslation Include="i18\English.ts" />
+    <QtTranslation Include="i18n\English.ts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

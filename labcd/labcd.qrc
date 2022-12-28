@@ -28,6 +28,6 @@
         <file>configs/colormap.txt</file>
     </qresource>
     <qresource prefix="/translate">
-        <file>i18/English.qm</file>
+        <file>i18n/English.qm</file>
     </qresource>
 </RCC>

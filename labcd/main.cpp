@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     QTranslator translator;
     if (langu == "EN")
     {
-        translator.load(":/translate/i18/English.qm");
+        translator.load(":/translate/i18n/English.qm");
         a.installTranslator(&translator);
     }
     else

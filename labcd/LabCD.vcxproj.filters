@@ -1200,7 +1200,7 @@
     <None Include="depends\lib\jsoncpp.exp" />
     <None Include="depends\lib\jsoncpp_staticd.pdb" />
     <None Include="depends\lib\jsoncppd.exp" />
-    <None Include="i18\English.qm" />
+    <None Include="i18n\English.qm" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="depends\lib\jsoncpp_static.lib" />
@@ -1211,7 +1211,7 @@
     <Library Include="depends\lib\jsoncppd.lib" />
   </ItemGroup>
   <ItemGroup>
-    <QtTranslation Include="i18\English.ts">
+    <QtTranslation Include="i18n\English.ts">
       <Filter>Translation Files</Filter>
     </QtTranslation>
   </ItemGroup>

@@ -375,5 +375,5 @@ SOURCES += ./utils/colormap.cpp \
     ./widgets/labeltable.cpp \
     ./labcd.cpp \
     ./main.cpp
-TRANSLATIONS += ./i18/English.ts
+TRANSLATIONS += ./i18n/English.ts
 RESOURCES += labcd.qrc

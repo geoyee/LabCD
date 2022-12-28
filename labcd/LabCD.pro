@@ -16,4 +16,4 @@ OBJECTS_DIR += debug
 UI_DIR += GeneratedFiles
 RCC_DIR += .
 include(LabCD.pri)
-TRANSLATIONS += i18/English.ts
+TRANSLATIONS += i18n/English.ts

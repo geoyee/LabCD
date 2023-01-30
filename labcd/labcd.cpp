@@ -107,9 +107,10 @@ LabCD::LabCD(QWidget *parent)
     filesDock->setMinimumWidth(200);
     filesDock->setAllowedAreas(Qt::RightDockWidgetArea);
     fListWidget = new FileList(this);
+    // 保存图像
+    connect(fListWidget, &FileList::saveLastFileRequest, this, &LabCD::save);
     connect(fListWidget, &FileList::FileClickRequest, 
         [=](QString t1Path, QString t2Path, QString jsonPath) {
-            save();
             drawCanvas->loadImages(t1Path, t2Path, jsonPath);
             QFileInfo fileInfo(t1Path);
             fileName = fileInfo.fileName();
@@ -242,6 +243,8 @@ void LabCD::openDir()
         {
             labTableWidget->importLabelFromFile(jsonPath);
         }
+        // 加载总进度
+        fListWidget->resetProgress();
     }
 }
 
@@ -259,7 +262,9 @@ void LabCD::save()
             drawCanvas->imageWidth,
             drawCanvas->t1Canva->aScene->polygonItems
         );
+        fListWidget->finishedCurrentItem();
         messageState->setText(tr("保存图像：") + saveImgPath);
+        fListWidget->progressUpAdd();
     }
 }
 

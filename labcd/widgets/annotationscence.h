@@ -2,6 +2,8 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QPen>
+#include <QPainter>
 #include "labpolygon.h"
 #include "opttypes.h"
 #include "../utils/label.h"
@@ -14,10 +16,13 @@ private:
 	double scaleRate;
 	QColor insideColor;
 	QColor borderColor;
+	QPen* crossPen;
+	QPointF* coords;
 
 	bool getItemHovering();
 	bool getPolyHovering();
 	bool getLineHovering();
+	void updateCrossPenSize();
 
 public:
 	int labelIndex = -1;
@@ -46,6 +51,8 @@ public:
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);
+	void drawForeground(QPainter* painter, const QRectF& rect);
+	void onMouseChanged(double x, double y);
 
 signals:
 	void focusRequest(int labelIndex);

@@ -19,6 +19,7 @@ Canvas::Canvas(QWidget *parent)
 	aView->setAlignment(Qt::AlignCenter);
 	aView->setAutoFillBackground(false);
 	aView->setStyleSheet("background-color: White");
+	connect(aView, &AnnotationView::mousePosChanged, aScene, &AnnotationScence::onMouseChanged);
 	// 保持滑动滑块的时候也能同步
 	connect(aView->horizontalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
 		emit syncScroll(value, aView->verticalScrollBar()->value());

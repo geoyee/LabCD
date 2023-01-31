@@ -43,6 +43,15 @@ MultCanvas::MultCanvas(QWidget *parent)
 		t2Canva->aScene, &AnnotationScence::mouseOptRequest,
 		t1Canva->aScene, &AnnotationScence::copyMouseOpt
 	);
+	// 同步十字丝
+	connect(
+		t1Canva->aView, &AnnotationView::mousePosChanged,
+		t2Canva->aScene, &AnnotationScence::onMouseChanged
+	);
+	connect(
+		t2Canva->aView, &AnnotationView::mousePosChanged,
+		t1Canva->aScene, &AnnotationScence::onMouseChanged
+	);
 	setLayout(gLayout);
 }
 

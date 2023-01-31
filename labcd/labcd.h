@@ -19,6 +19,7 @@ private:
 
     void openDir();
     void save();
+    void setCrossPenColor();
 
 public:
     FileList* fListWidget = nullptr;  // 数据列表

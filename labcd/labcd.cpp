@@ -9,6 +9,7 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QColorDialog>
 #include "labcd.h"
 #include "utils/fileworker.h"
 #include "utils/imgpress.h"
@@ -207,6 +208,11 @@ LabCD::LabCD(QWidget *parent)
         drawCanvas->t2Canva->aScene->removeAllPolygons();
     });
     delAllPolysAct->setShortcut(QKeySequence("Delete"));
+    lcdToolBar->addSeparator();
+    QAction* crossColorAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Color.png"), tr("设置十字丝颜色"));
+    connect(crossColorAct, &QAction::triggered, this, &LabCD::setCrossPenColor);
+    // 完成
     lcdToolBar->setMovable(false);
     addToolBar(Qt::LeftToolBarArea, lcdToolBar);
     
@@ -266,6 +272,16 @@ void LabCD::save()
         messageState->setText(tr("保存图像：") + saveImgPath);
         fListWidget->progressUpAdd();
     }
+}
+
+void LabCD::setCrossPenColor()
+{
+    QColor nowCrossColor = drawCanvas->getCrossPenColor();
+    QColor color = QColorDialog::getColor(
+        nowCrossColor, this, tr("设置十字丝颜色"), QColorDialog::ShowAlphaChannel
+    );
+    setting->setValue("cross_color", color);
+    drawCanvas->setCrossPenColor(color);
 }
 
 void LabCD::closeEvent(QCloseEvent* ev)

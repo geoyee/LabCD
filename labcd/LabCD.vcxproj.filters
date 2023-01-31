@@ -129,6 +129,9 @@
     <Image Include="resources\English.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\Color.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">

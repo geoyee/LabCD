@@ -25,8 +25,9 @@ int main(int argc, char* argv[])
         a.removeTranslator(&translator);
     }
    
-    // 重加载界面
+    // 重加载界面和设置
     LabCD w;
+    w.drawCanvas->setCrossPenColor(setting.value("cross_color").value<QColor>());
     QByteArray layoutStatus = setting.value("layout_status").toByteArray();
     w.restoreState(layoutStatus);
     w.show();

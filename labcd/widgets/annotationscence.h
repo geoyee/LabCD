@@ -40,6 +40,8 @@ public:
 	void setScaleRate(double zoomAll);
 	void updatePolygonSize();
 	void setColor(QColor _insideColor, QColor _borderColor);
+	QColor getCrossPenColor();
+	void setCrossPenColor(QColor color);
 	bool hovering();
 	int findFocusPolygon();
 	void delPoly(int preFocusIndex);

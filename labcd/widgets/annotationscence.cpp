@@ -104,6 +104,16 @@ void AnnotationScence::setColor(QColor _insideColor, QColor _borderColor)
 	borderColor = _borderColor;
 }
 
+QColor AnnotationScence::getCrossPenColor()
+{
+	return crossPen->color();
+}
+
+void AnnotationScence::setCrossPenColor(QColor color)
+{
+	crossPen->setColor(color);
+}
+
 bool AnnotationScence::hovering()
 {
 	if (getItemHovering() || getPolyHovering() || getLineHovering())
@@ -555,7 +565,6 @@ void AnnotationScence::drawForeground(QPainter* painter, const QRectF& rect)
 			int(rect.left()),
 			int(coords->y()),
 			int(rect.right() + 1), int(coords->y()));
-		qDebug() << coords->x() << ", " << coords->y();
 	}
 }
 

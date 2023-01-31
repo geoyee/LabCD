@@ -105,3 +105,14 @@ void MultCanvas::finished()
 	t1Canva->aScene->finished();
 	t1Canva->aScene->finished();
 }
+
+QColor MultCanvas::getCrossPenColor()
+{
+	return t1Canva->aScene->getCrossPenColor();
+}
+
+void MultCanvas::setCrossPenColor(QColor color)
+{
+	t1Canva->aScene->setCrossPenColor(color);
+	t2Canva->aScene->setCrossPenColor(color);
+}

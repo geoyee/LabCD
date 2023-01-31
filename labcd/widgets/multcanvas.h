@@ -19,6 +19,8 @@ public:
 	void loadImages(QString t1Path, QString t2Path, QString jsonPath);
 	void clearFocusAndSelected();
 	void finished();
+	QColor getCrossPenColor();
+	void setCrossPenColor(QColor color);
 
 signals:
 	void labelSelected(Label* label);

@@ -112,6 +112,11 @@
         <translation>Delete all polygons</translation>
     </message>
     <message>
+        <location filename="../labcd.cpp" line="213"/>
+        <source>设置十字丝颜色</source>
+        <translation>Set cross color</translation>
+    </message>
+    <message>
         <location filename="../labcd.cpp" line="214"/>
         <source>LabCD - 遥感变化检测标注工具</source>
         <translation>LabCD - Remote sensing change detection annotation tool</translation>

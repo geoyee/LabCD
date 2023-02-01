@@ -53,7 +53,7 @@ public:
 	// 鼠标事件
 	void mousePressEvent(QGraphicsSceneMouseEvent* ev);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev);
-	void drawForeground(QPainter* painter, const QRectF& rect);
+	void drawForeground(QPainter* painter, const QRectF &rect);
 	void onMouseChanged(double x, double y);
 
 signals:

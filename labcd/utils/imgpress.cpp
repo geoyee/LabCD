@@ -5,7 +5,7 @@
 #include <QImageReader>
 #include "imgpress.h"
 
-unsigned char* ImagePress::ImgSketch(
+unsigned char* ImagePress::imgSketch(
 	float* buffer, 
 	GDALRasterBand* currentBand, 
 	int bandSize, 
@@ -42,8 +42,8 @@ unsigned char* ImagePress::ImgSketch(
 
 QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 {
-	int imgWidth = imgBand->at(0)->GetXSize();
-	int imgHeight = imgBand->at(0)->GetYSize();
+	rsize_t imgWidth = imgBand->at(0)->GetXSize();
+	rsize_t imgHeight = imgBand->at(0)->GetYSize();
 	GDALDataType dataType = imgBand->at(0)->GetRasterDataType();
 	// 首先分别读取RGB三个波段
 	float* rBand = new float[imgWidth * imgHeight];
@@ -60,13 +60,13 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 		GF_Read, 0, 0, imgWidth, imgHeight, bBand, imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	// 分别拉伸每个波段并将Float转换为unsigned char
-	rBandUC = ImgSketch(
+	rBandUC = imgSketch(
 		rBand, imgBand->at(0), imgWidth * imgHeight, imgBand->at(0)->GetNoDataValue()
 	);
-	gBandUC = ImgSketch(
+	gBandUC = imgSketch(
 		gBand, imgBand->at(1), imgWidth * imgHeight, imgBand->at(1)->GetNoDataValue()
 	);
-	bBandUC = ImgSketch(
+	bBandUC = imgSketch(
 		bBand, imgBand->at(2), imgWidth * imgHeight, imgBand->at(2)->GetNoDataValue()
 	);
 	// 将三个波段组合起来
@@ -82,6 +82,39 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 		}
 	}
 	return QPixmap::fromImage(QImage(allBandUC, imgWidth, imgHeight, bytePerLine, QImage::Format_RGB888));
+}
+
+bool ImagePress::saveTiffFromCVMat(
+	std::string savePath, 
+	cv::Mat mask, 
+	const char* projs, 
+	double* trans
+)
+{
+	int nImgSizeX = mask.cols;
+	int nImgSizeY = mask.rows;
+	GDALAllRegister();
+	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
+	GDALDriver* pDriverMEM = GetGDALDriverManager()->GetDriverByName("GTiff");
+	if (!pDriverMEM) 
+	{
+		return false;
+	}
+	GDALDataset* poDataset = pDriverMEM->Create(
+		savePath.c_str(), nImgSizeX, nImgSizeY, 1, GDT_Byte, NULL
+	);
+	poDataset->SetProjection(projs);
+	poDataset->SetGeoTransform(trans);
+	if (!poDataset) 
+	{
+		return false;
+	}
+	poDataset->GetRasterBand(1)->RasterIO(
+		GF_Write, 0, 0, nImgSizeX, nImgSizeY, mask.data, nImgSizeX, nImgSizeY, GDT_Byte, 0, 0
+	);
+	GDALClose(poDataset);
+	GDALDestroyDriverManager();
+	return true;
 }
 
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
@@ -105,15 +138,16 @@ void ImagePress::saveResultFromPolygon(
 		int labNum,
 		int imgHeight,
 		int imgWidth,
-		QList<LabPolygon*> polygons
+		QList<LabPolygon*> polygons,
+		std::string projs,
+		double* trans
 )
 {
 	// 处理保存路径
 	QStringList pathAndName = savePath.split(".");
 	std::string iPath = pathAndName[0].toStdString();
 	std::string iExt = pathAndName[1].toStdString();
-	cv::String pseudoSavaPath = iPath + "_pseudo." + iExt;  // 保存伪彩色
-	cv::String baseSavaPath = iPath + ".bmp";  // 保存标签
+	cv::String pseudoSavaPath = iPath + "_pseudo.png";  // 保存伪彩色
 	std::string jsonSavePath = iPath + ".json";// 保存json
 	// 新建保存的图像
 	cv::Mat pseudoResult = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_8UC3);
@@ -164,20 +198,32 @@ void ImagePress::saveResultFromPolygon(
 	}
 	// 保存
 	cv::imwrite(pseudoSavaPath, pseudoResult);
-	cv::imwrite(baseSavaPath, result);
+	if (iExt == "jpg" || iExt == "jpeg" || iExt == "png")
+	{
+		cv::String baseSavaPath = iPath + ".bmp";
+		cv::imwrite(baseSavaPath, result);
+	}
+	else
+	{
+		std::string baseSavaPath = iPath + ".tif";
+		saveTiffFromCVMat(baseSavaPath, result, projs.c_str(), trans);
+	}
 	os << writer.write(polyList);
 	os.close();  // 关闭json
 }
 
-bool ImagePress::openImage(QString imgPath, QPixmap &img)
+bool ImagePress::openImage(
+	QString imgPath,
+	QPixmap &img,
+	std::string &projs,
+	double trans[6]
+)
 {
 	QFileInfo fileInfo(imgPath);
 	QString ext = fileInfo.completeSuffix();
 	QList<QByteArray> qtSupporExts = QImageReader::supportedImageFormats();
 	if (qtSupporExts.contains(ext.toLocal8Bit()))
 	{
-		/*QPixmap newMap;
-		newMap.load(imgPath);*/
 		img.load(imgPath);
 		return true;
 	}
@@ -204,7 +250,12 @@ bool ImagePress::openImage(QString imgPath, QPixmap &img)
 			bandList.append(poDataset->GetRasterBand(1));
 			bandList.append(poDataset->GetRasterBand(1));
 		}
+		projs = poDataset->GetProjectionRef();
+		poDataset->GetGeoTransform(trans);
 		img = QPixmap(GDALRastertoPixmap(&bandList));
+		// 注销驱动
+		GDALClose(poDataset);
+		GDALDestroyDriverManager();
 		return true;
 	}
 }

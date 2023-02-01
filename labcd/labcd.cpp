@@ -266,7 +266,9 @@ void LabCD::save()
             labNum,
             drawCanvas->imageHeight,
             drawCanvas->imageWidth,
-            drawCanvas->t1Canva->aScene->polygonItems
+            drawCanvas->t1Canva->aScene->polygonItems,
+            drawCanvas->projs,
+            drawCanvas->trans
         );
         fListWidget->finishedCurrentItem();
         messageState->setText(tr("保存图像：") + saveImgPath);

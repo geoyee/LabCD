@@ -552,7 +552,7 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 	blockSignals(false);
 }
 
-void AnnotationScence::drawForeground(QPainter* painter, const QRectF& rect)
+void AnnotationScence::drawForeground(QPainter* painter, const QRectF &rect)
 {
 	if (coords != nullptr && *coords != QPointF(-1, -1))
 	{

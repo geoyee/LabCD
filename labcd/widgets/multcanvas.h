@@ -13,6 +13,8 @@ public:
 	Canvas* t2Canva = nullptr;
 	int imageWidth = 0;
 	int imageHeight = 0;
+	std::string projs = "";
+	double trans[6] = {0, 1, 0, 0, 0, 1};
 
 	MultCanvas(QWidget *parent = nullptr);
 	~MultCanvas();

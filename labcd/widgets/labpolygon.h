@@ -64,6 +64,6 @@ public:
 	void focusOutEvent(QFocusEvent* ev);
 	// 重写
 	QVariant itemChange(
-		GraphicsItemChange change, const QVariant& value);
+		GraphicsItemChange change, const QVariant &value);
 	AnnotationScence* scene();
 };

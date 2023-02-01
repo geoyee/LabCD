@@ -64,8 +64,8 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 {
 	QPixmap t1;
 	QPixmap t2;
-	bool t1Succ = ImagePress::openImage(t1Path, t1);
-	bool t2Succ = ImagePress::openImage(t2Path, t2);
+	bool t1Succ = ImagePress::openImage(t1Path, t1, projs, trans);
+	bool t2Succ = ImagePress::openImage(t2Path, t2, projs, trans);
 	if (!t1Succ || !t2Succ)
 	{
 		QMessageBox::critical(

@@ -367,3 +367,6 @@ testimgs/
 
 # setup
 setup/
+
+# depends
+labcd/depends/

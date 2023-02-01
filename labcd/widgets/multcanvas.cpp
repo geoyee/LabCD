@@ -63,34 +63,45 @@ MultCanvas::~MultCanvas()
 void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 {
 	QPixmap t1;
-	t1.load(t1Path);
 	QPixmap t2;
-	t2.load(t2Path);
-	if (t1.width() != t2.width() || t1.height() != t2.height())
+	bool t1Succ = ImagePress::openImage(t1Path, t1);
+	bool t2Succ = ImagePress::openImage(t2Path, t2);
+	if (!t1Succ || !t2Succ)
 	{
 		QMessageBox::critical(
 			this,
 			tr("错误"),
-			tr("两个时段的数据大小不一致。")
+			tr("无法打开图像文件。")
 		);
 	}
 	else
 	{
-		t1Canva->loadImageFromPixmap(t1);
-		t2Canva->loadImageFromPixmap(t2);
-		imageWidth = t1.width();
-		imageHeight = t1.height();
-		emit imageLoaded(imageWidth, imageHeight);  // 发送大小
-		// 加载已标注过的数据
-		if (jsonPath != "")
+		if (t1.width() != t2.width() || t1.height() != t2.height())
 		{
-			t1Canva->loadJSONFromFile(jsonPath);
-			t2Canva->loadJSONFromFile(jsonPath);
+			QMessageBox::critical(
+				this,
+				tr("错误"),
+				tr("两个时段的数据大小不一致。")
+			);
 		}
-		t1Canva->aScene->resetScence();
-		t2Canva->aScene->resetScence();
-		// 鹰眼图
-		// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
+		else
+		{
+			t1Canva->loadImageFromPixmap(t1);
+			t2Canva->loadImageFromPixmap(t2);
+			imageWidth = t1.width();
+			imageHeight = t1.height();
+			emit imageLoaded(imageWidth, imageHeight);  // 发送大小
+			// 加载已标注过的数据
+			if (jsonPath != "")
+			{
+				t1Canva->loadJSONFromFile(jsonPath);
+				t2Canva->loadJSONFromFile(jsonPath);
+			}
+			t1Canva->aScene->resetScence();
+			t2Canva->aScene->resetScence();
+			// 鹰眼图
+			// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
+		}
 	}
 }
 

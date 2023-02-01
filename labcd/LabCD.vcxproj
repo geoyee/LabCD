@@ -55,8 +55,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>E:\dataFiles\gdal\include;E:\dataFiles\github\LabCD\labcd\depends\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\dataFiles\gdal\lib;E:\dataFiles\github\LabCD\labcd\depends\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)depends\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)depends\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <IncludePath>$(ProjectDir)depends\include;$(IncludePath)</IncludePath>
@@ -76,7 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <AdditionalOptions>/utf-8 /NATVIS:"$(IntDir)\qt.natvis" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>opencv_world455.lib;jsoncpp_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdal_i.lib;opencv_world455.lib;jsoncpp_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalOptions>
@@ -150,149 +150,8 @@
     <Image Include="resources\Save.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="depends\include\json\allocator.h" />
-    <ClInclude Include="depends\include\json\assertions.h" />
-    <ClInclude Include="depends\include\json\config.h" />
-    <ClInclude Include="depends\include\json\forwards.h" />
-    <ClInclude Include="depends\include\json\json.h" />
-    <ClInclude Include="depends\include\json\json_features.h" />
-    <ClInclude Include="depends\include\json\reader.h" />
-    <ClInclude Include="depends\include\json\value.h" />
-    <ClInclude Include="depends\include\json\version.h" />
-    <ClInclude Include="depends\include\json\writer.h" />
-    <ClInclude Include="depends\include\opencv2\calib3d.hpp" />
     <ClInclude Include="depends\include\opencv2\calib3d\calib3d.hpp" />
     <ClInclude Include="depends\include\opencv2\calib3d\calib3d_c.h" />
-    <ClInclude Include="depends\include\opencv2\core.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\affine.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\async.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\base.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\bindings_utils.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\bufferpool.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\check.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\core.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\core_c.h" />
-    <ClInclude Include="depends\include\opencv2\core\cuda.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda.inl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\block.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\border_interpolate.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\color.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\common.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\datamov_utils.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\detail\color_detail.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\detail\reduce.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\detail\reduce_key_val.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\detail\transform_detail.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\detail\type_traits_detail.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\detail\vec_distance_detail.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\dynamic_smem.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\emulation.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\filters.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\funcattrib.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\functional.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\limits.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\reduce.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\saturate_cast.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\scan.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\simd_functions.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\transform.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\type_traits.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\utility.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\vec_distance.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\vec_math.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\vec_traits.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\warp.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\warp_reduce.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda\warp_shuffle.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda_stream_accessor.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cuda_types.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cvdef.h" />
-    <ClInclude Include="depends\include\opencv2\core\cvstd.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cvstd.inl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cvstd_wrapper.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\cv_cpu_dispatch.h" />
-    <ClInclude Include="depends\include\opencv2\core\cv_cpu_helper.h" />
-    <ClInclude Include="depends\include\opencv2\core\detail\async_promise.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\detail\dispatch_helper.impl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\detail\exception_ptr.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\directx.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\dualquaternion.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\dualquaternion.inl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\eigen.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\fast_math.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\hal.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\interface.h" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_avx.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_avx512.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_cpp.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_forward.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_msa.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_neon.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_rvv.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_rvv071.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_sse.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_sse_em.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_vsx.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\intrin_wasm.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\hal\msa_macros.h" />
-    <ClInclude Include="depends\include\opencv2\core\hal\simd_utils.impl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\mat.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\mat.inl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\matx.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\neon_utils.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\ocl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\ocl_genbase.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\ocl_defs.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\opencl_info.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\opencl_svm.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\autogenerated\opencl_clblas.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\autogenerated\opencl_clfft.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\autogenerated\opencl_core.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\autogenerated\opencl_core_wrappers.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\autogenerated\opencl_gl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\autogenerated\opencl_gl_wrappers.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_clblas.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_clfft.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_core.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_core_wrappers.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_gl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_gl_wrappers.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_svm_20.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_svm_definitions.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opencl\runtime\opencl_svm_hsa_extension.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\opengl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\operations.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\optim.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\ovx.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\parallel\backend\parallel_for.openmp.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\parallel\backend\parallel_for.tbb.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\parallel\parallel_backend.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\persistence.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\quaternion.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\quaternion.inl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\saturate.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\simd_intrinsics.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\softfloat.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\sse_utils.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\traits.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\types.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\types_c.h" />
-    <ClInclude Include="depends\include\opencv2\core\utility.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\allocator_stats.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\allocator_stats.impl.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\filesystem.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\instrumentation.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\logger.defines.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\logger.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\logtag.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\tls.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\utils\trace.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\va_intel.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\version.hpp" />
-    <ClInclude Include="depends\include\opencv2\core\vsx_utils.hpp" />
-    <ClInclude Include="depends\include\opencv2\cvconfig.h" />
-    <ClInclude Include="depends\include\opencv2\dnn.hpp" />
     <ClInclude Include="depends\include\opencv2\dnn\all_layers.hpp" />
     <ClInclude Include="depends\include\opencv2\dnn\dict.hpp" />
     <ClInclude Include="depends\include\opencv2\dnn\dnn.hpp" />
@@ -303,10 +162,8 @@
     <ClInclude Include="depends\include\opencv2\dnn\utils\debug_utils.hpp" />
     <ClInclude Include="depends\include\opencv2\dnn\utils\inference_engine.hpp" />
     <ClInclude Include="depends\include\opencv2\dnn\version.hpp" />
-    <ClInclude Include="depends\include\opencv2\features2d.hpp" />
     <ClInclude Include="depends\include\opencv2\features2d\features2d.hpp" />
     <ClInclude Include="depends\include\opencv2\features2d\hal\interface.h" />
-    <ClInclude Include="depends\include\opencv2\flann.hpp" />
     <ClInclude Include="depends\include\opencv2\flann\allocator.h" />
     <ClInclude Include="depends\include\opencv2\flann\all_indices.h" />
     <ClInclude Include="depends\include\opencv2\flann\any.h" />
@@ -343,7 +200,6 @@
     <ClInclude Include="depends\include\opencv2\flann\saving.h" />
     <ClInclude Include="depends\include\opencv2\flann\simplex_downhill.h" />
     <ClInclude Include="depends\include\opencv2\flann\timer.h" />
-    <ClInclude Include="depends\include\opencv2\gapi.hpp" />
     <ClInclude Include="depends\include\opencv2\gapi\core.hpp" />
     <ClInclude Include="depends\include\opencv2\gapi\cpu\core.hpp" />
     <ClInclude Include="depends\include\opencv2\gapi\cpu\gcpukernel.hpp" />
@@ -430,16 +286,13 @@
     <ClInclude Include="depends\include\opencv2\gapi\util\util.hpp" />
     <ClInclude Include="depends\include\opencv2\gapi\util\variant.hpp" />
     <ClInclude Include="depends\include\opencv2\gapi\video.hpp" />
-    <ClInclude Include="depends\include\opencv2\highgui.hpp" />
     <ClInclude Include="depends\include\opencv2\highgui\highgui.hpp" />
     <ClInclude Include="depends\include\opencv2\highgui\highgui_c.h" />
-    <ClInclude Include="depends\include\opencv2\imgcodecs.hpp" />
     <ClInclude Include="depends\include\opencv2\imgcodecs\imgcodecs.hpp" />
     <ClInclude Include="depends\include\opencv2\imgcodecs\imgcodecs_c.h" />
     <ClInclude Include="depends\include\opencv2\imgcodecs\ios.h" />
     <ClInclude Include="depends\include\opencv2\imgcodecs\legacy\constants_c.h" />
     <ClInclude Include="depends\include\opencv2\imgcodecs\macosx.h" />
-    <ClInclude Include="depends\include\opencv2\imgproc.hpp" />
     <ClInclude Include="depends\include\opencv2\imgproc\bindings.hpp" />
     <ClInclude Include="depends\include\opencv2\imgproc\detail\gcgraph.hpp" />
     <ClInclude Include="depends\include\opencv2\imgproc\hal\hal.hpp" />
@@ -448,20 +301,14 @@
     <ClInclude Include="depends\include\opencv2\imgproc\imgproc_c.h" />
     <ClInclude Include="depends\include\opencv2\imgproc\segmentation.hpp" />
     <ClInclude Include="depends\include\opencv2\imgproc\types_c.h" />
-    <ClInclude Include="depends\include\opencv2\ml.hpp" />
     <ClInclude Include="depends\include\opencv2\ml\ml.hpp" />
     <ClInclude Include="depends\include\opencv2\ml\ml.inl.hpp" />
-    <ClInclude Include="depends\include\opencv2\objdetect.hpp" />
     <ClInclude Include="depends\include\opencv2\objdetect\detection_based_tracker.hpp" />
     <ClInclude Include="depends\include\opencv2\objdetect\face.hpp" />
     <ClInclude Include="depends\include\opencv2\objdetect\objdetect.hpp" />
-    <ClInclude Include="depends\include\opencv2\opencv.hpp" />
-    <ClInclude Include="depends\include\opencv2\opencv_modules.hpp" />
-    <ClInclude Include="depends\include\opencv2\photo.hpp" />
     <ClInclude Include="depends\include\opencv2\photo\cuda.hpp" />
     <ClInclude Include="depends\include\opencv2\photo\legacy\constants_c.h" />
     <ClInclude Include="depends\include\opencv2\photo\photo.hpp" />
-    <ClInclude Include="depends\include\opencv2\stitching.hpp" />
     <ClInclude Include="depends\include\opencv2\stitching\detail\autocalib.hpp" />
     <ClInclude Include="depends\include\opencv2\stitching\detail\blenders.hpp" />
     <ClInclude Include="depends\include\opencv2\stitching\detail\camera.hpp" />
@@ -475,8 +322,6 @@
     <ClInclude Include="depends\include\opencv2\stitching\detail\warpers.hpp" />
     <ClInclude Include="depends\include\opencv2\stitching\detail\warpers_inl.hpp" />
     <ClInclude Include="depends\include\opencv2\stitching\warpers.hpp" />
-    <ClInclude Include="depends\include\opencv2\video.hpp" />
-    <ClInclude Include="depends\include\opencv2\videoio.hpp" />
     <ClInclude Include="depends\include\opencv2\videoio\cap_ios.h" />
     <ClInclude Include="depends\include\opencv2\videoio\legacy\constants_c.h" />
     <ClInclude Include="depends\include\opencv2\videoio\registry.hpp" />
@@ -487,7 +332,6 @@
     <ClInclude Include="depends\include\opencv2\video\legacy\constants_c.h" />
     <ClInclude Include="depends\include\opencv2\video\tracking.hpp" />
     <ClInclude Include="depends\include\opencv2\video\video.hpp" />
-    <ClInclude Include="depends\include\opencv2\world.hpp" />
     <ClInclude Include="utils\colormap.h" />
     <ClInclude Include="utils\fileworker.h" />
     <ClInclude Include="utils\imgpress.h" />
@@ -510,12 +354,12 @@
     <None Include=".editorconfig" />
     <None Include="depends\lib\jsoncpp.exp" />
     <None Include="depends\lib\jsoncppd.exp" />
-    <None Include="depends\lib\jsoncpp_staticd.pdb" />
     <None Include="i18n\English.qm" />
     <None Include="LabCD.pri" />
     <None Include="LabCD.pro" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="depends\lib\gdal_i.lib" />
     <Library Include="depends\lib\jsoncpp.lib" />
     <Library Include="depends\lib\jsoncppd.lib" />
     <Library Include="depends\lib\jsoncpp_static.lib" />

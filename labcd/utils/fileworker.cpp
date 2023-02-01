@@ -38,8 +38,7 @@ bool FileWorker::openImageDir(
     {
         subDirList.removeOne("GT");
         QStringList nameFilters;
-        nameFilters << "*.jpg" << "*.jpeg" << "*.png";
-        // nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
+        nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
         QDir dirT1(dirPath + "/" + subDirList.at(0));
         QStringList t1ListTmp = (dirT1).entryList(
             nameFilters, QDir::Readable | QDir::Files, QDir::Name);

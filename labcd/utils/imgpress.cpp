@@ -1,7 +1,88 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <json/json.h>
+#include <QFileInfo>
+#include <QImageReader>
 #include "imgpress.h"
+
+unsigned char* ImagePress::ImgSketch(
+	float* buffer, 
+	GDALRasterBand* currentBand, 
+	int bandSize, 
+	double noValue
+)
+{
+	unsigned char* resBuffer = new unsigned char[bandSize];
+	double max, min;
+	double minmax[2];
+	currentBand->ComputeRasterMinMax(1, minmax);
+	min = minmax[0];
+	max = minmax[1];
+	if (min <= noValue && noValue <= max)
+	{
+		min = 0;
+	}
+	for (int i = 0; i < bandSize; i++)
+	{
+		if (buffer[i] > max)
+		{
+			resBuffer[i] = 255;
+		}
+		else if (buffer[i] <= max && buffer[i] >= min)
+		{
+			resBuffer[i] = static_cast<uchar>(255 - 255 * (max - buffer[i]) / (max - min));
+		}
+		else
+		{
+			resBuffer[i] = 0;
+		}
+	}
+	return resBuffer;
+}
+
+QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
+{
+	int imgWidth = imgBand->at(0)->GetXSize();
+	int imgHeight = imgBand->at(0)->GetYSize();
+	GDALDataType dataType = imgBand->at(0)->GetRasterDataType();
+	// 首先分别读取RGB三个波段
+	float* rBand = new float[imgWidth * imgHeight];
+	float* gBand = new float[imgWidth * imgHeight];
+	float* bBand = new float[imgWidth * imgHeight];
+	unsigned char* rBandUC, * gBandUC, * bBandUC;
+	imgBand->at(0)->RasterIO(
+		GF_Read, 0, 0, imgWidth, imgHeight, rBand, imgWidth, imgHeight, GDT_Float32, 0, 0
+	);
+	imgBand->at(1)->RasterIO(
+		GF_Read, 0, 0, imgWidth, imgHeight, gBand, imgWidth, imgHeight, GDT_Float32, 0, 0
+	);
+	imgBand->at(2)->RasterIO(
+		GF_Read, 0, 0, imgWidth, imgHeight, bBand, imgWidth, imgHeight, GDT_Float32, 0, 0
+	);
+	// 分别拉伸每个波段并将Float转换为unsigned char
+	rBandUC = ImgSketch(
+		rBand, imgBand->at(0), imgWidth * imgHeight, imgBand->at(0)->GetNoDataValue()
+	);
+	gBandUC = ImgSketch(
+		gBand, imgBand->at(1), imgWidth * imgHeight, imgBand->at(1)->GetNoDataValue()
+	);
+	bBandUC = ImgSketch(
+		bBand, imgBand->at(2), imgWidth * imgHeight, imgBand->at(2)->GetNoDataValue()
+	);
+	// 将三个波段组合起来
+	int bytePerLine = (imgWidth * 24 + 31) / 8;
+	unsigned char* allBandUC = new unsigned char[bytePerLine * imgHeight * 3];
+	for (int h = 0; h < imgHeight; h++)
+	{
+		for (int w = 0; w < imgWidth; w++)
+		{
+			allBandUC[h * bytePerLine + w * 3 + 0] = rBandUC[h * imgWidth + w];
+			allBandUC[h * bytePerLine + w * 3 + 1] = gBandUC[h * imgWidth + w];
+			allBandUC[h * bytePerLine + w * 3 + 2] = bBandUC[h * imgWidth + w];
+		}
+	}
+	return QPixmap::fromImage(QImage(allBandUC, imgWidth, imgHeight, bytePerLine, QImage::Format_RGB888));
+}
 
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 {
@@ -86,4 +167,44 @@ void ImagePress::saveResultFromPolygon(
 	cv::imwrite(baseSavaPath, result);
 	os << writer.write(polyList);
 	os.close();  // 关闭json
+}
+
+bool ImagePress::openImage(QString imgPath, QPixmap &img)
+{
+	QFileInfo fileInfo(imgPath);
+	QString ext = fileInfo.completeSuffix();
+	QList<QByteArray> qtSupporExts = QImageReader::supportedImageFormats();
+	if (qtSupporExts.contains(ext.toLocal8Bit()))
+	{
+		/*QPixmap newMap;
+		newMap.load(imgPath);*/
+		img.load(imgPath);
+		return true;
+	}
+	else  // 使用gdal打开
+	{
+		GDALAllRegister();  // 注册所有的驱动
+		CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");  // 设置支持中文路径和文件名
+		GDALDataset* poDataset = (GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
+		if (poDataset == NULL)
+		{
+			return false;
+		}
+		int bandCount = poDataset->GetRasterCount();
+		QList<GDALRasterBand*> bandList;
+		if (bandCount == 3)
+		{
+			bandList.append(poDataset->GetRasterBand(1));
+			bandList.append(poDataset->GetRasterBand(2));
+			bandList.append(poDataset->GetRasterBand(3));
+		}
+		else
+		{
+			bandList.append(poDataset->GetRasterBand(1));
+			bandList.append(poDataset->GetRasterBand(1));
+			bandList.append(poDataset->GetRasterBand(1));
+		}
+		img = QPixmap(GDALRastertoPixmap(&bandList));
+		return true;
+	}
 }

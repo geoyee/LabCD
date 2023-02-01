@@ -148,12 +148,17 @@
 <context>
     <name>MultCanvas</name>
     <message>
-        <location filename="../widgets/multcanvas.cpp" line="64"/>
+        <location filename="../widgets/multcanvas.cpp" line="73"/>
         <source>错误</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../widgets/multcanvas.cpp" line="65"/>
+        <location filename="../widgets/multcanvas.cpp" line="74"/>
+        <source>无法打开图像文件。</source>
+        <translation>Unable to open image file.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/multcanvas.cpp" line="84"/>
         <source>两个时段的数据大小不一致。</source>
         <translation>The data size of the two periods is inconsistent.</translation>
     </message>

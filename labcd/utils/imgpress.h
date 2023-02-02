@@ -15,12 +15,24 @@ private:
 		double noValue
 	);
 	static QPixmap GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand);
-	static bool saveTiffFromCVMat(
+	static bool saveTiffFromUChar(
+		std::string savePath,
+		unsigned char* img,
+		int nImgSizeX,
+		int nImgSizeY,
+		int nChannel,
+		GDALDataType types,
+		const char* projs,
+		double* trans,
+		int* pBandMaps
+	);
+	static bool saveTiffFromCVMask(
 		std::string savePath,
 		cv::Mat mask,
 		const char* projs,
 		double* trans
 	);
+	static void calcWindowTrans(double trans[6], int locX, int locY);
 
 public:
 	static cv::Mat CVA(cv::Mat t1, cv::Mat t2);
@@ -38,5 +50,11 @@ public:
 		QPixmap &img,
 		std::string &projs,
 		double trans[6]
+	);
+	static bool splitTiff(
+		QString imgPath,
+		QString saveDir,
+		int blockHeight = 512,
+		int blockWidth = 512
 	);
 };

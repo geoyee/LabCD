@@ -2,6 +2,7 @@
 #include <fstream>
 #include <json/json.h>
 #include <QFileInfo>
+#include <QDir>
 #include <QImageReader>
 #include "imgpress.h"
 
@@ -81,23 +82,61 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 			allBandUC[h * bytePerLine + w * 3 + 2] = bBandUC[h * imgWidth + w];
 		}
 	}
-	return QPixmap::fromImage(QImage(allBandUC, imgWidth, imgHeight, bytePerLine, QImage::Format_RGB888));
+	return QPixmap::fromImage(
+		QImage(allBandUC, imgWidth, imgHeight, bytePerLine, QImage::Format_RGB888)
+	);
 }
 
-bool ImagePress::saveTiffFromCVMat(
+bool ImagePress::saveTiffFromUChar(
+	std::string savePath,
+	unsigned char* img,
+	int nImgSizeX,
+	int nImgSizeY,
+	int nChannel,
+	GDALDataType types,
+	const char* projs,
+	double* trans,
+	int* pBandMaps
+)
+{
+	GDALDriver* pDriverMEM = GetGDALDriverManager()->GetDriverByName("GTiff");
+	if (!pDriverMEM)
+	{
+		GDALDestroyDriverManager();
+		return false;
+	}
+	GDALDataset* poDataset = pDriverMEM->Create(
+		savePath.c_str(), nImgSizeX, nImgSizeY, nChannel, types, NULL
+	);
+	poDataset->SetProjection(projs);
+	poDataset->SetGeoTransform(trans);
+	if (!poDataset)
+	{
+		GDALClose(poDataset);
+		GDALDestroyDriverManager();
+		return false;
+	}
+	poDataset->RasterIO(
+		GF_Write, 0, 0, nImgSizeX, nImgSizeY, img, nImgSizeX, nImgSizeY,
+		types, nChannel, pBandMaps, 0, 0, 0, NULL
+	);
+	GDALClose(poDataset);
+	return true;
+}
+
+bool ImagePress::saveTiffFromCVMask(
 	std::string savePath, 
-	cv::Mat mask, 
+	cv::Mat mask,
 	const char* projs, 
 	double* trans
 )
 {
 	int nImgSizeX = mask.cols;
 	int nImgSizeY = mask.rows;
-	GDALAllRegister();
-	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
 	GDALDriver* pDriverMEM = GetGDALDriverManager()->GetDriverByName("GTiff");
 	if (!pDriverMEM) 
 	{
+		GDALDestroyDriverManager();
 		return false;
 	}
 	GDALDataset* poDataset = pDriverMEM->Create(
@@ -107,14 +146,22 @@ bool ImagePress::saveTiffFromCVMat(
 	poDataset->SetGeoTransform(trans);
 	if (!poDataset) 
 	{
+		GDALClose(poDataset);
+		GDALDestroyDriverManager();
 		return false;
 	}
 	poDataset->GetRasterBand(1)->RasterIO(
-		GF_Write, 0, 0, nImgSizeX, nImgSizeY, mask.data, nImgSizeX, nImgSizeY, GDT_Byte, 0, 0
+		GF_Write, 0, 0, nImgSizeX, nImgSizeY, mask.data, 
+		nImgSizeX, nImgSizeY, GDT_Byte, 0, 0, NULL
 	);
 	GDALClose(poDataset);
-	GDALDestroyDriverManager();
 	return true;
+}
+
+void ImagePress::calcWindowTrans(double trans[6], int locX, int locY)
+{
+	trans[0] += locX * trans[1];
+	trans[3] += locY * trans[5];
 }
 
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
@@ -206,7 +253,10 @@ void ImagePress::saveResultFromPolygon(
 	else
 	{
 		std::string baseSavaPath = iPath + ".tif";
-		saveTiffFromCVMat(baseSavaPath, result, projs.c_str(), trans);
+		GDALAllRegister();
+		CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
+		saveTiffFromCVMask(baseSavaPath, result, projs.c_str(), trans);
+		GDALDestroyDriverManager();
 	}
 	os << writer.write(polyList);
 	os.close();  // 关闭json
@@ -234,6 +284,8 @@ bool ImagePress::openImage(
 		GDALDataset* poDataset = (GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
 		if (poDataset == NULL)
 		{
+			GDALClose(poDataset);
+			GDALDestroyDriverManager();
 			return false;
 		}
 		int bandCount = poDataset->GetRasterCount();
@@ -258,4 +310,78 @@ bool ImagePress::openImage(
 		GDALDestroyDriverManager();
 		return true;
 	}
+}
+
+bool ImagePress::splitTiff(
+		QString imgPath,
+		QString saveDir,
+		int blockHeight,
+		int blockWidth
+)
+{
+	// 获取文件名
+	QString name = QFileInfo(imgPath).fileName().split(".")[0];
+	// 读取数据解析属性
+	GDALAllRegister();
+	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
+	GDALDataset* poDataset = (GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
+	if (poDataset == NULL)
+	{
+		GDALClose(poDataset);
+		GDALDestroyDriverManager();
+		return false;
+	}
+	int bandCount = poDataset->GetRasterCount();
+	GDALDataType types = poDataset->GetRasterBand(1)->GetRasterDataType();
+	double trans[6] = { 0 };
+	double windowTrans[6] = { 0 };
+	poDataset->GetGeoTransform(trans);
+	const char* projs = poDataset->GetProjectionRef();
+	// 定义读取输入图像波段顺序
+	int* pBandMaps = new int[bandCount];
+	for (int b = 0; b < bandCount; b++)
+	{
+		pBandMaps[b] = b + 1;
+	}
+	// 循环分块并进行处理
+	rsize_t nYSize = poDataset->GetRasterYSize();
+	rsize_t nXSize = poDataset->GetRasterXSize();
+	unsigned char* pSrcData = new unsigned char[blockHeight * blockWidth * bandCount];
+	int row = 0;
+	for (rsize_t i = 0; i < nYSize; i += blockWidth)
+	{
+		int col = 0;
+		for (rsize_t j = 0; j < nXSize; j += blockHeight)
+		{
+			// 不够的直接跳过
+			if (i + blockHeight > nYSize || j + blockWidth > nXSize)
+				continue;
+			// 读取原始图像块
+			poDataset->RasterIO(
+				GF_Read, j, i, blockWidth, blockHeight, pSrcData,
+				blockWidth, blockHeight, types, bandCount, pBandMaps, 0, 0, 0, NULL
+			);
+			// 保存
+			std::string windowSavePath = (saveDir + QDir::separator() + name +
+				"_" + QString::number(row) + "_" + QString::number(col) + ".tif").toStdString();
+			std::copy(std::begin(trans), std::end(trans), std::begin(windowTrans));
+			calcWindowTrans(windowTrans, col * blockWidth, row * blockHeight);
+			if (!saveTiffFromUChar(
+				windowSavePath, pSrcData, blockWidth, blockHeight, 
+				bandCount, types, projs, windowTrans, pBandMaps)
+			)
+			{
+				delete[] pSrcData;
+				GDALClose(poDataset);
+				GDALDestroyDriverManager();
+				return false;
+			}
+			col++;
+		}
+		row++;
+	}
+	delete[] pSrcData;
+	GDALClose(poDataset);
+	GDALDestroyDriverManager();
+	return true;
 }

@@ -14,6 +14,11 @@
         <translation>Open image folder</translation>
     </message>
     <message>
+        <location filename="../labcd.cpp" line="40"/>
+        <source>切分大图</source>
+        <translation>Large image split</translation>
+    </message>
+    <message>
         <location filename="../labcd.cpp" line="38"/>
         <source>关于</source>
         <translation>About</translation>
@@ -120,6 +125,21 @@
         <location filename="../labcd.cpp" line="214"/>
         <source>LabCD - 遥感变化检测标注工具</source>
         <translation>LabCD - Remote sensing change detection annotation tool</translation>
+    </message>
+    <message>
+        <location filename="../labcd.cpp" line="266"/>
+        <source>打开大图像</source>
+        <translation>Open large image</translation>
+    </message>
+    <message>
+        <location filename="../labcd.cpp" line="268"/>
+        <source>栅格图像文件 (*.tif *.tiff)</source>
+        <translation>Raster File (*.tif *.tiff)</translation>
+    </message>
+    <message>
+        <location filename="../labcd.cpp" line="273"/>
+        <source>切分完成，保存至：</source>
+        <translation>Split finished, save to: </translation>
     </message>
     <message>
         <location filename="../labcd.cpp" line="262"/>

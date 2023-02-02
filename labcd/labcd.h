@@ -18,6 +18,7 @@ private:
     bool isCN;
 
     void openDir();
+    void openBigImageFile();
     void save();
     void setCrossPenColor();
 

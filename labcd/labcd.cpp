@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QColorDialog>
+#include <QFileDialog>
 #include "labcd.h"
 #include "utils/fileworker.h"
 #include "utils/imgpress.h"
@@ -35,6 +36,10 @@ LabCD::LabCD(QWidget *parent)
         QIcon(":/menu/resources/Folder.png"), tr("打开文件夹"));
     opensAct->setShortcut(QKeySequence("Ctrl+O"));
     connect(opensAct, &QAction::triggered, this, &LabCD::openDir);
+    QAction* splitAct = fileMenu->addAction(
+        QIcon(":/menu/resources/Split.png"), tr("切分大图"));
+    splitAct->setShortcut(QKeySequence("Ctrl+B"));
+    connect(splitAct, &QAction::triggered, this, &LabCD::openBigImageFile);
     lcdMenuBar->addMenu(fileMenu);
     QMenu* aboutMenu = new QMenu(tr("关于"), this);
     QAction* githubAct = aboutMenu->addAction(
@@ -252,6 +257,21 @@ void LabCD::openDir()
         // 加载总进度
         fListWidget->resetProgress();
     }
+}
+
+void LabCD::openBigImageFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        tr("打开大图像"), 
+        QString(), 
+        tr("栅格图像文件 (*.tif *.tiff)")
+    );
+    QString saveDir = QFileInfo(fileName).absolutePath() + QDir::separator() + "split_output";
+    saveDir = saveDir.replace("\\", "/");
+    FileWorker::createFolder(saveDir);
+    ImagePress::splitTiff(fileName, saveDir);
+    messageState->setText(tr("切分完成，保存至：") + saveDir);
 }
 
 void LabCD::save()

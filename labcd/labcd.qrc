@@ -8,6 +8,7 @@
         <file>resources/Help.png</file>
         <file>resources/Chinese.png</file>
         <file>resources/English.png</file>
+        <file>resources/Split.png</file>
     </qresource>
     <qresource prefix="/tools">
         <file>resources/Enlarge.png</file>

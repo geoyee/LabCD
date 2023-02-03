@@ -87,9 +87,9 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 	);
 }
 
-bool ImagePress::saveTiffFromUChar(
+bool ImagePress::saveTiffFromGDAL(
 	std::string savePath,
-	unsigned char* img,
+	void* img,
 	int nImgSizeX,
 	int nImgSizeY,
 	int nChannel,
@@ -346,7 +346,33 @@ bool ImagePress::splitTiff(
 	// 循环分块并进行处理
 	rsize_t nYSize = poDataset->GetRasterYSize();
 	rsize_t nXSize = poDataset->GetRasterXSize();
-	unsigned char* pSrcData = new unsigned char[blockHeight * blockWidth * bandCount];
+	void* pSrcData;
+	switch (types)
+	{
+	case GDT_Byte:
+		pSrcData = new unsigned char[blockHeight * blockWidth * bandCount];
+		break;
+	case GDT_UInt16:
+		pSrcData = new unsigned short[blockHeight * blockWidth * bandCount];
+		break;
+	case GDT_Int16:
+		pSrcData = new short[blockHeight * blockWidth * bandCount];
+		break;
+	case GDT_UInt32:
+		pSrcData = new unsigned long[blockHeight * blockWidth * bandCount];
+		break;
+	case GDT_Int32:
+		pSrcData = new long[blockHeight * blockWidth * bandCount];
+		break;
+	case GDT_Float32:
+		pSrcData = new float[blockHeight * blockWidth * bandCount];
+		break;
+	case GDT_Float64:
+		pSrcData = new double[blockHeight * blockWidth * bandCount];
+		break;
+	default:
+		return false;
+	}
 	int row = 0;
 	for (rsize_t i = 0; i < nYSize; i += blockWidth)
 	{
@@ -366,7 +392,7 @@ bool ImagePress::splitTiff(
 				"_" + QString::number(row) + "_" + QString::number(col) + ".tif").toStdString();
 			std::copy(std::begin(trans), std::end(trans), std::begin(windowTrans));
 			calcWindowTrans(windowTrans, col * blockWidth, row * blockHeight);
-			if (!saveTiffFromUChar(
+			if (!saveTiffFromGDAL(
 				windowSavePath, pSrcData, blockWidth, blockHeight, 
 				bandCount, types, projs, windowTrans, pBandMaps)
 			)

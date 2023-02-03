@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QColorDialog>
 #include <QFileDialog>
+#include <QtConcurrent/qtconcurrentrun.h>
 #include "labcd.h"
 #include "utils/fileworker.h"
 #include "utils/imgpress.h"
@@ -270,8 +271,10 @@ void LabCD::openBigImageFile()
     QString saveDir = QFileInfo(fileName).absolutePath() + QDir::separator() + "split_output";
     saveDir = saveDir.replace("\\", "/");
     FileWorker::createFolder(saveDir);
-    ImagePress::splitTiff(fileName, saveDir);
-    messageState->setText(tr("切分完成，保存至：") + saveDir);
+    QtConcurrent::run([=]() {
+        ImagePress::splitTiff(fileName, saveDir, 512, 512); 
+        messageState->setText(tr("切分完成，保存至：") + saveDir);
+    });
 }
 
 void LabCD::save()

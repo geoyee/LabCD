@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <variant>
 #include <opencv2/opencv.hpp>
 #include <gdal/gdal_priv.h>
 #include <QString>
@@ -15,9 +16,9 @@ private:
 		double noValue
 	);
 	static QPixmap GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand);
-	static bool saveTiffFromUChar(
+	static bool saveTiffFromGDAL(
 		std::string savePath,
-		unsigned char* img,
+		void* img,
 		int nImgSizeX,
 		int nImgSizeY,
 		int nChannel,

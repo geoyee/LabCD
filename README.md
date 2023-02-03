@@ -1,6 +1,6 @@
 # LabCD
 
-简体中文| [English](./README_EN.md)
+简体中文 | [English](./README_EN.md)
 
 https://user-images.githubusercontent.com/71769312/216638896-bd1d5e40-6512-478d-b7b0-927c142aece6.mp4
 

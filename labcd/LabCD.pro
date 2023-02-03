@@ -7,6 +7,7 @@ TARGET = LabCD
 DESTDIR = ./x64/Release
 CONFIG += release
 LIBS += -L"." \
+    -lgdal_i \
     -lopencv_world455 \
     -ljsoncpp_static
 DEPENDPATH += .
@@ -15,3 +16,4 @@ OBJECTS_DIR += release
 UI_DIR += GeneratedFiles
 RCC_DIR += .
 include(LabCD.pri)
+TRANSLATIONS += i18n/English.ts

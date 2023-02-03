@@ -6,6 +6,9 @@
         <file>resources/Folder.png</file>
         <file>resources/Github.png</file>
         <file>resources/Help.png</file>
+        <file>resources/Chinese.png</file>
+        <file>resources/English.png</file>
+        <file>resources/Split.png</file>
     </qresource>
     <qresource prefix="/tools">
         <file>resources/Enlarge.png</file>
@@ -16,6 +19,8 @@
         <file>resources/Save.png</file>
         <file>resources/DeleteAllPolygons.png</file>
         <file>resources/DeletePolygon.png</file>
+        <file>resources/Color.png</file>
+        <file>resources/Reference.png</file>
     </qresource>
     <qresource prefix="/docks">
         <file>resources/AddLabel.png</file>
@@ -24,5 +29,8 @@
     </qresource>
     <qresource prefix="/configs">
         <file>configs/colormap.txt</file>
+    </qresource>
+    <qresource prefix="/translate">
+        <file>i18n/English.qm</file>
     </qresource>
 </RCC>

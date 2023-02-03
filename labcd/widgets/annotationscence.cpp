@@ -1,9 +1,16 @@
-﻿#include "annotationscence.h"
+﻿#include <iostream>
+#include <algorithm>
+#include "annotationscence.h"
 
 AnnotationScence::AnnotationScence()
 	: QGraphicsScene()
 {
 	scaleRate = 1.0;
+	// 十字丝
+	crossPen = new QPen();
+	crossPen->setWidth(2);
+	crossPen->setColor(QColor(0, 0, 0, 127));
+	coords = nullptr;
 }
 
 AnnotationScence::~AnnotationScence()
@@ -45,6 +52,11 @@ bool AnnotationScence::getLineHovering()
 		}
 	}
 	return false;
+}
+
+void AnnotationScence::updateCrossPenSize()
+{
+	crossPen->setWidth(std::max(1, int(2 / scaleRate + 1e-12)));
 }
 
 void AnnotationScence::resetScence()
@@ -90,6 +102,16 @@ void AnnotationScence::setColor(QColor _insideColor, QColor _borderColor)
 {
 	insideColor = _insideColor;
 	borderColor = _borderColor;
+}
+
+QColor AnnotationScence::getCrossPenColor()
+{
+	return crossPen->color();
+}
+
+void AnnotationScence::setCrossPenColor(QColor color)
+{
+	crossPen->setColor(color);
 }
 
 bool AnnotationScence::hovering()
@@ -528,4 +550,26 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		break;
 	}
 	blockSignals(false);
+}
+
+void AnnotationScence::drawForeground(QPainter* painter, const QRectF &rect)
+{
+	if (coords != nullptr && *coords != QPointF(-1, -1))
+	{
+		painter->setClipRect(rect);
+		painter->setPen(*crossPen);
+		painter->drawLine(
+			int(coords->x()),
+			int(rect.top()), int(coords->x()), int(rect.bottom() + 1));
+		painter->drawLine(
+			int(rect.left()),
+			int(coords->y()),
+			int(rect.right() + 1), int(coords->y()));
+	}
+}
+
+void AnnotationScence::onMouseChanged(double x, double y)
+{
+	coords = new QPointF(x, y);
+	invalidate();
 }

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <QString>
+#include <QTranslator>
 
 class FileWorker
 {

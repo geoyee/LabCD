@@ -373,7 +373,7 @@ void LabPolygon::focusOutEvent(QFocusEvent* ev)
 }
 
 QVariant LabPolygon::itemChange(
-	GraphicsItemChange change, const QVariant& value)
+	GraphicsItemChange change, const QVariant &value)
 {
 	if (change == QGraphicsItem::ItemPositionHasChanged) 
 	{

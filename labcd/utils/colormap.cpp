@@ -1,7 +1,7 @@
 ﻿#include <QFile>
 #include "colormap.h"
 
-int* ColorMap::strToColor(std::string& str)
+int* ColorMap::strToColor(std::string &str)
 {
 	int* color = new int[3];
 	std::size_t startIdx = 0;

@@ -11,7 +11,7 @@ bool FileWorker::openImageDir(
 {
     QString dirPath = QFileDialog::getExistingDirectory(
         parent,
-        "打开图像文件夹",
+        QObject::tr("打开图像文件夹"),
         QString(),
         QFileDialog::ShowDirsOnly
     );
@@ -29,8 +29,8 @@ bool FileWorker::openImageDir(
     {
         QMessageBox::critical(
             parent, 
-            "错误", 
-            "文件组织格式错误，请确保数据文件夹下仅存在两个（或三个）子文件夹，分别为A、B（以及GT）。"
+            QObject::tr("错误"),
+            QObject::tr("文件组织格式错误，请确保数据文件夹下仅存在两个（或三个）子文件夹，分别为A、B（以及GT）。")
         );
         return false;
     }
@@ -38,8 +38,7 @@ bool FileWorker::openImageDir(
     {
         subDirList.removeOne("GT");
         QStringList nameFilters;
-        nameFilters << "*.jpg" << "*.jpeg" << "*.png";
-        // nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
+        nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
         QDir dirT1(dirPath + "/" + subDirList.at(0));
         QStringList t1ListTmp = (dirT1).entryList(
             nameFilters, QDir::Readable | QDir::Files, QDir::Name);
@@ -50,8 +49,8 @@ bool FileWorker::openImageDir(
         {
             QMessageBox::critical(
                 parent,
-                "错误",
-                "时段一数据和时段二数据数量不相等。"
+                QObject::tr("错误"),
+                QObject::tr("时段一数据和时段二数据数量不相等。")
             );
             return false;
         }

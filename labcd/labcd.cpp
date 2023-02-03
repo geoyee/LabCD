@@ -246,7 +246,7 @@ LabCD::LabCD(QWidget *parent)
             imgRef->setPixmap(QPixmap::fromImage(qimg));
             refDock->setFixedSize(refNewWidth, refNewHeight);
             refDock->show();
-        }
+        } 
     });
     refDock->setWidget(imgRef);
     addDockWidget(Qt::NoDockWidgetArea, refDock);

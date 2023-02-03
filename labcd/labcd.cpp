@@ -12,6 +12,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QtConcurrent/qtconcurrentrun.h>
+#include <opencv2/opencv.hpp>
 #include "labcd.h"
 #include "utils/fileworker.h"
 #include "utils/imgpress.h"
@@ -221,6 +222,23 @@ LabCD::LabCD(QWidget *parent)
     // 完成
     lcdToolBar->setMovable(false);
     addToolBar(Qt::LeftToolBarArea, lcdToolBar);
+
+    /* 变化参考图 */
+    QDockWidget* refDock = new QDockWidget(tr("变化参考图"), this);
+    refDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    QLabel* imgRef = new QLabel(this);
+    imgRef->setPixmap(QPixmap());
+    connect(drawCanvas, &MultCanvas::addimgDiff, [=](cv::Mat imgDiff) {
+        cv::cvtColor(imgDiff, imgDiff, cv::COLOR_RGB2BGR);
+        cv::resize(imgDiff, imgDiff, cv::Size(200, 200));
+        QImage qimg = QImage(
+            (const uchar*)(imgDiff.data), imgDiff.cols, imgDiff.rows,
+            imgDiff.cols * imgDiff.channels(), QImage::Format_RGB888
+        );
+        imgRef->setPixmap(QPixmap::fromImage(qimg));
+    });
+    refDock->setWidget(imgRef);
+    addDockWidget(Qt::RightDockWidgetArea, refDock);
     
     /* 界面设置 */
     resize(1200, 600);

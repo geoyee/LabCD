@@ -27,4 +27,5 @@ public:
 signals:
 	void labelSelected(Label* label);
 	void imageLoaded(int imgWidth, int imgHeight);
+	void addimgDiff(cv::Mat imgDiff);
 };

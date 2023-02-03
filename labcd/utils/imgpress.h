@@ -58,4 +58,5 @@ public:
 		int blockHeight = 512,
 		int blockWidth = 512
 	);
+	static cv::Mat qpixmapToCVMat(QPixmap pimg);
 };

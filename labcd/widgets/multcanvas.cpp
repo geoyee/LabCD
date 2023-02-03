@@ -99,8 +99,11 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 			}
 			t1Canva->aScene->resetScence();
 			t2Canva->aScene->resetScence();
-			// 鹰眼图
-			// cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
+			// CVA变化图
+			cv::Mat imgT1 = ImagePress::qpixmapToCVMat(t1);
+			cv::Mat imgT2 = ImagePress::qpixmapToCVMat(t2);
+			cv::Mat imgDiff = ImagePress::CVA(imgT1, imgT2);
+			emit addimgDiff(imgDiff);
 		}
 	}
 }

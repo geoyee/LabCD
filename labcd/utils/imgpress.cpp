@@ -166,18 +166,30 @@ void ImagePress::calcWindowTrans(double trans[6], int locX, int locY)
 
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 {
-	cv::cvtColor(t1, t1, cv::COLOR_BGR2GRAY);
-	cv::cvtColor(t2, t1, cv::COLOR_BGR2GRAY);
-	cv::Mat diff = t1 - t1;
-	cv::Mat deltaV;
-	cv::pow(diff, 2, deltaV);
-	cv::Scalar sumdeltaV = cv::sum(deltaV);
-	cv::pow(deltaV, 0.5, deltaV);
-	diff = diff / (cv::abs(deltaV) + 1e-12);
-	double max, min;
-	cv::minMaxIdx(diff, &min, &max);
-	cv::Mat cva = (diff - min) / (max - min + 1e-12);
-	return cva;
+	float eps = 1e-12;
+	std::vector<cv::Mat> t1Channels;
+	cv::split(t1, t1Channels);
+	std::vector<cv::Mat> t2Channels;
+	cv::split(t2, t2Channels);
+	int m = t1.rows;
+	int n = t1.cols;
+	cv::Mat intensity = cv::Mat::zeros(m, n, CV_64FC1);
+	for (int i = 0; i < t1Channels.size(); i++)
+	{
+		cv::Mat diff = t1Channels[i] - t2Channels[i];
+		cv::pow(diff, 2, diff);
+		intensity += diff;
+	}
+	cv::pow(intensity, 0.5, intensity);
+	// 变化强度
+	double amin = 0, amax = 0;
+	cv::Point minPt, maxPt;
+	minMaxLoc(intensity, &amin, &amax, &minPt, &maxPt);
+	intensity = 255.0f * (intensity - amin) / (amax - amin);
+	// 伪彩色渲染
+	intensity.convertTo(intensity, CV_8UC1);
+	cv::applyColorMap(intensity, intensity, cv::COLORMAP_HOT);
+	return intensity;
 }
 
 void ImagePress::saveResultFromPolygon(
@@ -410,4 +422,35 @@ bool ImagePress::splitTiff(
 	GDALClose(poDataset);
 	GDALDestroyDriverManager();
 	return true;
+}
+
+cv::Mat ImagePress::qpixmapToCVMat(QPixmap pimg)
+{
+	QImage image = pimg.toImage();
+	cv::Mat mat;
+	switch (image.format())
+	{
+	case QImage::Format_ARGB32:
+	case QImage::Format_RGB32:
+	case QImage::Format_ARGB32_Premultiplied:
+		mat = cv::Mat(
+			image.height(), image.width(), CV_8UC4, 
+			(void*)image.constBits(), image.bytesPerLine()
+		);
+		break;
+	case QImage::Format_RGB888:
+		mat = cv::Mat(
+			image.height(), image.width(), CV_8UC3, 
+			(void*)image.constBits(), image.bytesPerLine()
+		);
+		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+		break;
+	case QImage::Format_Grayscale8:
+		mat = cv::Mat(
+			image.height(), image.width(), CV_8UC1, 
+			(void*)image.constBits(), image.bytesPerLine()
+		);
+		break;
+	}
+	return mat;
 }

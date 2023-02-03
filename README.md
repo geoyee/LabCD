@@ -1,10 +1,12 @@
 # LabCD
 
+简体中文| [English](./README_EN.md)
+
 https://user-images.githubusercontent.com/71769312/216638896-bd1d5e40-6512-478d-b7b0-927c142aece6.mp4
 
 遥感变化检测标注工具，设计参考[EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.6/EISeg)，可以分别在左右两张画布中标注两个时段影像的变化信息，将自动同步在另一画布进行显示，[快捷键](https://github.com/geoyee/LabCD/wiki/%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%88%97%E8%A1%A8)更方便。
 
-**bilibili：[https://www.bilibili.com/video/BV11j411T7up?t=23.2](https://www.bilibili.com/video/BV11j411T7up?t=23.2)**
+**哔哩哔哩：[https://www.bilibili.com/video/BV11j411T7up?t=23.2](https://www.bilibili.com/video/BV11j411T7up?t=23.2)**
 
 **下载：[Windows x64 exe](https://github.com/geoyee/LabCD/releases/download/0.2/LabCD-0.2-x64-setup.exe)**
 

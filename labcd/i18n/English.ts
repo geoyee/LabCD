@@ -122,6 +122,16 @@
         <translation>Set cross color</translation>
     </message>
     <message>
+        <location filename="../labcd.cpp" line="224"/>
+        <source>打开变化参考图</source>
+        <translation>Open reference image</translation>
+    </message>
+    <message>
+        <location filename="../labcd.cpp" line="231"/>
+        <source>光谱变化向量强度参考图</source>
+        <translation>CVA intensity reference</translation>
+    </message>
+    <message>
         <location filename="../labcd.cpp" line="214"/>
         <source>LabCD - 遥感变化检测标注工具</source>
         <translation>LabCD - Remote sensing change detection annotation tool</translation>

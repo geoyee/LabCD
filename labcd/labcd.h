@@ -16,6 +16,8 @@ private:
     QString savePath;
     QString fileName;
     bool isCN;
+    const int refNewWidth = 200;
+    int refNewHeight = 200;
 
     void openDir();
     void openBigImageFile();

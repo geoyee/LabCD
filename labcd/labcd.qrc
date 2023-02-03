@@ -20,6 +20,7 @@
         <file>resources/DeleteAllPolygons.png</file>
         <file>resources/DeletePolygon.png</file>
         <file>resources/Color.png</file>
+        <file>resources/Reference.png</file>
     </qresource>
     <qresource prefix="/docks">
         <file>resources/AddLabel.png</file>

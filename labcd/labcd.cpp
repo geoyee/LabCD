@@ -219,26 +219,37 @@ LabCD::LabCD(QWidget *parent)
     QAction* crossColorAct = lcdToolBar->addAction(
         QIcon(":/tools/resources/Color.png"), tr("设置十字丝颜色"));
     connect(crossColorAct, &QAction::triggered, this, &LabCD::setCrossPenColor);
+    lcdToolBar->addSeparator();
+    QAction* isCVAAct = lcdToolBar->addAction(
+        QIcon(":/tools/resources/Reference.png"), tr("打开变化参考图"));
+    isCVAAct->setCheckable(true);
     // 完成
     lcdToolBar->setMovable(false);
     addToolBar(Qt::LeftToolBarArea, lcdToolBar);
 
     /* 变化参考图 */
-    QDockWidget* refDock = new QDockWidget(tr("变化参考图"), this);
-    refDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    QDockWidget* refDock = new QDockWidget(tr("光谱变化向量强度参考图"), this);
+    refDock->setAllowedAreas(Qt::NoDockWidgetArea);
     QLabel* imgRef = new QLabel(this);
-    imgRef->setPixmap(QPixmap());
+    refDock->setFloating(true);
+    refDock->hide();
     connect(drawCanvas, &MultCanvas::addimgDiff, [=](cv::Mat imgDiff) {
-        cv::cvtColor(imgDiff, imgDiff, cv::COLOR_RGB2BGR);
-        cv::resize(imgDiff, imgDiff, cv::Size(200, 200));
-        QImage qimg = QImage(
-            (const uchar*)(imgDiff.data), imgDiff.cols, imgDiff.rows,
-            imgDiff.cols * imgDiff.channels(), QImage::Format_RGB888
-        );
-        imgRef->setPixmap(QPixmap::fromImage(qimg));
+        if (isCVAAct->isChecked())
+        {
+            refNewHeight = refNewWidth * imgDiff.rows / imgDiff.cols;
+            cv::cvtColor(imgDiff, imgDiff, cv::COLOR_RGB2BGR);
+            cv::resize(imgDiff, imgDiff, cv::Size(refNewWidth, refNewHeight));
+            QImage qimg = QImage(
+                (const uchar*)(imgDiff.data), imgDiff.cols, imgDiff.rows,
+                imgDiff.cols * imgDiff.channels(), QImage::Format_RGB888
+            );
+            imgRef->setPixmap(QPixmap::fromImage(qimg));
+            refDock->setFixedSize(refNewWidth, refNewHeight);
+            refDock->show();
+        }
     });
     refDock->setWidget(imgRef);
-    addDockWidget(Qt::RightDockWidgetArea, refDock);
+    addDockWidget(Qt::NoDockWidgetArea, refDock);
     
     /* 界面设置 */
     resize(1200, 600);

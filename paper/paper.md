@@ -39,9 +39,7 @@ LabCD is written in C++ and has a graphical user interface (GUI) developed in [Q
 
 - Friendly label and file/process management
 
-![gui](images/gui.png)
-
-Figure 1: A screenshot of LabCD. Two images are being annotated.
+![A screenshot of LabCD. Two images are being annotated.](images/gui.png)
 
 # Tutorials
 

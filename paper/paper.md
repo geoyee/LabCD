@@ -14,7 +14,7 @@ affiliations:
  - name: Chongqing Smart City Institute, Chongqing Jiaotong University, China
    index: 1
 date: 4 February 2023
-bibliography: paper.bib
+bibliography: paper/paper.bib
 ---
 
 # Summary
@@ -25,7 +25,7 @@ LabCD is an annotation tool. It was designed with reference to [EISeg](https://g
 
 # Audience
 
-LabCD is intended for students who engaged in remote sensing change detection and deep learning research. This will help them  annotation data quickly. And they will have more time to train their AI models based on some geoscience deep learning tools, like [paddlers](https://github.com/PaddlePaddle/PaddleRS).
+LabCD is intended for students who engaged in remote sensing change detection and deep learning research. This will help them  annotation data quickly. And they will have more time to train their AI models based on some geoscience deep learning tools, like [PaddleRS](https://github.com/PaddlePaddle/PaddleRS).
 
 # Functionality
 

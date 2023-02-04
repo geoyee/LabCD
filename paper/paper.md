@@ -19,9 +19,9 @@ bibliography: paper.bib
 
 # Summary
 
-In recent years, with the development of deep learning, more and more data needs to be annotated. There are many annotation tools we can choosed, like [labelme](https://github.com/wkentaro/labelme) or [labelimg](https://github.com/heartexlabs/labelImg). But they only support traditional computer vision (CV) tasks, like classification, segmentation and detection, etc. Not in remote sensing change detection in the field of  geoscience.
+In recent years, with the development of deep learning, more and more data needs to be annotated. There are many annotation tools we can choosed, like [labelme](https://github.com/wkentaro/labelme) [@2008LabelMe] or [labelimg](https://github.com/heartexlabs/labelImg). But they only support traditional computer vision (CV) tasks, like classification, segmentation and detection, etc. Not in remote sensing change detection in the field of  geoscience.
 
-LabCD is an annotation tool. It was designed with reference to [EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.7/EISeg) ([@hao2022eiseg], [@hao2021edgeflow]), but it is mainly used for remote sensing change detection. LabCD provides left-right synchronization of the canvas, and support GeoTiff split and IO with coordinate reference systems (CRS) by [GDAL](https://gdal.org/). Above all, LabCD is a convenient and fast data annotation tool for remote sensing professional fields.
+LabCD is an annotation tool. It was designed with reference to [EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.7/EISeg) [@hao2022eiseg; @hao2021edgeflow], but it is mainly used for remote sensing change detection. LabCD provides left-right synchronization of the canvas, and support GeoTiff split and IO with coordinate reference systems (CRS) by [GDAL](https://gdal.org/). Above all, LabCD is a convenient and fast data annotation tool for remote sensing professional fields.
 
 # Audience
 

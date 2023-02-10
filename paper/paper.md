@@ -23,7 +23,7 @@ Remote sensing change detection is a way to obtain dynamic changes of various su
 
 It is usually used  evaluating natural disaster, change detection of the land use / cover, change detection of architectural areas, and etc. An area where a 6.3-magnitude earthquake has occurred in February 2011 and rebuilt in the following years [@2018Fully]  in Figure 1.
 
-![building change detection](images/cd.jpg)
+![Building change detection](images/cd.jpg)
 
 Capturing and annotating remote sensing images is the first step in this work, and LabCD is an annotation tool for remote sensing change detection.
 
@@ -33,14 +33,14 @@ In recent years, with the development of deep learning, more and more data needs
 
 LabCD is developed based on C++17. It has a graphical user interface (GUI) developed in [Qt6](https://www.qt.io/product/qt6) and depends on [OpenCV](https://github.com/opencv/opencv) [@opencv_library], [JsonCpp](https://github.com/open-source-parsers/jsoncpp) and [GDAL](https://gdal.org/) [@gdal]. It was designed with reference to [EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.7/EISeg) [@hao2022eiseg; @hao2021edgeflow], but it is mainly used for remote sensing change detection. LabCD provides left-right synchronization of the canvas, and support GeoTiff split and IO with coordinate reference systems (CRS). Above all, LabCD is a convenient and fast data annotation tool for remote sensing professional fields.
 
-|          | Open source | Free | GeoTiff IO | Support change detection |
-| :------: | :---------: | :--: | :--------: | :----------------------: |
-| labelme  |      √      |  √   |            |                          |
-| labelimg |      √      |  √   |            |                          |
-|  ArcGIS  |             |      |     √      |            √             |
-|   QGIS   |      √      |  √   |     √      |            √             |
-|   PCL    |             |      |     √      |            √             |
-|  LabCD   |      √      |  √   |     √      |            √             |
+|          |    Open source     |        Free        |     GeoTiff IO     | Support change detection |
+| :------: | :----------------: | :----------------: | :----------------: | :----------------------: |
+| labelme  | :heavy_check_mark: | :heavy_check_mark: |                    |                          |
+| labelimg | :heavy_check_mark: | :heavy_check_mark: |                    |                          |
+|  ArcGIS  |                    |                    | :heavy_check_mark: |    :heavy_check_mark:    |
+|   QGIS   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    |
+|   PCL    |                    |                    | :heavy_check_mark: |    :heavy_check_mark:    |
+|  LabCD   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    |
 
 # Audience
 

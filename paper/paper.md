@@ -35,12 +35,12 @@ LabCD is developed based on C++17. It has a graphical user interface (GUI) devel
 
 |          | Open source | Free | GeoTiff IO | Support change detection |
 | :------: | :---------: | :--: | :--------: | :----------------------: |
-| labelme  |      ✔      |  ✔   |            |                          |
-| labelimg |      ✔      |  ✔   |            |                          |
-|  ArcGIS  |             |      |     ✔      |            ✔             |
-|   QGIS   |      ✔      |  ✔   |     ✔      |            ✔             |
-|   PCL    |             |      |     ✔      |            ✔             |
-|  LabCD   |      ✔      |  ✔   |     ✔      |            ✔             |
+| labelme  |      √      |  √   |            |                          |
+| labelimg |      √      |  √   |            |                          |
+|  ArcGIS  |             |      |     √      |            √             |
+|   QGIS   |      √      |  √   |     √      |            √             |
+|   PCL    |             |      |     √      |            √             |
+|  LabCD   |      √      |  √   |     √      |            √             |
 
 # Audience
 

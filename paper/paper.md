@@ -33,14 +33,14 @@ In recent years, with the development of deep learning, more and more data needs
 
 LabCD is developed based on C++17. It has a graphical user interface (GUI) developed in [Qt6](https://www.qt.io/product/qt6) and depends on [OpenCV](https://github.com/opencv/opencv) [@opencv_library], [JsonCpp](https://github.com/open-source-parsers/jsoncpp) and [GDAL](https://gdal.org/) [@gdal]. It was designed with reference to [EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.7/EISeg) [@hao2022eiseg; @hao2021edgeflow], but it is mainly used for remote sensing change detection. LabCD provides left-right synchronization of the canvas, and support GeoTiff split and IO with coordinate reference systems (CRS). Above all, LabCD is a convenient and fast data annotation tool for remote sensing professional fields.
 
-|          | Open source | Free | Simple | GeoTiff IO | Support change detection | Double view |
-| :------: | :---------: | :--: | :----: | :--------: | :----------------------: | :---------: |
-| labelme  |      √      |  √   |   √    |            |                          |             |
-| labelimg |      √      |  √   |   √    |            |                          |             |
-|  ArcGIS  |             |      |        |     √      |            √             |             |
-|   QGIS   |      √      |  √   |        |     √      |            √             |             |
-|   PCL    |             |      |        |     √      |            √             |             |
-|  LabCD   |      √      |  √   |   √    |     √      |            √             |      √      |
+|          | Open source | Free | Simple | GeoTiff IO | Support change detection |
+| :------: | :---------: | :--: | :----: | :--------: | :----------------------: |
+| labelme  |      √      |  √   |   √    |            |                          |
+| labelimg |      √      |  √   |   √    |            |                          |
+|  ArcGIS  |             |      |        |     √      |            √             |
+|   QGIS   |      √      |  √   |        |     √      |            √             |
+|   PCL    |             |      |        |     √      |            √             |
+|  LabCD   |      √      |  √   |   √    |     √      |            √             |
 
 # Audience
 

@@ -55,3 +55,11 @@ testimgs
 - 部分图标：[SuperMap GIS产品彩色系功能图标库](https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=32519)
 - 标签预定义颜色：[色板 | AntV](https://antv.vision/zh/docs/specification/language/palette)
 - 打包：[Inno Setup](https://jrsoftware.org/)
+
+## TODO
+
+- [ ] 上下位置的点拖动没有进行限制
+- [ ] 多光谱加载可以选择波段或加载前三个波段
+- [ ] 切分图像块可以设置大小
+- [ ] 切分图像扩展保存边缘的
+- [ ] 增加合并标签图像块

@@ -370,3 +370,7 @@ setup/
 
 # depends
 labcd/depends/
+
+# config
+labcd/configs/setting.ini
+

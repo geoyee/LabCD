@@ -63,3 +63,4 @@ testimgs
 - [ ] 切分图像块可以设置大小
 - [ ] 切分图像扩展保存边缘的
 - [ ] 增加合并标签图像块
+- [ ] 增加过滤空标签和图像（[#5](https://github.com/geoyee/LabCD/issues/5)）

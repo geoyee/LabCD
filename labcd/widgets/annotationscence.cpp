@@ -203,6 +203,10 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 	else
 	{
 		QPointF p = ev->scenePos();
+		if (p.x() < 0 || p.x() > imgWidth || p.y() < 0 || p.y() > imgHeight)
+		{
+			return;  // 超出范围
+		}
 		if (!hovering())  // 非激活状态
 		{
 			// 当选择有标签的时候，左键添加

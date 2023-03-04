@@ -1,5 +1,4 @@
-﻿#include <iostream>
-#include <fstream>
+﻿#include <fstream>
 #include <json/json.h>
 #include <QFileInfo>
 #include <QDir>
@@ -164,6 +163,80 @@ void ImagePress::calcWindowTrans(double trans[6], int locX, int locY)
 	trans[3] += locY * trans[5];
 }
 
+// TODO: 计算太慢等太久
+std::vector<int> ImagePress::calcOIF(GDALDataset* poDataset)
+{
+	int bandCount = poDataset->GetRasterCount();
+	// 计算均值和标准差
+	double Max;
+	double Min;
+	double pdfMean;
+	double pdfStdDev;
+	std::vector<double> means, stds;
+	for (int i = 1; i <= bandCount; i++)
+	{
+		poDataset->GetRasterBand(i)->ComputeStatistics(
+			TRUE, &Min, &Max, &pdfMean, &pdfStdDev, NULL, NULL
+		);
+		means.push_back(pdfMean);
+		stds.push_back(pdfStdDev);
+	}
+	// 计算OIF
+	int xCount = poDataset->GetRasterXSize();
+	int yCount = poDataset->GetRasterYSize();
+	std::vector<int> bBands = { 1, 1, 1 };
+	double bestOIFValue(0.0), tmpOIFValue(0.0);
+	GDALRasterBand* rImg, * gImg, * bImg;
+	double covRG(0), covRB(0), covGB(0);
+	for (int r = 1; r < bandCount; r++)
+	{
+		rImg = poDataset->GetRasterBand(r);
+		for (int g = r + 1; g < bandCount; g++)
+		{
+			gImg = poDataset->GetRasterBand(g);
+			for (int b = g + 1; b < bandCount; b++)
+			{
+				bImg = poDataset->GetRasterBand(b);
+				// 计算相关系数
+				covRG = ImagePress::_cov(rImg, means[r], gImg, means[g], xCount, yCount);
+				covRB = ImagePress::_cov(rImg, means[r], bImg, means[b], xCount, yCount);
+				covGB = ImagePress::_cov(gImg, means[g], bImg, means[b], xCount, yCount);
+				// 更新OIF及波段
+				tmpOIFValue = (stds[r] + stds[g] + stds[b]) / (covRG + covRB + covGB);
+				if (tmpOIFValue > bestOIFValue)
+				{
+					bestOIFValue = tmpOIFValue;
+					bBands[0] = r;
+					bBands[1] = g;
+					bBands[2] = b;
+				}
+			}
+		}
+	}
+	return bBands;
+}
+
+double ImagePress::_cov(
+	GDALRasterBand* b1, double avg1, GDALRasterBand* b2, \
+	double avg2, int xCount, int yCount
+)
+{
+	double R1(0), R2(0), R3(0);
+	double v1, v2;
+	for (int i = 0; i < xCount; i++)
+	{
+		for (int j = 0; j < yCount; j++)
+		{
+			b1->RasterIO(GF_Read, i, j, 1, 1, &v1, 1, 1, b1->GetRasterDataType(), 1, 1, nullptr);
+			b2->RasterIO(GF_Read, i, j, 1, 1, &v2, 1, 1, b2->GetRasterDataType(), 1, 1, nullptr);
+			R1 += (v1 - avg1) * (v2 - avg2);
+			R2 += std::pow((v1 - avg1), 2);
+			R3 += std::pow((v2 - avg2), 2);
+		}
+	}
+	return (R1 / std::sqrt(R2 * R3));
+}
+
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 {
 	float eps = 1e-12;
@@ -281,6 +354,7 @@ bool ImagePress::openImage(
 	double trans[6]
 )
 {
+	static std::vector<int> rgb;
 	QFileInfo fileInfo(imgPath);
 	QString ext = fileInfo.completeSuffix();
 	QList<QByteArray> qtSupporExts = QImageReader::supportedImageFormats();
@@ -302,17 +376,30 @@ bool ImagePress::openImage(
 		}
 		int bandCount = poDataset->GetRasterCount();
 		QList<GDALRasterBand*> bandList;
-		if (bandCount == 3)
+		if (bandCount < 3)  // 单波图像只加载这个波段
+		{
+			bandList.append(poDataset->GetRasterBand(1));
+			bandList.append(poDataset->GetRasterBand(1));
+			bandList.append(poDataset->GetRasterBand(1));
+		}
+		else if (bandCount == 3)  // 三通道直接加载RGB
 		{
 			bandList.append(poDataset->GetRasterBand(1));
 			bandList.append(poDataset->GetRasterBand(2));
 			bandList.append(poDataset->GetRasterBand(3));
 		}
-		else
+		else  // 多光谱计算oif来添加
 		{
-			bandList.append(poDataset->GetRasterBand(1));
-			bandList.append(poDataset->GetRasterBand(1));
-			bandList.append(poDataset->GetRasterBand(1));
+			if (rgb.empty())  // 只计算一次
+			{
+				GDALDataset* tmpDataset = (
+					GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
+				rgb = ImagePress::calcOIF(tmpDataset);
+				GDALClose(tmpDataset);
+			}
+			bandList.append(poDataset->GetRasterBand(rgb[0]));
+			bandList.append(poDataset->GetRasterBand(rgb[1]));
+			bandList.append(poDataset->GetRasterBand(rgb[2]));
 		}
 		projs = poDataset->GetProjectionRef();
 		poDataset->GetGeoTransform(trans);
@@ -361,29 +448,29 @@ bool ImagePress::splitTiff(
 	void* pSrcData;
 	switch (types)
 	{
-	case GDT_Byte:
-		pSrcData = new unsigned char[blockHeight * blockWidth * bandCount];
-		break;
-	case GDT_UInt16:
-		pSrcData = new unsigned short[blockHeight * blockWidth * bandCount];
-		break;
-	case GDT_Int16:
-		pSrcData = new short[blockHeight * blockWidth * bandCount];
-		break;
-	case GDT_UInt32:
-		pSrcData = new unsigned long[blockHeight * blockWidth * bandCount];
-		break;
-	case GDT_Int32:
-		pSrcData = new long[blockHeight * blockWidth * bandCount];
-		break;
-	case GDT_Float32:
-		pSrcData = new float[blockHeight * blockWidth * bandCount];
-		break;
-	case GDT_Float64:
-		pSrcData = new double[blockHeight * blockWidth * bandCount];
-		break;
-	default:
-		return false;
+		case GDT_Byte:
+			pSrcData = new unsigned char[blockHeight * blockWidth * bandCount];
+			break;
+		case GDT_UInt16:
+			pSrcData = new unsigned short[blockHeight * blockWidth * bandCount];
+			break;
+		case GDT_Int16:
+			pSrcData = new short[blockHeight * blockWidth * bandCount];
+			break;
+		case GDT_UInt32:
+			pSrcData = new unsigned long[blockHeight * blockWidth * bandCount];
+			break;
+		case GDT_Int32:
+			pSrcData = new long[blockHeight * blockWidth * bandCount];
+			break;
+		case GDT_Float32:
+			pSrcData = new float[blockHeight * blockWidth * bandCount];
+			break;
+		case GDT_Float64:
+			pSrcData = new double[blockHeight * blockWidth * bandCount];
+			break;
+		default:
+			return false;
 	}
 	int row = 0;
 	for (rsize_t i = 0; i < nYSize; i += blockWidth)

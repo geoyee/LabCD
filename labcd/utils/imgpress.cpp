@@ -303,6 +303,7 @@ bool ImagePress::openImage(
 		int bandCount = poDataset->GetRasterCount();
 		QList<GDALRasterBand*> bandList;
 		static std::vector<int> HSI_RGB_LOAD;
+		static int NOW_BAND_COUNT;
 		if (bandCount < 3)  // 小于3个波段只加载第一个波段
 		{
 			bandList.append(poDataset->GetRasterBand(1));
@@ -318,8 +319,7 @@ bool ImagePress::openImage(
 		else  // 多光谱计算oif再加载
 		{
 			// 只计算一次
-			if (HSI_RGB_LOAD.empty() || static_cast<int>( \
-				*(std::max_element(HSI_RGB_LOAD.begin(), HSI_RGB_LOAD.end()))) > bandCount)
+			if (HSI_RGB_LOAD.empty() || bandCount != NOW_BAND_COUNT)
 			{
 				HSI_RGB_LOAD = ImagePress::calcOIF(imgPath);
 			}
@@ -327,6 +327,7 @@ bool ImagePress::openImage(
 			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[1]));
 			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[2]));
 		}
+		NOW_BAND_COUNT = bandCount;
 		projs = poDataset->GetProjectionRef();
 		poDataset->GetGeoTransform(trans);
 		img = QPixmap(GDALRastertoPixmap(&bandList));
@@ -480,18 +481,18 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 	for (int i = 1; i <= bandCount; i++)  // 波段1
 	{
 		GDALRasterBand* band1 = ds->GetRasterBand(i);
-		float* data1 = new float[width * height];
-		band1->RasterIO(GF_Read, 0, 0, width, height, data1, width, height, GDT_Float32, 0, 0);
-		Eigen::Map<Eigen::MatrixXf> mat1(data1, height, width);
+		double* data1 = new double[width * height];
+		band1->RasterIO(GF_Read, 0, 0, width, height, data1, width, height, GDT_Float64, 0, 0);
+		Eigen::Map<Eigen::MatrixXd> mat1(data1, height, width);
 		// 计算标准差
 		double std = mat1.array().sqrt().matrix().mean();
 		stdDev.push_back(std);
 		for (int j = i + 1; j <= bandCount; j++)  // 波段2
 		{
 			GDALRasterBand* band2 = ds->GetRasterBand(j);
-			float* data2 = new float[width * height];
-			band2->RasterIO(GF_Read, 0, 0, width, height, data2, width, height, GDT_Float32, 0, 0);
-			Eigen::Map<Eigen::MatrixXf> mat2(data2, height, width);
+			double* data2 = new double[width * height];
+			band2->RasterIO(GF_Read, 0, 0, width, height, data2, width, height, GDT_Float64, 0, 0);
+			Eigen::Map<Eigen::MatrixXd> mat2(data2, height, width);
 			// 计算相关系数矩阵
 			double corr = (mat1.array() - \
 				mat1.mean()).matrix().normalized().cwiseProduct((mat2.array() - \

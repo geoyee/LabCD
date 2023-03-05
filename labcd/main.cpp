@@ -13,7 +13,6 @@ int main(int argc, char* argv[])
 
     // 加载语言
     QString langu = setting.value("language").toString();
-    qDebug() << langu;
     QTranslator translator;
     if (langu == "EN")
     {

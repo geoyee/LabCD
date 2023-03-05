@@ -29,6 +29,8 @@ https://user-images.githubusercontent.com/71769312/216638896-bd1d5e40-6512-478d-
 
 - GDAL 3.5.3
 
+- Eigen 3.4.0
+
 ## 文件组织
 
 ```

@@ -29,6 +29,8 @@ Remote sensing change detection annotation tool, it was designed with reference 
 
 - GDAL 3.5.3
 
+- Eigen 3.4.0
+
 ## Data organization
 
 ```

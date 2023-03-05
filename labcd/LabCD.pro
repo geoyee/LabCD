@@ -4,16 +4,16 @@
 
 TEMPLATE = app
 TARGET = LabCD
-DESTDIR = ./x64/Release
-CONFIG += release
+DESTDIR = ./x64/Debug
+CONFIG += debug
 LIBS += -L"." \
     -lgdal_i \
-    -lopencv_world455 \
-    -ljsoncpp_static
+    -lopencv_world455d \
+    -ljsoncpp_staticd
 DEPENDPATH += .
-MOC_DIR += .
-OBJECTS_DIR += release
+MOC_DIR += GeneratedFiles/$(ConfigurationName)
+OBJECTS_DIR += debug
 UI_DIR += GeneratedFiles
-RCC_DIR += .
+RCC_DIR += GeneratedFiles
 include(LabCD.pri)
 TRANSLATIONS += i18n/English.ts

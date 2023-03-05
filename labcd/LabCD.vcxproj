@@ -149,7 +149,6 @@
     <Image Include="resources\Last.png" />
     <Image Include="resources\Narrow.png" />
     <Image Include="resources\Next.png" />
-    <Image Include="resources\OIF.png" />
     <Image Include="resources\Reference.png" />
     <Image Include="resources\Save.png" />
     <Image Include="resources\Split.png" />

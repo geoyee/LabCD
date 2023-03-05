@@ -138,9 +138,6 @@
     <Image Include="resources\Reference.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\OIF.png">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">

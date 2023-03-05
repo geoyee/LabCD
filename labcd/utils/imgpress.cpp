@@ -1,5 +1,6 @@
 ﻿#include <fstream>
 #include <json/json.h>
+#include <Eigen/Dense>
 #include <QFileInfo>
 #include <QDir>
 #include <QImageReader>
@@ -163,80 +164,6 @@ void ImagePress::calcWindowTrans(double trans[6], int locX, int locY)
 	trans[3] += locY * trans[5];
 }
 
-// TODO: 计算太慢等太久
-std::vector<int> ImagePress::calcOIF(GDALDataset* poDataset)
-{
-	int bandCount = poDataset->GetRasterCount();
-	// 计算均值和标准差
-	double Max;
-	double Min;
-	double pdfMean;
-	double pdfStdDev;
-	std::vector<double> means, stds;
-	for (int i = 1; i <= bandCount; i++)
-	{
-		poDataset->GetRasterBand(i)->ComputeStatistics(
-			TRUE, &Min, &Max, &pdfMean, &pdfStdDev, NULL, NULL
-		);
-		means.push_back(pdfMean);
-		stds.push_back(pdfStdDev);
-	}
-	// 计算OIF
-	int xCount = poDataset->GetRasterXSize();
-	int yCount = poDataset->GetRasterYSize();
-	std::vector<int> bBands = { 1, 1, 1 };
-	double bestOIFValue(0.0), tmpOIFValue(0.0);
-	GDALRasterBand* rImg, * gImg, * bImg;
-	double covRG(0), covRB(0), covGB(0);
-	for (int r = 1; r < bandCount; r++)
-	{
-		rImg = poDataset->GetRasterBand(r);
-		for (int g = r + 1; g < bandCount; g++)
-		{
-			gImg = poDataset->GetRasterBand(g);
-			for (int b = g + 1; b < bandCount; b++)
-			{
-				bImg = poDataset->GetRasterBand(b);
-				// 计算相关系数
-				covRG = ImagePress::_cov(rImg, means[r], gImg, means[g], xCount, yCount);
-				covRB = ImagePress::_cov(rImg, means[r], bImg, means[b], xCount, yCount);
-				covGB = ImagePress::_cov(gImg, means[g], bImg, means[b], xCount, yCount);
-				// 更新OIF及波段
-				tmpOIFValue = (stds[r] + stds[g] + stds[b]) / (covRG + covRB + covGB);
-				if (tmpOIFValue > bestOIFValue)
-				{
-					bestOIFValue = tmpOIFValue;
-					bBands[0] = r;
-					bBands[1] = g;
-					bBands[2] = b;
-				}
-			}
-		}
-	}
-	return bBands;
-}
-
-double ImagePress::_cov(
-	GDALRasterBand* b1, double avg1, GDALRasterBand* b2, \
-	double avg2, int xCount, int yCount
-)
-{
-	double R1(0), R2(0), R3(0);
-	double v1, v2;
-	for (int i = 0; i < xCount; i++)
-	{
-		for (int j = 0; j < yCount; j++)
-		{
-			b1->RasterIO(GF_Read, i, j, 1, 1, &v1, 1, 1, b1->GetRasterDataType(), 1, 1, nullptr);
-			b2->RasterIO(GF_Read, i, j, 1, 1, &v2, 1, 1, b2->GetRasterDataType(), 1, 1, nullptr);
-			R1 += (v1 - avg1) * (v2 - avg2);
-			R2 += std::pow((v1 - avg1), 2);
-			R3 += std::pow((v2 - avg2), 2);
-		}
-	}
-	return (R1 / std::sqrt(R2 * R3));
-}
-
 cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 {
 	float eps = 1e-12;
@@ -354,7 +281,6 @@ bool ImagePress::openImage(
 	double trans[6]
 )
 {
-	static std::vector<int> rgb;
 	QFileInfo fileInfo(imgPath);
 	QString ext = fileInfo.completeSuffix();
 	QList<QByteArray> qtSupporExts = QImageReader::supportedImageFormats();
@@ -376,30 +302,30 @@ bool ImagePress::openImage(
 		}
 		int bandCount = poDataset->GetRasterCount();
 		QList<GDALRasterBand*> bandList;
-		if (bandCount < 3)  // 单波图像只加载这个波段
+		static std::vector<int> HSI_RGB_LOAD;
+		if (bandCount < 3)  // 小于3个波段只加载第一个波段
 		{
 			bandList.append(poDataset->GetRasterBand(1));
 			bandList.append(poDataset->GetRasterBand(1));
 			bandList.append(poDataset->GetRasterBand(1));
 		}
-		else if (bandCount == 3)  // 三通道直接加载RGB
+		else if (bandCount == 3)  // RGB直接加载
 		{
 			bandList.append(poDataset->GetRasterBand(1));
 			bandList.append(poDataset->GetRasterBand(2));
 			bandList.append(poDataset->GetRasterBand(3));
 		}
-		else  // 多光谱计算oif来添加
+		else  // 多光谱计算oif再加载
 		{
-			if (rgb.empty())  // 只计算一次
+			// 只计算一次
+			if (HSI_RGB_LOAD.empty() || static_cast<int>( \
+				*(std::max_element(HSI_RGB_LOAD.begin(), HSI_RGB_LOAD.end()))) > bandCount)
 			{
-				GDALDataset* tmpDataset = (
-					GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
-				rgb = ImagePress::calcOIF(tmpDataset);
-				GDALClose(tmpDataset);
+				HSI_RGB_LOAD = ImagePress::calcOIF(imgPath);
 			}
-			bandList.append(poDataset->GetRasterBand(rgb[0]));
-			bandList.append(poDataset->GetRasterBand(rgb[1]));
-			bandList.append(poDataset->GetRasterBand(rgb[2]));
+			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[0]));
+			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[1]));
+			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[2]));
 		}
 		projs = poDataset->GetProjectionRef();
 		poDataset->GetGeoTransform(trans);
@@ -540,4 +466,60 @@ cv::Mat ImagePress::qpixmapToCVMat(QPixmap pimg)
 		break;
 	}
 	return mat;
+}
+
+std::vector<int> ImagePress::calcOIF(QString hsiPath)
+{
+	GDALDataset* ds = (GDALDataset*)GDALOpen(hsiPath.toStdString().c_str(), GA_ReadOnly);
+	int bandCount = ds->GetRasterCount();
+	int width = ds->GetRasterXSize();
+	int height = ds->GetRasterYSize();
+	// 计算标准差和相关系数矩阵
+	Eigen::MatrixXd coMatrix(bandCount, bandCount);
+	std::vector<double> stdDev;
+	for (int i = 1; i <= bandCount; i++)  // 波段1
+	{
+		GDALRasterBand* band1 = ds->GetRasterBand(i);
+		float* data1 = new float[width * height];
+		band1->RasterIO(GF_Read, 0, 0, width, height, data1, width, height, GDT_Float32, 0, 0);
+		Eigen::Map<Eigen::MatrixXf> mat1(data1, height, width);
+		// 计算标准差
+		double std = mat1.array().sqrt().matrix().mean();
+		stdDev.push_back(std);
+		for (int j = i + 1; j <= bandCount; j++)  // 波段2
+		{
+			GDALRasterBand* band2 = ds->GetRasterBand(j);
+			float* data2 = new float[width * height];
+			band2->RasterIO(GF_Read, 0, 0, width, height, data2, width, height, GDT_Float32, 0, 0);
+			Eigen::Map<Eigen::MatrixXf> mat2(data2, height, width);
+			// 计算相关系数矩阵
+			double corr = (mat1.array() - \
+				mat1.mean()).matrix().normalized().cwiseProduct((mat2.array() - \
+				mat2.mean()).matrix().normalized()).sum() / ((double)width * height);
+			coMatrix(i - 1, j - 1) = corr;
+			coMatrix(j - 1, i - 1) = corr;
+			// 释放内存
+			delete[] data2;
+		}
+		delete[] data1;
+	}
+	// 计算OIF值
+	double maxOIF(0), oif(0);
+	std::vector<int> best_bands = {0, 0, 0};
+	for (int i = 1; i <= bandCount; i++) {
+		for (int j = i + 1; j <= bandCount; j++) {
+			for (int k = j + 1; k <= bandCount; k++) {
+				oif = (stdDev[i - 1] + stdDev[j - 1] + stdDev[k - 1]) / \
+					  (coMatrix(i - 1, j - 1) + coMatrix(i - 1, k - 1) + coMatrix(j - 1, k - 1));
+				if (oif > maxOIF) {
+					maxOIF = oif;
+					best_bands[0] = i;
+					best_bands[1] = j;
+					best_bands[2] = k;
+				}
+			}
+		}
+	}
+	GDALClose(ds);
+	return best_bands;
 }

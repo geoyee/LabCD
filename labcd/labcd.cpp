@@ -38,6 +38,7 @@ LabCD::LabCD(QWidget *parent)
         QIcon(":/menu/resources/Folder.png"), tr("打开文件夹"));
     opensAct->setShortcut(QKeySequence("Ctrl+O"));
     connect(opensAct, &QAction::triggered, this, &LabCD::openDir);
+    fileMenu->addSeparator();
     QAction* splitAct = fileMenu->addAction(
         QIcon(":/menu/resources/Split.png"), tr("切分大图"));
     splitAct->setShortcut(QKeySequence("Ctrl+B"));

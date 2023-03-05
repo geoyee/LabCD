@@ -35,15 +35,6 @@ private:
 		double* trans
 	);
 	static void calcWindowTrans(double trans[6], int locX, int locY);
-	static std::vector<int> calcOIF(GDALDataset* poDataset);
-	static inline double _cov(
-		GDALRasterBand* b1,
-		double avg1,
-		GDALRasterBand* b2,
-		double avg2,
-		int xCount,
-		int yCount
-	);
 
 public:
 	static cv::Mat CVA(cv::Mat t1, cv::Mat t2);
@@ -69,4 +60,5 @@ public:
 		int blockWidth = 512
 	);
 	static cv::Mat qpixmapToCVMat(QPixmap pimg);
+	static std::vector<int> calcOIF(QString hsiPath);
 };

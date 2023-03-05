@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <iostream>
 #include <QWidget>
 #include "canvas.h"
 #include "../utils/label.h"

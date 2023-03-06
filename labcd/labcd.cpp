@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QColorDialog>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QtConcurrent/qtconcurrentrun.h>
 #include <opencv2/opencv.hpp>
 #include "labcd.h"
@@ -292,18 +293,42 @@ void LabCD::openDir()
 
 void LabCD::openBigImageFile()
 {
+    // 获取文件路径
     QString fileName = QFileDialog::getOpenFileName(
         this,
         tr("打开大图像"), 
         QString(), 
         tr("栅格图像文件 (*.tif *.tiff)")
     );
+    if (fileName == "")
+    {
+        return;
+    }
     QString saveDir = QFileInfo(fileName).absolutePath() + QDir::separator() + "split_output";
     saveDir = saveDir.replace("\\", "/");
     FileWorker::createFolder(saveDir);
+    // 获取切分大小
+    bool blockOk = false;
+    int blockSize = QInputDialog::getInt(
+        this,
+        tr("设置"),
+        tr("设置切块大小"),
+        512, 1, 2048, 1,
+        &blockOk
+    );
+    if (!blockOk)
+    {
+        return;
+    }
     QtConcurrent::run([=]() {
-        ImagePress::splitTiff(fileName, saveDir, 512, 512); 
-        messageState->setText(tr("切分完成，保存至：") + saveDir);
+        if (ImagePress::splitTiff(fileName, saveDir, blockSize, blockSize))
+        {
+            messageState->setText(tr("切分完成，保存至：") + saveDir);
+        }
+        else
+        {
+            messageState->setText(tr("切分失败，可能是不支持的类型或超出范围的切块大小"));
+        }
     });
 }
 

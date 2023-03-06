@@ -372,6 +372,10 @@ bool ImagePress::splitTiff(
 	// 循环分块并进行处理
 	rsize_t nYSize = poDataset->GetRasterYSize();
 	rsize_t nXSize = poDataset->GetRasterXSize();
+	if (blockHeight > nXSize || blockWidth > nYSize)
+	{
+		return false;
+	}
 	void* pSrcData;
 	switch (types)
 	{

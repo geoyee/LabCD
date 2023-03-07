@@ -13,7 +13,7 @@ class LabCD : public QMainWindow
 
 private:
     QSettings* setting;
-    QString savePath;
+    QString savePath = "";
     QString fileName;
     bool isCN;
     const int refNewWidth = 200;

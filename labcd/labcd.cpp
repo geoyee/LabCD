@@ -367,8 +367,11 @@ void LabCD::setCrossPenColor()
 void LabCD::closeEvent(QCloseEvent* ev)
 {
     // 保存标签
-    QString jsonPath = savePath + "/label.json";
-    labTableWidget->exportLabelToFile(jsonPath);
+    if (savePath != "")
+    {
+        QString jsonPath = savePath + "/label.json";
+        labTableWidget->exportLabelToFile(jsonPath);
+    }
     // 保存界面
     setting->setValue("layout_status", QByteArray(saveState()));
     QMainWindow::closeEvent(ev);

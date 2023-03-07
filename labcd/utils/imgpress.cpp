@@ -404,17 +404,25 @@ bool ImagePress::splitTiff(
 			return false;
 	}
 	int row = 0;
+	int tmpI, tmpJ;
 	for (rsize_t i = 0; i < nYSize; i += blockWidth)
 	{
 		int col = 0;
 		for (rsize_t j = 0; j < nXSize; j += blockHeight)
 		{
-			// 不够的直接跳过
-			if (i + blockHeight > nYSize || j + blockWidth > nXSize)
-				continue;
+			tmpI = i;
+			tmpJ = j;
+			if (i + blockHeight > nYSize)
+			{
+				tmpI = nYSize - blockHeight;
+			}
+			if (j + blockWidth > nXSize)
+			{
+				tmpJ = nXSize - blockWidth;
+			}
 			// 读取原始图像块
 			poDataset->RasterIO(
-				GF_Read, j, i, blockWidth, blockHeight, pSrcData,
+				GF_Read, tmpJ, tmpI, blockWidth, blockHeight, pSrcData,
 				blockWidth, blockHeight, types, bandCount, pBandMaps, 0, 0, 0, NULL
 			);
 			// 保存

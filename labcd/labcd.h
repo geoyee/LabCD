@@ -21,6 +21,7 @@ private:
 
     void openDir();
     void openBigImageFile();
+    void mergeBigImage();
     void save();
     void setCrossPenColor();
 

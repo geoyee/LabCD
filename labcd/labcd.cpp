@@ -44,6 +44,10 @@ LabCD::LabCD(QWidget *parent)
         QIcon(":/menu/resources/Split.png"), tr("切分大图"));
     splitAct->setShortcut(QKeySequence("Ctrl+B"));
     connect(splitAct, &QAction::triggered, this, &LabCD::openBigImageFile);
+    QAction* mergeAct = fileMenu->addAction(
+        QIcon(":/menu/resources/Merge.png"), tr("合并大图"));
+    mergeAct->setShortcut(QKeySequence("Ctrl+M"));
+    connect(mergeAct, &QAction::triggered, this, &LabCD::mergeBigImage);
     lcdMenuBar->addMenu(fileMenu);
     QMenu* aboutMenu = new QMenu(tr("关于"), this);
     QAction* githubAct = aboutMenu->addAction(
@@ -328,6 +332,31 @@ void LabCD::openBigImageFile()
         else
         {
             messageState->setText(tr("切分失败，可能是不支持的类型或超出范围的切块大小"));
+        }
+    });
+}
+
+void LabCD::mergeBigImage()
+{
+    QString dirPath = QFileDialog::getExistingDirectory(
+        this,
+        QObject::tr("打开图像文件夹"),
+        QString(),
+        QFileDialog::ShowDirsOnly
+    );
+    if (dirPath.isEmpty())
+    {
+        return;
+    }
+    QtConcurrent::run([=]() {
+        if (ImagePress::mergeTiff(dirPath))
+        {
+            messageState->setText(
+                tr("合并完成，保存至：") + dirPath + QDir::separator() + "merge.tif");
+        }
+        else
+        {
+            messageState->setText(tr("合并失败"));
         }
     });
 }

@@ -4,7 +4,39 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QImageReader>
+#include <QtAlgorithms>
 #include "imgpress.h"
+
+bool ImagePress::createArr(void** data, GDALDataType types, int xSize, int ySize, int band)
+{
+	switch (types)
+	{
+	case GDT_Byte:
+		*data = new unsigned char[xSize * ySize * band];
+		break;
+	case GDT_UInt16:
+		*data = new unsigned short[xSize * ySize * band];
+		break;
+	case GDT_Int16:
+		*data = new short[xSize * ySize * band];
+		break;
+	case GDT_UInt32:
+		*data = new unsigned long[xSize * ySize * band];
+		break;
+	case GDT_Int32:
+		*data = new long[xSize * ySize * band];
+		break;
+	case GDT_Float32:
+		*data = new float[xSize * ySize * band];
+		break;
+	case GDT_Float64:
+		*data = new double[xSize * ySize * band];
+		break;
+	default:
+		return false;
+	}
+	return true;
+}
 
 unsigned char* ImagePress::imgSketch(
 	float* buffer, 
@@ -358,6 +390,8 @@ bool ImagePress::splitTiff(
 		return false;
 	}
 	int bandCount = poDataset->GetRasterCount();
+	rsize_t nYSize = poDataset->GetRasterYSize();
+	rsize_t nXSize = poDataset->GetRasterXSize();
 	GDALDataType types = poDataset->GetRasterBand(1)->GetRasterDataType();
 	double trans[6] = { 0 };
 	double windowTrans[6] = { 0 };
@@ -370,39 +404,12 @@ bool ImagePress::splitTiff(
 		pBandMaps[b] = b + 1;
 	}
 	// 循环分块并进行处理
-	rsize_t nYSize = poDataset->GetRasterYSize();
-	rsize_t nXSize = poDataset->GetRasterXSize();
 	if (blockHeight > nXSize || blockWidth > nYSize)
 	{
 		return false;
 	}
-	void* pSrcData;
-	switch (types)
-	{
-		case GDT_Byte:
-			pSrcData = new unsigned char[blockHeight * blockWidth * bandCount];
-			break;
-		case GDT_UInt16:
-			pSrcData = new unsigned short[blockHeight * blockWidth * bandCount];
-			break;
-		case GDT_Int16:
-			pSrcData = new short[blockHeight * blockWidth * bandCount];
-			break;
-		case GDT_UInt32:
-			pSrcData = new unsigned long[blockHeight * blockWidth * bandCount];
-			break;
-		case GDT_Int32:
-			pSrcData = new long[blockHeight * blockWidth * bandCount];
-			break;
-		case GDT_Float32:
-			pSrcData = new float[blockHeight * blockWidth * bandCount];
-			break;
-		case GDT_Float64:
-			pSrcData = new double[blockHeight * blockWidth * bandCount];
-			break;
-		default:
-			return false;
-	}
+	void* pSrcData = nullptr;
+	ImagePress::createArr(&pSrcData, types, blockWidth, blockHeight, bandCount);
 	int row = 0;
 	int tmpI, tmpJ;
 	for (rsize_t i = 0; i < nYSize; i += blockWidth)
@@ -427,7 +434,7 @@ bool ImagePress::splitTiff(
 			);
 			// 保存
 			std::string windowSavePath = (saveDir + QDir::separator() + name +
-				"_" + QString::number(row) + "_" + QString::number(col) + ".tif").toStdString();
+				"_" + QString::number(tmpJ) + "_" + QString::number(tmpI) + ".tif").toStdString();
 			std::copy(std::begin(trans), std::end(trans), std::begin(windowTrans));
 			calcWindowTrans(windowTrans, col * blockWidth, row * blockHeight);
 			if (!saveTiffFromGDAL(
@@ -445,6 +452,108 @@ bool ImagePress::splitTiff(
 		row++;
 	}
 	delete[] pSrcData;
+	GDALClose(poDataset);
+	GDALDestroyDriverManager();
+	return true;
+}
+
+bool ImagePress::mergeTiff(QString imgDir)
+{
+	// 读取
+	if (imgDir.isEmpty()) return false;
+	QDir dir(imgDir);
+	dir.setFilter(QDir::Files);
+	dir.setSorting(QDir::Name);
+	dir.setNameFilters(QString("*.tiff;*.tif").split(";"));
+	QStringList subDirList = dir.entryList();
+	std::sort(subDirList.begin(), subDirList.end(), [](const QString& s1, const QString& s2) {
+		QStringList fi1 = QFileInfo(s1).baseName().split("_");
+		QStringList fi2 = QFileInfo(s2).baseName().split("_");
+		int j1 = fi1.at(fi1.size() - 2).toInt();
+		int i1 = fi1.at(fi1.size() - 1).toInt();
+		int j2 = fi2.at(fi1.size() - 2).toInt();
+		int i2 = fi2.at(fi1.size() - 1).toInt();
+		if (j1 < j2) return true;
+		else if (j1 > j2) return false;
+		else
+		{
+			if (i1 < i2) return true;
+			else return false;
+		}
+	});
+	GDALAllRegister();
+	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
+	// 读取第一个块，获取信息
+	GDALDataset* tmpDataset = (GDALDataset*)GDALOpen(
+		(imgDir + QDir::separator() + subDirList.at(0)).toStdString().c_str(), GA_ReadOnly);
+	if (tmpDataset == NULL)
+	{
+		GDALClose(tmpDataset);
+		GDALDestroyDriverManager();
+		return false;
+	}
+	int bandCount = tmpDataset->GetRasterCount();
+	int* pBandMaps = new int[bandCount];
+	for (int b = 0; b < bandCount; b++) pBandMaps[b] = b + 1;
+	int blockX = tmpDataset->GetRasterXSize();
+	int blockY = tmpDataset->GetRasterYSize();
+	double trans[6] = { 0 };
+	tmpDataset->GetGeoTransform(trans);
+	GDALDataType types = tmpDataset->GetRasterBand(1)->GetRasterDataType();
+	const char* projs = tmpDataset->GetProjectionRef();
+	GDALClose(tmpDataset);
+	// 读取最后一个块的坐标信息
+	QString tmp = subDirList.at(subDirList.size() - 1);
+	QFileInfo tmpInfo = QFileInfo(tmp);
+	QStringList ids = tmpInfo.baseName().split("_");
+	int jInd = ids.at(ids.size() - 2).toInt();
+	int iInd = ids.at(ids.size() - 1).toInt();
+	int nImgSizeX = jInd + blockX;
+	int nImgSizeY = iInd + blockY;
+	// 创建
+	QString imgPath = imgDir + QDir::separator() + "merge.tif";
+	GDALDriver* pDriverMEM = GetGDALDriverManager()->GetDriverByName("GTiff");
+	if (!pDriverMEM)
+	{
+		GDALDestroyDriverManager();
+		return false;
+	}
+	GDALDataset* poDataset = pDriverMEM->Create(
+		imgPath.toStdString().c_str(), nImgSizeX, nImgSizeY, bandCount, types, NULL
+	);
+	// 循环填入
+	QFileInfo blockInfo;
+	QStringList blockIds;
+	void* tmpSrcData = nullptr;
+	for (QString blockPath : subDirList)
+	{
+		blockInfo = QFileInfo(blockPath);
+		blockIds = blockInfo.baseName().split("_");
+		GDALDataset* tmpDataset = (GDALDataset*)GDALOpen(
+			(imgDir + QDir::separator() + tmp).toStdString().c_str(), GA_ReadOnly);
+		jInd = blockIds.at(ids.size() - 2).toInt();
+		iInd = blockIds.at(ids.size() - 1).toInt();
+		if (tmpDataset == NULL)
+		{
+			GDALClose(tmpDataset);
+			GDALDestroyDriverManager();
+			return false;
+		}
+		ImagePress::createArr(&tmpSrcData, types, blockX, blockY, bandCount);
+		tmpDataset->RasterIO(
+			GF_Read, 0, 0, blockX, blockY, tmpSrcData, blockX, blockY, 
+			types, bandCount, pBandMaps, 0, 0, 0, NULL
+		);
+		poDataset->RasterIO(
+			GF_Write, jInd, iInd, blockX, blockY, tmpSrcData, blockX, blockY,
+			types, bandCount, pBandMaps, 0, 0, 0, NULL
+		);
+		delete[] tmpSrcData;
+		GDALClose(tmpDataset);
+		poDataset->FlushCache();
+	}
+	poDataset->SetProjection(projs);
+	poDataset->SetGeoTransform(trans);
 	GDALClose(poDataset);
 	GDALDestroyDriverManager();
 	return true;

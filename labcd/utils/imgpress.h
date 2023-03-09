@@ -10,6 +10,7 @@
 class ImagePress
 {
 private:
+	static bool createArr(void** data, GDALDataType types, int xSize, int ySize, int band);
 	static unsigned char* imgSketch(
 		float* buffer, 
 		GDALRasterBand* currentBand, 
@@ -59,6 +60,7 @@ public:
 		int blockHeight = 512,
 		int blockWidth = 512
 	);
+	static bool mergeTiff(QString imgDir);
 	static cv::Mat qpixmapToCVMat(QPixmap pimg);
 	static std::vector<int> calcOIF(QString hsiPath);
 };

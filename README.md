@@ -67,3 +67,4 @@ testimgs
 - [x] 切分图像扩展保存边缘的
 - [ ] 增加合并标签图像块
 - [ ] 增加过滤空标签和图像（[#5](https://github.com/geoyee/LabCD/issues/5)）
+- [ ] 增加可以将已经推理好的变换检测mask加载进来进行调整

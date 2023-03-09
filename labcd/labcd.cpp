@@ -352,7 +352,7 @@ void LabCD::mergeBigImage()
         if (ImagePress::mergeTiff(dirPath))
         {
             messageState->setText(
-                tr("合并完成，保存至：") + dirPath + QDir::separator() + "merge.tif");
+                tr("合并完成，保存至：") + dirPath + "/merge.tif");
         }
         else
         {

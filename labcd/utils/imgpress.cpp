@@ -485,7 +485,9 @@ bool ImagePress::mergeTiff(QString imgDir)
 	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
 	// 读取第一个块，获取信息
 	GDALDataset* tmpDataset = (GDALDataset*)GDALOpen(
-		(imgDir + QDir::separator() + subDirList.at(0)).toStdString().c_str(), GA_ReadOnly);
+		(imgDir + QDir::separator() + subDirList.at(0)).toStdString().c_str(), 
+		GA_ReadOnly
+	);
 	if (tmpDataset == NULL)
 	{
 		GDALClose(tmpDataset);
@@ -529,8 +531,11 @@ bool ImagePress::mergeTiff(QString imgDir)
 	{
 		blockInfo = QFileInfo(blockPath);
 		blockIds = blockInfo.baseName().split("_");
+
 		GDALDataset* tmpDataset = (GDALDataset*)GDALOpen(
-			(imgDir + QDir::separator() + tmp).toStdString().c_str(), GA_ReadOnly);
+			(imgDir + QDir::separator() + blockPath).toStdString().c_str(),
+			GA_ReadOnly
+		);
 		jInd = blockIds.at(ids.size() - 2).toInt();
 		iInd = blockIds.at(ids.size() - 1).toInt();
 		if (tmpDataset == NULL)

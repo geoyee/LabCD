@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QString>
 #include <QDesktopServices>
+#include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QColorDialog>
@@ -48,6 +49,9 @@ LabCD::LabCD(QWidget *parent)
         QIcon(":/menu/resources/Merge.png"), tr("合并大图"));
     mergeAct->setShortcut(QKeySequence("Ctrl+M"));
     connect(mergeAct, &QAction::triggered, this, &LabCD::mergeBigImage);
+    QAction* clearAct = fileMenu->addAction(
+        QIcon(":/menu/resources/ClearMask.png"), tr("清理空白标签"));
+    connect(clearAct, &QAction::triggered, this, &LabCD::clearEmptyMask);
     lcdMenuBar->addMenu(fileMenu);
     QMenu* aboutMenu = new QMenu(tr("关于"), this);
     QAction* githubAct = aboutMenu->addAction(
@@ -272,7 +276,7 @@ void LabCD::openDir()
 {
     QStringList t1List;
     QStringList t2List;
-    if (FileWorker::openImageDir(&t1List, &t2List, this))
+    if (FileWorker::openImageDir(&t1List, &t2List, nullptr, this))
     {
         fListWidget->addFileNames(t1List, t2List);
         fListWidget->gotoItem(0);
@@ -359,6 +363,37 @@ void LabCD::mergeBigImage()
             messageState->setText(tr("合并失败"));
         }
     });
+}
+
+void LabCD::clearEmptyMask()
+{
+    QStringList t1List;
+    QStringList t2List;
+    QStringList GTList;
+    if (FileWorker::openImageDir(&t1List, &t2List, &GTList, this))
+    {
+        std::sort(t1List.begin(), t1List.end());
+        std::sort(t2List.begin(), t2List.end());
+        std::sort(GTList.begin(), GTList.end());
+        QFileInfo fInfo;
+        QString pathName;
+        for (int i = 0; i < GTList.size(); ++i)
+        {
+            if (ImagePress::maskIsEmpty(GTList.at(i)))
+            {
+                // 清理图像
+                QFile::remove(t1List.at(i));
+                QFile::remove(t2List.at(i));
+                // 清理标签
+                fInfo = QFileInfo(GTList.at(i));
+                pathName = fInfo.path() + "/" + fInfo.baseName();
+                QFile::remove(GTList.at(i));
+                QFile::remove(pathName + ".json");
+                QFile::remove(pathName + "_pseudo.png");
+            }
+        }
+    }
+    messageState->setText(tr("清理完成"));
 }
 
 void LabCD::save()

@@ -7,7 +7,8 @@
 #include <QtAlgorithms>
 #include "imgpress.h"
 
-bool ImagePress::createArr(void** data, GDALDataType types, int xSize, int ySize, int band)
+bool ImagePress::createArr(
+	void** data, GDALDataType types, int xSize, int ySize, int band)
 {
 	switch (types)
 	{
@@ -63,7 +64,8 @@ unsigned char* ImagePress::imgSketch(
 		}
 		else if (buffer[i] <= max && buffer[i] >= min)
 		{
-			resBuffer[i] = static_cast<uchar>(255 - 255 * (max - buffer[i]) / (max - min));
+			resBuffer[i] = static_cast<uchar>(
+				255 - 255 * (max - buffer[i]) / (max - min));
 		}
 		else
 		{
@@ -84,23 +86,29 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 	float* bBand = new float[imgWidth * imgHeight];
 	unsigned char* rBandUC, * gBandUC, * bBandUC;
 	imgBand->at(0)->RasterIO(
-		GF_Read, 0, 0, imgWidth, imgHeight, rBand, imgWidth, imgHeight, GDT_Float32, 0, 0
+		GF_Read, 0, 0, imgWidth, imgHeight, rBand, 
+		imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	imgBand->at(1)->RasterIO(
-		GF_Read, 0, 0, imgWidth, imgHeight, gBand, imgWidth, imgHeight, GDT_Float32, 0, 0
+		GF_Read, 0, 0, imgWidth, imgHeight, gBand, 
+		imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	imgBand->at(2)->RasterIO(
-		GF_Read, 0, 0, imgWidth, imgHeight, bBand, imgWidth, imgHeight, GDT_Float32, 0, 0
+		GF_Read, 0, 0, imgWidth, imgHeight, bBand, 
+		imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	// 分别拉伸每个波段并将Float转换为unsigned char
 	rBandUC = imgSketch(
-		rBand, imgBand->at(0), imgWidth * imgHeight, imgBand->at(0)->GetNoDataValue()
+		rBand, imgBand->at(0), imgWidth * imgHeight, 
+		imgBand->at(0)->GetNoDataValue()
 	);
 	gBandUC = imgSketch(
-		gBand, imgBand->at(1), imgWidth * imgHeight, imgBand->at(1)->GetNoDataValue()
+		gBand, imgBand->at(1), imgWidth * imgHeight, 
+		imgBand->at(1)->GetNoDataValue()
 	);
 	bBandUC = imgSketch(
-		bBand, imgBand->at(2), imgWidth * imgHeight, imgBand->at(2)->GetNoDataValue()
+		bBand, imgBand->at(2), imgWidth * imgHeight, 
+		imgBand->at(2)->GetNoDataValue()
 	);
 	// 将三个波段组合起来
 	int bytePerLine = (imgWidth * 24 + 31) / 8;
@@ -325,7 +333,8 @@ bool ImagePress::openImage(
 	{
 		GDALAllRegister();  // 注册所有的驱动
 		CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");  // 设置支持中文路径和文件名
-		GDALDataset* poDataset = (GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
+		GDALDataset* poDataset = (GDALDataset*)GDALOpen(
+			imgPath.toStdString().c_str(), GA_ReadOnly);
 		if (poDataset == NULL)
 		{
 			GDALClose(poDataset);
@@ -382,7 +391,8 @@ bool ImagePress::splitTiff(
 	// 读取数据解析属性
 	GDALAllRegister();
 	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
-	GDALDataset* poDataset = (GDALDataset*)GDALOpen(imgPath.toStdString().c_str(), GA_ReadOnly);
+	GDALDataset* poDataset = (GDALDataset*)GDALOpen(
+		imgPath.toStdString().c_str(), GA_ReadOnly);
 	if (poDataset == NULL)
 	{
 		GDALClose(poDataset);
@@ -433,8 +443,9 @@ bool ImagePress::splitTiff(
 				blockWidth, blockHeight, types, bandCount, pBandMaps, 0, 0, 0, NULL
 			);
 			// 保存
-			std::string windowSavePath = (saveDir + QDir::separator() + name +
-				"_" + QString::number(tmpJ) + "_" + QString::number(tmpI) + ".tif").toStdString();
+			std::string windowSavePath = (saveDir + QDir::separator() + name + \
+				"_" + QString::number(tmpJ) + \
+				"_" + QString::number(tmpI) + ".tif").toStdString();
 			std::copy(std::begin(trans), std::end(trans), std::begin(windowTrans));
 			calcWindowTrans(windowTrans, col * blockWidth, row * blockHeight);
 			if (!saveTiffFromGDAL(
@@ -466,21 +477,24 @@ bool ImagePress::mergeTiff(QString imgDir)
 	dir.setSorting(QDir::Name);
 	dir.setNameFilters(QString("*.tiff;*.tif").split(";"));
 	QStringList subDirList = dir.entryList();
-	std::sort(subDirList.begin(), subDirList.end(), [](const QString& s1, const QString& s2) {
-		QStringList fi1 = QFileInfo(s1).baseName().split("_");
-		QStringList fi2 = QFileInfo(s2).baseName().split("_");
-		int j1 = fi1.at(fi1.size() - 2).toInt();
-		int i1 = fi1.at(fi1.size() - 1).toInt();
-		int j2 = fi2.at(fi1.size() - 2).toInt();
-		int i2 = fi2.at(fi1.size() - 1).toInt();
-		if (j1 < j2) return true;
-		else if (j1 > j2) return false;
-		else
+	std::sort(subDirList.begin(), subDirList.end(), 
+		[](const QString& s1, const QString& s2) 
 		{
-			if (i1 < i2) return true;
-			else return false;
+			QStringList fi1 = QFileInfo(s1).baseName().split("_");
+			QStringList fi2 = QFileInfo(s2).baseName().split("_");
+			int j1 = fi1.at(fi1.size() - 2).toInt();
+			int i1 = fi1.at(fi1.size() - 1).toInt();
+			int j2 = fi2.at(fi1.size() - 2).toInt();
+			int i2 = fi2.at(fi1.size() - 1).toInt();
+			if (j1 < j2) return true;
+			else if (j1 > j2) return false;
+			else
+			{
+				if (i1 < i2) return true;
+				else return false;
+			}
 		}
-	});
+	);
 	GDALAllRegister();
 	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
 	// 读取第一个块，获取信息
@@ -597,7 +611,8 @@ cv::Mat ImagePress::qpixmapToCVMat(QPixmap pimg)
 
 std::vector<int> ImagePress::calcOIF(QString hsiPath)
 {
-	GDALDataset* ds = (GDALDataset*)GDALOpen(hsiPath.toStdString().c_str(), GA_ReadOnly);
+	GDALDataset* ds = (GDALDataset*)GDALOpen(
+		hsiPath.toStdString().c_str(), GA_ReadOnly);
 	int bandCount = ds->GetRasterCount();
 	int width = ds->GetRasterXSize();
 	int height = ds->GetRasterYSize();
@@ -608,7 +623,8 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 	{
 		GDALRasterBand* band1 = ds->GetRasterBand(i);
 		double* data1 = new double[width * height];
-		band1->RasterIO(GF_Read, 0, 0, width, height, data1, width, height, GDT_Float64, 0, 0);
+		band1->RasterIO(
+			GF_Read, 0, 0, width, height, data1, width, height, GDT_Float64, 0, 0);
 		Eigen::Map<Eigen::MatrixXd> mat1(data1, height, width);
 		// 计算标准差
 		double std = mat1.array().sqrt().matrix().mean();
@@ -617,7 +633,10 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 		{
 			GDALRasterBand* band2 = ds->GetRasterBand(j);
 			double* data2 = new double[width * height];
-			band2->RasterIO(GF_Read, 0, 0, width, height, data2, width, height, GDT_Float64, 0, 0);
+			band2->RasterIO(
+				GF_Read, 0, 0, width, height, data2, 
+				width, height, GDT_Float64, 0, 0
+			);
 			Eigen::Map<Eigen::MatrixXd> mat2(data2, height, width);
 			// 计算相关系数矩阵
 			double corr = (mat1.array() - \
@@ -637,7 +656,9 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 		for (int j = i + 1; j <= bandCount; j++) {
 			for (int k = j + 1; k <= bandCount; k++) {
 				oif = (stdDev[i - 1] + stdDev[j - 1] + stdDev[k - 1]) / \
-					  (coMatrix(i - 1, j - 1) + coMatrix(i - 1, k - 1) + coMatrix(j - 1, k - 1));
+					  (coMatrix(i - 1, j - 1) + \
+					   coMatrix(i - 1, k - 1) + \
+					   coMatrix(j - 1, k - 1));
 				if (oif > maxOIF) {
 					maxOIF = oif;
 					best_bands[0] = i;
@@ -649,4 +670,21 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 	}
 	GDALClose(ds);
 	return best_bands;
+}
+
+bool ImagePress::maskIsEmpty(QString maskPath)
+{
+	bool isEmpty = false;
+	GDALAllRegister();
+	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
+	CPLSetConfigOption("GDAL_PAM_ENABLED", "NO");  // 不创建aux.xml文件
+	GDALDataset* maskData = (GDALDataset*)GDALOpen(
+		maskPath.toStdString().c_str(), GA_ReadOnly);
+	double mMin, mMax, mMean, mStddev;
+	maskData->GetRasterBand(1)->ComputeStatistics(
+		true, &mMin, &mMax, &mMean, &mStddev, NULL, NULL);
+	if (mMin == mMax && mMin == 0) isEmpty = true;
+	GDALClose(maskData);
+	GDALDestroyDriverManager();
+	return isEmpty;
 }

@@ -10,6 +10,7 @@
         <file>resources/English.png</file>
         <file>resources/Split.png</file>
         <file>resources/Merge.png</file>
+        <file>resources/ClearMask.png</file>
     </qresource>
     <qresource prefix="/tools">
         <file>resources/Enlarge.png</file>

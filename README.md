@@ -40,7 +40,7 @@ testimgs
    ├-- B					# 用于存放时段二的图像
    |   └-- 01.jpg				# 时段二图像
    ├-- GT					# 自动生成，用于存放标注结果
-   |   ├-- 01_pseudo.jpg			# 伪彩色图
+   |   ├-- 01_pseudo.png			# 伪彩色图
    |   ├-- 01.bmp			        # 单波段标注图
    |   └-- 01.json				# 自定义格式标注，用于恢复多边形
    └-- label.json	 		        # 自动生成，用于自动标签导入
@@ -66,5 +66,5 @@ testimgs
 - [x] 切分图像块可以设置大小
 - [x] 切分图像扩展保存边缘的
 - [x] 增加合并标签图像块
-- [ ] 增加过滤空标签和图像（[#5](https://github.com/geoyee/LabCD/issues/5)）
+- [x] 增加过滤空标签和图像（[#5](https://github.com/geoyee/LabCD/issues/5)）
 - [ ] 增加可以将已经推理好的变换检测mask加载进来进行调整

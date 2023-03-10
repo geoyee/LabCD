@@ -22,6 +22,7 @@ private:
     void openDir();
     void openBigImageFile();
     void mergeBigImage();
+    void clearEmptyMask();
     void save();
     void setCrossPenColor();
 

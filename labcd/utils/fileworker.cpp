@@ -6,6 +6,7 @@
 bool FileWorker::openImageDir(
     QStringList* t1List,
     QStringList* t2List,
+    QStringList* GTList,
     QWidget* parent
 )
 {
@@ -36,7 +37,6 @@ bool FileWorker::openImageDir(
     }
     else  // 获取所有图像
     {
-        subDirList.removeOne("GT");
         QStringList nameFilters;
         nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
         QDir dirT1(dirPath + "/" + subDirList.at(0));
@@ -53,6 +53,23 @@ bool FileWorker::openImageDir(
                 QObject::tr("时段一数据和时段二数据数量不相等。")
             );
             return false;
+        }
+        if (GTList != nullptr && subDirList.size() == 3)
+        {
+            QDir dirGT(dirPath + "/" + subDirList.at(2));
+            QStringList GTListTmp = (dirGT).entryList(
+                nameFilters, QDir::Readable | QDir::Files, QDir::Name);
+            QString name;
+            QStringList nameFlag;
+            for (int i = 0; i < GTListTmp.size(); i++)
+            {
+                name = GTListTmp.at(i);
+                nameFlag = name.split("_");
+                if (nameFlag[nameFlag.size() - 1] == "pseudo.png")
+                    continue;
+                GTList->append(
+                    dirPath + "/" + subDirList.at(2) + "/" + name);
+            }
         }
         for (int i = 0; i < t1ListTmp.size(); i++)
         {

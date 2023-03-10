@@ -63,4 +63,5 @@ public:
 	static bool mergeTiff(QString imgDir);
 	static cv::Mat qpixmapToCVMat(QPixmap pimg);
 	static std::vector<int> calcOIF(QString hsiPath);
+	static bool maskIsEmpty(QString maskPath);
 };

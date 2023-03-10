@@ -40,7 +40,7 @@ testimgs
    ├-- B					# time2 image folder
    |   └-- 01.jpg				# time2 image
    ├-- GT					# automatically generated for save annotation
-   |   ├-- 01_pseudo.jpg			# pseudo-color map
+   |   ├-- 01_pseudo.png			# pseudo-color map
    |   ├-- 01.bmp			        # annotation with single band
    |   └-- 01.json				# custom format used to restore polygons
    └-- label.json	 		        # automatically generated for label import

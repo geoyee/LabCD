@@ -7,7 +7,7 @@
 #include "canvas.h"
 #include "labpolygon.h"
 
-Canvas::Canvas(QWidget *parent)
+Canvas::Canvas(QWidget* parent)
 	: QScrollArea(parent)
 {
 	setWidgetResizable(true);
@@ -19,14 +19,13 @@ Canvas::Canvas(QWidget *parent)
 	aView->setAlignment(Qt::AlignCenter);
 	aView->setAutoFillBackground(false);
 	aView->setStyleSheet("background-color: White");
-	connect(aView, &AnnotationView::mousePosChanged, aScene, &AnnotationScence::onMouseChanged);
+	connect(aView, &AnnotationView::mousePosChanged, 
+		aScene, &AnnotationScence::onMouseChanged);
 	// 保持滑动滑块的时候也能同步
 	connect(aView->horizontalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
-		emit syncScroll(value, aView->verticalScrollBar()->value());
-	});
+		emit syncScroll(value, aView->verticalScrollBar()->value());});
 	connect(aView->verticalScrollBar(), &QScrollBar::valueChanged, [=](int value) {
-		emit syncScroll(aView->horizontalScrollBar()->value(), value);
-	});
+		emit syncScroll(aView->horizontalScrollBar()->value(), value);});
 	// 加载
 	setWidget(aView);
 }
@@ -46,13 +45,9 @@ void Canvas::resetZoom(int width, int height)
 	double scrContWidth = (this->width() * optSize) / width;
 	double scrContHeight = (this->height() * optSize) / height;
 	if (scrContWidth * height > this->height())
-	{
 		aView->setZoomAll(scrContHeight);
-	}
 	else
-	{
 		aView->setZoomAll(scrContWidth);
-	}
 	aView->scale(aView->getZoomAll(), aView->getZoomAll());
 	aScene->setScaleRate(aView->getZoomAll());
 }
@@ -71,15 +66,13 @@ void Canvas::loadJSONFromFile(QString jsonPath)
 {
 	std::ifstream ifs(jsonPath.toStdString(), std::ios::binary);
 	if (!ifs.is_open())
-	{
 		return;
-	}
 	Json::Reader reader;
 	Json::Value root;
 	// 解析json内容
 	if (reader.parse(ifs, root))
 	{
-		for (int i = 0; i < root.size(); i++)
+		for (int i = 0; i < root.size(); ++i)
 		{
 			QColor jColor = QColor(
 				root[i]["color"]["R"].asInt(),
@@ -90,13 +83,13 @@ void Canvas::loadJSONFromFile(QString jsonPath)
 			int jPointNumber = root[i]["polygon"]["pointNumber"].asInt();
 			// 新建多边形
 			LabPolygon* nowItem = new LabPolygon(
-				aScene, i, jIndex, aScene->imgWidth, aScene->imgHeight, \
+				aScene, i, jIndex, aScene->imgWidth, aScene->imgHeight,
 				jColor, jColor, aScene->opacity
 			);
 			aScene->addItem(nowItem);
 			aScene->polygonItems.push_back(nowItem);
 			// 添加点
-			for (int j = 0; j < jPointNumber; j++)
+			for (int j = 0; j < jPointNumber; ++j)
 			{
 				QPointF* point = new QPointF(
 					root[i]["polygon"]["points"][2 * j].asFloat(),

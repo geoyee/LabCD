@@ -10,11 +10,12 @@
 class ImagePress
 {
 private:
-	static bool createArr(void** data, GDALDataType types, int xSize, int ySize, int band);
+	static bool createArr(
+		void** data, GDALDataType types, int xSize, int ySize, int band);
 	static unsigned char* imgSketch(
-		float* buffer, 
-		GDALRasterBand* currentBand, 
-		int bandSize, 
+		float* buffer,
+		GDALRasterBand* currentBand,
+		int bandSize,
 		double noValue
 	);
 	static QPixmap GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand);
@@ -50,8 +51,8 @@ public:
 	);
 	static bool openImage(
 		QString imgPath,
-		QPixmap &img,
-		std::string &projs,
+		QPixmap& img,
+		std::string& projs,
 		double trans[6]
 	);
 	static bool splitTiff(

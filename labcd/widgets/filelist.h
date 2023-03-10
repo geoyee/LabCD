@@ -18,7 +18,7 @@ private:
 	QString getGTJsonPath(QString t1Path);
 
 public:
-	FileList(QWidget *parent = nullptr);
+	FileList(QWidget* parent = nullptr);
 	~FileList();
 	void addFileNames(QStringList t1List, QStringList t2List);
 	bool gotoItem(int index);

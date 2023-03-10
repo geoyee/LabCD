@@ -51,9 +51,7 @@ QList<QPointF> LabPolygon::getPointsNotPtr()
 {
 	QList<QPointF> tmpPoints;
 	for (QPointF* p : mPoints)
-	{
 		tmpPoints.push_back(*p);
-	}
 	return tmpPoints;
 }
 
@@ -73,13 +71,9 @@ void LabPolygon::setColor(QColor _insideColor, QColor _borderColor)
 	borderColor.setAlphaF(0.8);
 	setPen(QPen(borderColor));
 	for (LabGrid* item : mItems)
-	{
 		item->setColor(borderColor);
-	}
 	for (LabLine* line : mLines)
-	{
 		line->setColor(borderColor);
-	}
 }
 
 QColor LabPolygon::getColor()
@@ -101,30 +95,27 @@ QList<QPointF*> LabPolygon::getScenePos()
 void LabPolygon::addPointMiddle(int lineIndex, QPointF point)
 {
 	// 添加点
-	LabGrid* gripItem = new LabGrid(this, lineIndex + 1, borderColor, imgHeight, imgWidth);
+	LabGrid* gripItem = new LabGrid(
+		this, lineIndex + 1, borderColor, imgHeight, imgWidth);
 	gripItem->setEnabled(false);
 	gripItem->setPos(point);
 	scene()->addItem(gripItem);
 	gripItem->updateSize();
 	gripItem->setEnabled(true);
 	for (int i = lineIndex + 1; i < mItems.count(); i++)
-	{
 		mItems.at(i)->index += 1;
-	}
 	mItems.insert(static_cast<qsizetype>(lineIndex) + 1, gripItem);
 	QPointF* gripPoint = new QPointF(mapFromScene(point));
 	mPoints.insert(static_cast<qsizetype>(lineIndex) + 1, gripPoint);
 	setPolygon(QPolygonF(getPointsNotPtr()));
 	// 连线
 	for (int i = lineIndex + 1; i < mLines.count(); i++)
-	{
 		mLines.at(i)->index += 1;
-	}
 	QLineF line1 = QLineF(mapToScene(*(mPoints.at(lineIndex))), point);
 	mLines.at(lineIndex)->setLine(line1);
 	LabLine* lineItem = new LabLine(this, lineIndex + 1, borderColor);
 	QLineF line2 = QLineF(
-		point, 
+		point,
 		mapToScene(*(mPoints.at((lineIndex + 2) % getLen())))
 	);
 	lineItem->setLine(line2);
@@ -150,8 +141,7 @@ void LabPolygon::addPointLast(QPointF point)
 	else
 	{
 		mLines.at(mLines.count() - 1)->setLine(
-			QLineF(*mPoints.at(mPoints.count() - 1), point)
-		);
+			QLineF(*mPoints.at(mPoints.count() - 1), point));
 		LabLine* line = new LabLine(this, getLen(), borderColor);
 		scene()->addItem(line);
 		mLines.push_back(line);
@@ -165,27 +155,17 @@ void LabPolygon::addPointLast(QPointF point)
 void LabPolygon::remove()
 {
 	for (LabGrid* grip : mItems)
-	{
 		scene()->removeItem(grip);
-	}
 	for (LabLine* line : mLines)
-	{
 		scene()->removeItem(line);
-	}
 	while (mItems.count() != 0)
-	{
 		mItems.pop_back();
-	}
 	while (mLines.count() != 0)
-	{
 		mLines.pop_back();
-	}
 	scene()->polygonItems.removeAll(this);
 	// 重排序
 	for (int i = 0; i < scene()->polygonItems.count(); i++)
-	{
 		scene()->polygonItems[i]->index = i;
-	}
 	scene()->removeItem(this);
 	delete this;
 }
@@ -195,7 +175,7 @@ void LabPolygon::removeFocusPoint(int preFocusIndex)
 	int focusIndex = -1;
 	if (preFocusIndex == -1)
 	{
-		for (int i = 0; i < mItems.count(); i++)
+		for (int i = 0; i < mItems.count(); ++i)
 		{
 			if (mItems.at(i)->hasFocus())
 			{
@@ -205,48 +185,38 @@ void LabPolygon::removeFocusPoint(int preFocusIndex)
 		}
 	}
 	else
-	{
 		focusIndex = preFocusIndex;
-	}
 	if (focusIndex != -1)
 	{
 		if (getLen() <= 3)
-		{
 			remove();
-		}
 		else
 		{
 			mPoints.removeAt(focusIndex);
 			setPolygon(QPolygonF(getPointsNotPtr()));
 			scene()->removeItem(mItems.at(focusIndex));
 			mItems.removeAt(focusIndex);
-			for (int i = focusIndex; i < mItems.count(); i++)
+			for (int i = focusIndex; i < mItems.count(); ++i)
 			{
 				mItems.at(i)->index -= 1;
 				if (mItems.at(i)->index < 0)
-				{
 					mItems.at(i)->index += mItems.count();
-				}
 			}
 			scene()->removeItem(mLines.at(focusIndex));
 			mLines.removeAt(focusIndex);
 			int lastIndex = focusIndex - 1;
 			if (lastIndex < 0)
-			{
 				lastIndex += mItems.count();
-			}
 			QLineF line(
 				mapToScene(*mPoints.at(lastIndex % getLen())),
 				mapToScene(*mPoints.at(focusIndex % getLen()))
 			);
 			mLines.at(lastIndex % getLen())->setLine(line);
-			for (int i = focusIndex; i < mLines.count(); i++)
+			for (int i = focusIndex; i < mLines.count(); ++i)
 			{
 				mLines.at(i)->index -= 1;
 				if (mLines.at(i)->index < 0)
-				{
 					mLines.at(i)->index += mLines.count();
-				}
 			}
 		}
 	}
@@ -273,9 +243,7 @@ void LabPolygon::moveLine(int index)
 		mLines[index]->setLine(line1);
 		int lastIndex = index - 1;
 		if (lastIndex < 0)
-		{
 			lastIndex += mPoints.count();
-		}
 		QLineF line2 = QLineF(
 			mapToScene(*mPoints.at(lastIndex % getLen())),
 			mapToScene(*mPoints.at(index))
@@ -299,9 +267,7 @@ void LabPolygon::moveItem(int index, QPointF point)
 void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 {
 	if (scene()->drawing)
-	{
 		return;
-	}
 	polyHovering = true;
 	scene()->clearAllFocus();
 	setBrush(insideColor);
@@ -312,14 +278,10 @@ void LabPolygon::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 void LabPolygon::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 {
 	if (scene()->drawing)
-	{
 		return;
-	}
 	polyHovering = false;
 	if (!hasFocus())
-	{
 		setBrush(halfInsideColor);
-	}
 	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyHoverLeave, ev);
 	QGraphicsPolygonItem::hoverLeaveEvent(ev);
 
@@ -329,9 +291,7 @@ void LabPolygon::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 {
 	scene()->clearFocusAndSelected();
 	if (scene()->drawing)
-	{
 		return;
-	}
 	if (ev->button() == Qt::LeftButton)
 	{
 		setSelected(true);
@@ -352,9 +312,7 @@ void LabPolygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 void LabPolygon::focusInEvent(QFocusEvent* ev)
 {
 	if (scene()->drawing)
-	{
 		return;
-	}
 	setBrush(insideColor);
 	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusIn, ev);
 }
@@ -362,25 +320,19 @@ void LabPolygon::focusInEvent(QFocusEvent* ev)
 void LabPolygon::focusOutEvent(QFocusEvent* ev)
 {
 	if (scene()->drawing)
-	{
 		return;
-	}
 	if (!polyHovering)
-	{
 		setBrush(halfInsideColor);
-	}
 	emit scene()->mouseOptRequest(index, -1, OptTypes::PolyFocusOut, ev);
 }
 
 QVariant LabPolygon::itemChange(
-	GraphicsItemChange change, const QVariant &value)
+	GraphicsItemChange change, const QVariant& value)
 {
-	if (change == QGraphicsItem::ItemPositionHasChanged) 
+	if (change == QGraphicsItem::ItemPositionHasChanged)
 	{
 		for (int i = 0; i < mPoints.count(); i++)
-		{
 			moveItem(i, mapToScene(*(mPoints.at(i))));
-		}
 	}
 	return QGraphicsPolygonItem::itemChange(change, value);
 }

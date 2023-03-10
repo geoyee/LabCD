@@ -40,9 +40,9 @@ bool ImagePress::createArr(
 }
 
 unsigned char* ImagePress::imgSketch(
-	float* buffer, 
-	GDALRasterBand* currentBand, 
-	int bandSize, 
+	float* buffer,
+	GDALRasterBand* currentBand,
+	int bandSize,
 	double noValue
 )
 {
@@ -53,24 +53,16 @@ unsigned char* ImagePress::imgSketch(
 	min = minmax[0];
 	max = minmax[1];
 	if (min <= noValue && noValue <= max)
-	{
 		min = 0;
-	}
-	for (int i = 0; i < bandSize; i++)
+	for (int i = 0; i < bandSize; ++i)
 	{
 		if (buffer[i] > max)
-		{
 			resBuffer[i] = 255;
-		}
 		else if (buffer[i] <= max && buffer[i] >= min)
-		{
 			resBuffer[i] = static_cast<uchar>(
 				255 - 255 * (max - buffer[i]) / (max - min));
-		}
 		else
-		{
 			resBuffer[i] = 0;
-		}
 	}
 	return resBuffer;
 }
@@ -86,36 +78,36 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 	float* bBand = new float[imgWidth * imgHeight];
 	unsigned char* rBandUC, * gBandUC, * bBandUC;
 	imgBand->at(0)->RasterIO(
-		GF_Read, 0, 0, imgWidth, imgHeight, rBand, 
+		GF_Read, 0, 0, imgWidth, imgHeight, rBand,
 		imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	imgBand->at(1)->RasterIO(
-		GF_Read, 0, 0, imgWidth, imgHeight, gBand, 
+		GF_Read, 0, 0, imgWidth, imgHeight, gBand,
 		imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	imgBand->at(2)->RasterIO(
-		GF_Read, 0, 0, imgWidth, imgHeight, bBand, 
+		GF_Read, 0, 0, imgWidth, imgHeight, bBand,
 		imgWidth, imgHeight, GDT_Float32, 0, 0
 	);
 	// 分别拉伸每个波段并将Float转换为unsigned char
 	rBandUC = imgSketch(
-		rBand, imgBand->at(0), imgWidth * imgHeight, 
+		rBand, imgBand->at(0), imgWidth * imgHeight,
 		imgBand->at(0)->GetNoDataValue()
 	);
 	gBandUC = imgSketch(
-		gBand, imgBand->at(1), imgWidth * imgHeight, 
+		gBand, imgBand->at(1), imgWidth * imgHeight,
 		imgBand->at(1)->GetNoDataValue()
 	);
 	bBandUC = imgSketch(
-		bBand, imgBand->at(2), imgWidth * imgHeight, 
+		bBand, imgBand->at(2), imgWidth * imgHeight,
 		imgBand->at(2)->GetNoDataValue()
 	);
 	// 将三个波段组合起来
 	int bytePerLine = (imgWidth * 24 + 31) / 8;
 	unsigned char* allBandUC = new unsigned char[bytePerLine * imgHeight * 3];
-	for (int h = 0; h < imgHeight; h++)
+	for (int h = 0; h < imgHeight; ++h)
 	{
-		for (int w = 0; w < imgWidth; w++)
+		for (int w = 0; w < imgWidth; ++w)
 		{
 			allBandUC[h * bytePerLine + w * 3 + 0] = rBandUC[h * imgWidth + w];
 			allBandUC[h * bytePerLine + w * 3 + 1] = gBandUC[h * imgWidth + w];
@@ -123,8 +115,7 @@ QPixmap ImagePress::GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand)
 		}
 	}
 	return QPixmap::fromImage(
-		QImage(allBandUC, imgWidth, imgHeight, bytePerLine, QImage::Format_RGB888)
-	);
+		QImage(allBandUC, imgWidth, imgHeight, bytePerLine, QImage::Format_RGB888));
 }
 
 bool ImagePress::saveTiffFromGDAL(
@@ -146,8 +137,7 @@ bool ImagePress::saveTiffFromGDAL(
 		return false;
 	}
 	GDALDataset* poDataset = pDriverMEM->Create(
-		savePath.c_str(), nImgSizeX, nImgSizeY, nChannel, types, NULL
-	);
+		savePath.c_str(), nImgSizeX, nImgSizeY, nChannel, types, NULL);
 	poDataset->SetProjection(projs);
 	poDataset->SetGeoTransform(trans);
 	if (!poDataset)
@@ -165,33 +155,32 @@ bool ImagePress::saveTiffFromGDAL(
 }
 
 bool ImagePress::saveTiffFromCVMask(
-	std::string savePath, 
+	std::string savePath,
 	cv::Mat mask,
-	const char* projs, 
+	const char* projs,
 	double* trans
 )
 {
 	int nImgSizeX = mask.cols;
 	int nImgSizeY = mask.rows;
 	GDALDriver* pDriverMEM = GetGDALDriverManager()->GetDriverByName("GTiff");
-	if (!pDriverMEM) 
+	if (!pDriverMEM)
 	{
 		GDALDestroyDriverManager();
 		return false;
 	}
 	GDALDataset* poDataset = pDriverMEM->Create(
-		savePath.c_str(), nImgSizeX, nImgSizeY, 1, GDT_Byte, NULL
-	);
+		savePath.c_str(), nImgSizeX, nImgSizeY, 1, GDT_Byte, NULL);
 	poDataset->SetProjection(projs);
 	poDataset->SetGeoTransform(trans);
-	if (!poDataset) 
+	if (!poDataset)
 	{
 		GDALClose(poDataset);
 		GDALDestroyDriverManager();
 		return false;
 	}
 	poDataset->GetRasterBand(1)->RasterIO(
-		GF_Write, 0, 0, nImgSizeX, nImgSizeY, mask.data, 
+		GF_Write, 0, 0, nImgSizeX, nImgSizeY, mask.data,
 		nImgSizeX, nImgSizeY, GDT_Byte, 0, 0, NULL
 	);
 	GDALClose(poDataset);
@@ -214,7 +203,7 @@ cv::Mat ImagePress::CVA(cv::Mat t1, cv::Mat t2)
 	int m = t1.rows;
 	int n = t1.cols;
 	cv::Mat intensity = cv::Mat::zeros(m, n, CV_64FC1);
-	for (int i = 0; i < t1Channels.size(); i++)
+	for (int i = 0; i < t1Channels.size(); ++i)
 	{
 		cv::Mat diff = t1Channels[i] - t2Channels[i];
 		cv::pow(diff, 2, diff);
@@ -275,11 +264,10 @@ void ImagePress::saveResultFromPolygon(
 				cv::Point** cvPoints = new cv::Point * [1];
 				cvPoints[0] = new cv::Point[numPoint];
 				Json::Value points;
-				for (int i = 0; i < numPoint; i++)
+				for (int i = 0; i < numPoint; ++i)
 				{
 					cvPoints[0][i] = cv::Point(
-						poly->mPoints.at(i)->x(), poly->mPoints.at(i)->y()
-					);
+						poly->mPoints.at(i)->x(), poly->mPoints.at(i)->y());
 					points.append(poly->mPoints.at(i)->x());
 					points.append(poly->mPoints.at(i)->y());
 				}
@@ -316,8 +304,8 @@ void ImagePress::saveResultFromPolygon(
 
 bool ImagePress::openImage(
 	QString imgPath,
-	QPixmap &img,
-	std::string &projs,
+	QPixmap& img,
+	std::string& projs,
 	double trans[6]
 )
 {
@@ -361,9 +349,7 @@ bool ImagePress::openImage(
 		{
 			// 只计算一次
 			if (HSI_RGB_LOAD.empty() || bandCount != NOW_BAND_COUNT)
-			{
 				HSI_RGB_LOAD = ImagePress::calcOIF(imgPath);
-			}
 			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[0]));
 			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[1]));
 			bandList.append(poDataset->GetRasterBand(HSI_RGB_LOAD[2]));
@@ -409,15 +395,11 @@ bool ImagePress::splitTiff(
 	const char* projs = poDataset->GetProjectionRef();
 	// 定义读取输入图像波段顺序
 	int* pBandMaps = new int[bandCount];
-	for (int b = 0; b < bandCount; b++)
-	{
+	for (int b = 0; b < bandCount; ++b)
 		pBandMaps[b] = b + 1;
-	}
 	// 循环分块并进行处理
 	if (blockHeight > nXSize || blockWidth > nYSize)
-	{
 		return false;
-	}
 	void* pSrcData = nullptr;
 	ImagePress::createArr(&pSrcData, types, blockWidth, blockHeight, bandCount);
 	int row = 0;
@@ -430,13 +412,9 @@ bool ImagePress::splitTiff(
 			tmpI = i;
 			tmpJ = j;
 			if (i + blockHeight > nYSize)
-			{
 				tmpI = nYSize - blockHeight;
-			}
 			if (j + blockWidth > nXSize)
-			{
 				tmpJ = nXSize - blockWidth;
-			}
 			// 读取原始图像块
 			poDataset->RasterIO(
 				GF_Read, tmpJ, tmpI, blockWidth, blockHeight, pSrcData,
@@ -448,10 +426,8 @@ bool ImagePress::splitTiff(
 				"_" + QString::number(tmpI) + ".tif").toStdString();
 			std::copy(std::begin(trans), std::end(trans), std::begin(windowTrans));
 			calcWindowTrans(windowTrans, col * blockWidth, row * blockHeight);
-			if (!saveTiffFromGDAL(
-				windowSavePath, pSrcData, blockWidth, blockHeight, 
-				bandCount, types, projs, windowTrans, pBandMaps)
-			)
+			if (!saveTiffFromGDAL(windowSavePath, pSrcData, blockWidth, blockHeight,
+					bandCount, types, projs, windowTrans, pBandMaps))
 			{
 				delete[] pSrcData;
 				GDALClose(poDataset);
@@ -477,8 +453,8 @@ bool ImagePress::mergeTiff(QString imgDir)
 	dir.setSorting(QDir::Name);
 	dir.setNameFilters(QString("*.tiff;*.tif").split(";"));
 	QStringList subDirList = dir.entryList();
-	std::sort(subDirList.begin(), subDirList.end(), 
-		[](const QString& s1, const QString& s2) 
+	std::sort(subDirList.begin(), subDirList.end(),
+		[](const QString& s1, const QString& s2)
 		{
 			QStringList fi1 = QFileInfo(s1).baseName().split("_");
 			QStringList fi2 = QFileInfo(s2).baseName().split("_");
@@ -499,7 +475,7 @@ bool ImagePress::mergeTiff(QString imgDir)
 	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
 	// 读取第一个块，获取信息
 	GDALDataset* tmpDataset = (GDALDataset*)GDALOpen(
-		(imgDir + QDir::separator() + subDirList.at(0)).toStdString().c_str(), 
+		(imgDir + QDir::separator() + subDirList.at(0)).toStdString().c_str(),
 		GA_ReadOnly
 	);
 	if (tmpDataset == NULL)
@@ -510,7 +486,7 @@ bool ImagePress::mergeTiff(QString imgDir)
 	}
 	int bandCount = tmpDataset->GetRasterCount();
 	int* pBandMaps = new int[bandCount];
-	for (int b = 0; b < bandCount; b++) pBandMaps[b] = b + 1;
+	for (int b = 0; b < bandCount; ++b) pBandMaps[b] = b + 1;
 	int blockX = tmpDataset->GetRasterXSize();
 	int blockY = tmpDataset->GetRasterYSize();
 	double trans[6] = { 0 };
@@ -535,8 +511,7 @@ bool ImagePress::mergeTiff(QString imgDir)
 		return false;
 	}
 	GDALDataset* poDataset = pDriverMEM->Create(
-		imgPath.toStdString().c_str(), nImgSizeX, nImgSizeY, bandCount, types, NULL
-	);
+		imgPath.toStdString().c_str(), nImgSizeX, nImgSizeY, bandCount, types, NULL);
 	// 循环填入
 	QFileInfo blockInfo;
 	QStringList blockIds;
@@ -545,7 +520,6 @@ bool ImagePress::mergeTiff(QString imgDir)
 	{
 		blockInfo = QFileInfo(blockPath);
 		blockIds = blockInfo.baseName().split("_");
-
 		GDALDataset* tmpDataset = (GDALDataset*)GDALOpen(
 			(imgDir + QDir::separator() + blockPath).toStdString().c_str(),
 			GA_ReadOnly
@@ -560,7 +534,7 @@ bool ImagePress::mergeTiff(QString imgDir)
 		}
 		ImagePress::createArr(&tmpSrcData, types, blockX, blockY, bandCount);
 		tmpDataset->RasterIO(
-			GF_Read, 0, 0, blockX, blockY, tmpSrcData, blockX, blockY, 
+			GF_Read, 0, 0, blockX, blockY, tmpSrcData, blockX, blockY,
 			types, bandCount, pBandMaps, 0, 0, 0, NULL
 		);
 		poDataset->RasterIO(
@@ -588,20 +562,20 @@ cv::Mat ImagePress::qpixmapToCVMat(QPixmap pimg)
 	case QImage::Format_RGB32:
 	case QImage::Format_ARGB32_Premultiplied:
 		mat = cv::Mat(
-			image.height(), image.width(), CV_8UC4, 
+			image.height(), image.width(), CV_8UC4,
 			(void*)image.constBits(), image.bytesPerLine()
 		);
 		break;
 	case QImage::Format_RGB888:
 		mat = cv::Mat(
-			image.height(), image.width(), CV_8UC3, 
+			image.height(), image.width(), CV_8UC3,
 			(void*)image.constBits(), image.bytesPerLine()
 		);
 		cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 		break;
 	case QImage::Format_Grayscale8:
 		mat = cv::Mat(
-			image.height(), image.width(), CV_8UC1, 
+			image.height(), image.width(), CV_8UC1,
 			(void*)image.constBits(), image.bytesPerLine()
 		);
 		break;
@@ -619,7 +593,7 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 	// 计算标准差和相关系数矩阵
 	Eigen::MatrixXd coMatrix(bandCount, bandCount);
 	std::vector<double> stdDev;
-	for (int i = 1; i <= bandCount; i++)  // 波段1
+	for (int i = 1; i <= bandCount; ++i)  // 波段1
 	{
 		GDALRasterBand* band1 = ds->GetRasterBand(i);
 		double* data1 = new double[width * height];
@@ -629,12 +603,12 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 		// 计算标准差
 		double std = mat1.array().sqrt().matrix().mean();
 		stdDev.push_back(std);
-		for (int j = i + 1; j <= bandCount; j++)  // 波段2
+		for (int j = i + 1; j <= bandCount; ++j)  // 波段2
 		{
 			GDALRasterBand* band2 = ds->GetRasterBand(j);
 			double* data2 = new double[width * height];
 			band2->RasterIO(
-				GF_Read, 0, 0, width, height, data2, 
+				GF_Read, 0, 0, width, height, data2,
 				width, height, GDT_Float64, 0, 0
 			);
 			Eigen::Map<Eigen::MatrixXd> mat2(data2, height, width);
@@ -651,14 +625,17 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 	}
 	// 计算OIF值
 	double maxOIF(0), oif(0);
-	std::vector<int> best_bands = {0, 0, 0};
-	for (int i = 1; i <= bandCount; i++) {
-		for (int j = i + 1; j <= bandCount; j++) {
-			for (int k = j + 1; k <= bandCount; k++) {
-				oif = (stdDev[i - 1] + stdDev[j - 1] + stdDev[k - 1]) / \
-					  (coMatrix(i - 1, j - 1) + \
-					   coMatrix(i - 1, k - 1) + \
-					   coMatrix(j - 1, k - 1));
+	std::vector<int> best_bands = { 0, 0, 0 };
+	for (int i = 1; i <= bandCount; ++i) 
+	{
+		for (int j = i + 1; j <= bandCount; ++j) 
+		{
+			for (int k = j + 1; k <= bandCount; ++k) 
+			{
+				oif = (stdDev[i - 1] + stdDev[j - 1] + stdDev[k - 1]) / ( \
+					coMatrix(i - 1, j - 1) + \
+					coMatrix(i - 1, k - 1) + \
+					coMatrix(j - 1, k - 1));
 				if (oif > maxOIF) {
 					maxOIF = oif;
 					best_bands[0] = i;

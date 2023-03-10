@@ -8,7 +8,7 @@
 #include <json/json.h>
 #include "labeltable.h"
 
-LabelTable::LabelTable(QWidget *parent)
+LabelTable::LabelTable(QWidget* parent)
 	: QWidget(parent)
 {
 	nowLabel = new Label();
@@ -36,9 +36,7 @@ LabelTable::LabelTable(QWidget *parent)
 	// 标签改变文本
 	connect(labelTable, &QTableWidget::cellChanged, [=](int row, int column) {
 		if (column == 1)
-		{
 			nowLabel->setName(labelTable->item(row, 1)->text());
-		}
 	});
 	// 初始标签
 	addLabelItem(true);
@@ -77,11 +75,9 @@ void LabelTable::clickItem(int row, int column)
 	else if (column == 3 && row != 0)  // 删除
 	{
 		if (nowLabel->getIndex() == row)
-		{
 			nowLabel->init();
-		}
 		labelTable->removeRow(row);
-		for (int r = 0; r < labelTable->rowCount(); r++)
+		for (int r = 0; r < labelTable->rowCount(); ++r)
 		{
 			labelTable->item(r, 0)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 			labelTable->item(r, 0)->setText(QString::number(r));
@@ -94,11 +90,9 @@ void LabelTable::clickItem(int row, int column)
 	{
 		for (int col = 0; col < 2; col++)
 		{
-			for (int r = 0; r < labelTable->rowCount(); r++)
-			{
+			for (int r = 0; r < labelTable->rowCount(); ++r)
 				labelTable->item(r, col)->setBackground(
 					QColor(255, 255, 255));
-			}
 			labelTable->item(row, col)->setBackground(
 				QColor(48, 140, 198));
 			labelTable->item(row, 0)->setSelected(true);
@@ -135,11 +129,12 @@ int LabelTable::getLen()
 }
 
 void LabelTable::addLabelItem(bool init)
-{	
+{
 	if (init)
 	{
 		createLabelItem(0, tr("背景"), QColor(0, 0, 0));
-		labelTable->item(0, 1)->setFlags(labelTable->item(0, 1)->flags() & ~Qt::ItemIsEditable);
+		labelTable->item(0, 1)->setFlags(
+			labelTable->item(0, 1)->flags() & ~Qt::ItemIsEditable);
 		labelTable->item(0, 3)->setIcon(QIcon(":/docks/resources/CantDelete.png"));
 	}
 	else
@@ -156,7 +151,7 @@ void LabelTable::exportLabelToFile(QString path)
 	std::ofstream os;
 	os.open(path.toStdString());
 	// 写入json内容
-	for (int i = 1; i < labelTable->rowCount(); i++)
+	for (int i = 1; i < labelTable->rowCount(); ++i)
 	{
 		Json::Value leaf;
 		leaf["index"] = labelTable->item(i, 0)->text().toInt();
@@ -175,9 +170,7 @@ bool LabelTable::importLabelFromFile(QString path)
 {
 	std::ifstream ifs(path.toStdString(), std::ios::binary);
 	if (!ifs.is_open())
-	{
 		return false;
-	}
 	Json::Reader reader;
 	Json::Value root;
 	// 解析json内容

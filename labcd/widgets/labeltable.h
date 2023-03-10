@@ -20,7 +20,7 @@ private:
 	void createLabelItem(int _index, QString _name, QColor _color);
 
 public:
-	LabelTable(QWidget *parent = nullptr);
+	LabelTable(QWidget* parent = nullptr);
 	~LabelTable();
 	int getLen();
 	void addLabelItem(bool init = false);

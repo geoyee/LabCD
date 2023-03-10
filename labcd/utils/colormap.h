@@ -11,7 +11,7 @@ private:
 	int index;
 	std::vector<int*> colorList;
 
-	int* strToColor(std::string &str);
+	int* strToColor(std::string& str);
 
 public:
 	ColorMap();

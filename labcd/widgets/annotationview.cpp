@@ -3,9 +3,7 @@
 #include "annotationview.h"
 
 AnnotationView::AnnotationView(
-	AnnotationScence* scence, 
-	QWidget *parent
-)
+	AnnotationScence* scence, QWidget* parent)
 	: QGraphicsView(scence, parent)
 {
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
@@ -21,18 +19,12 @@ AnnotationView::~AnnotationView()
 
 double AnnotationView::limitZoom(double min, double now, double max)
 {
-	if (now > max) 
-	{
+	if (now > max)
 		return max;
-	}
 	else if (now < min)
-	{
 		return min;
-	}
 	else
-	{
 		return now;
-	}
 }
 
 void AnnotationView::sendSyncSignal()
@@ -48,13 +40,9 @@ void AnnotationView::sendSyncSignal()
 bool AnnotationView::checkZoomAll()
 {
 	if (zoomAll < minRange || zoomAll > maxRange)
-	{
 		return false;
-	}
 	else
-	{
 		return true;
-	}
 }
 
 void  AnnotationView::setZoomAll(double value)
@@ -80,13 +68,9 @@ void AnnotationView::scaleZoom(double _zoom)
 	zoomAll *= _zoom;
 	// 限制缩放
 	if (AnnotationView::checkZoomAll())
-	{
 		scale(_zoom, _zoom);
-	}
 	else
-	{
 		zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
-	}
 	emit zoomRequest(zoomAll);
 }
 
@@ -106,16 +90,12 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 			translate(delta.x(), delta.y());
 		}
 		else
-		{
 			zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
-		}
 		emit zoomRequest(zoomAll);
 		ev->ignore();  // 忽略滚动条
 	}
 	else
-	{
 		QGraphicsView::wheelEvent(ev);
-	}
 }
 
 void AnnotationView::mouseMoveEvent(QMouseEvent* ev)

@@ -141,6 +141,9 @@
     <Image Include="resources\Merge.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\ClearMask.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">

@@ -12,7 +12,7 @@ class LabLine : public QGraphicsLineItem
 private:
 	const double minWidth = 0.5;
 	const double maxWidth = 1;
-	
+
 public:
 	LabPolygon* annItem;
 	int index;

@@ -4,7 +4,7 @@
 #include "multcanvas.h"
 #include "../utils/imgpress.h"
 
-MultCanvas::MultCanvas(QWidget *parent)
+MultCanvas::MultCanvas(QWidget* parent)
 	: QWidget(parent)
 {
 	QGridLayout* gLayout = new QGridLayout(this);
@@ -15,11 +15,11 @@ MultCanvas::MultCanvas(QWidget *parent)
 	/* 操作关联 */
 	// 同步鼠标移动缩放
 	connect(
-		t1Canva->aView, &AnnotationView::syncRequest, 
+		t1Canva->aView, &AnnotationView::syncRequest,
 		t2Canva->aView, &AnnotationView::syncTranslate
 	);
 	connect(
-		t2Canva->aView, &AnnotationView::syncRequest, 
+		t2Canva->aView, &AnnotationView::syncRequest,
 		t1Canva->aView, &AnnotationView::syncTranslate
 	);
 	// 同步垂直和水平滑动条位置
@@ -67,23 +67,19 @@ void MultCanvas::loadImages(QString t1Path, QString t2Path, QString jsonPath)
 	bool t1Succ = ImagePress::openImage(t1Path, t1, projs, trans);
 	bool t2Succ = ImagePress::openImage(t2Path, t2, projs, trans);
 	if (!t1Succ || !t2Succ)
-	{
 		QMessageBox::critical(
 			this,
 			tr("错误"),
 			tr("无法打开图像文件。")
 		);
-	}
 	else
 	{
 		if (t1.width() != t2.width() || t1.height() != t2.height())
-		{
 			QMessageBox::critical(
 				this,
 				tr("错误"),
 				tr("两个时段的数据大小不一致。")
 			);
-		}
 		else
 		{
 			t1Canva->loadImageFromPixmap(t1);

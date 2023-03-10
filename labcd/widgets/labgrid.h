@@ -25,8 +25,8 @@ public:
 
 	LabGrid(
 		LabPolygon* _annItem,
-		int _index, 
-		QColor _color, 
+		int _index,
+		QColor _color,
 		int _imgHeight,
 		int _imgWidth
 	);
@@ -42,6 +42,6 @@ public:
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* ev);
 	// 重写方法
 	QVariant itemChange(
-		GraphicsItemChange change, const QVariant &value);
+		GraphicsItemChange change, const QVariant& value);
 	QPainterPath shape();
 };

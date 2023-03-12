@@ -331,6 +331,7 @@ void ImagePress::savePolygonFromMask(QString maskPath)
 	// 多类处理
 	ColorMap cMap;
 	QColor rgb;
+	// TODO: 背景类有父轮廓的最后来绘制
 	for (int i = 1; i < unique.size(); ++i)
 	{
 		rgb = cMap.getColor();

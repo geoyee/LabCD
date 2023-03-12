@@ -399,11 +399,11 @@ void LabCD::convertMask2Json()
 	if (dirPath.isEmpty())
 		return;
 	QtConcurrent::run([=]() { LabCD::_convertMask2Json(dirPath); });
-	//// 保存json
-	//QDir lastPath(dirPath);
-	//lastPath.cdUp();
-	//QString jsonPath = lastPath.path() + "/label.json";
-	//labTableWidget->exportLabelToFile(jsonPath);
+	// TODO: 保存对应数量的label以进行加载
+	// QDir lastPath(dirPath);
+	// lastPath.cdUp();
+	// QString jsonPath = lastPath.path() + "/label.json";
+	// labTableWidget->exportLabelToFile(jsonPath);
 	messageState->setText(tr("转换完成"));
 }
 

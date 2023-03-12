@@ -49,6 +49,7 @@ public:
 		std::string projs = "",
 		double* trans = NULL
 	);
+	static void savePolygonFromMask(QString maskPath);
 	static bool openImage(
 		QString imgPath,
 		QPixmap& img,

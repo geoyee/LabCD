@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QImageReader>
 #include <QtAlgorithms>
+#include "colormap.h"
 #include "imgpress.h"
 
 bool ImagePress::createArr(
@@ -236,7 +237,7 @@ void ImagePress::saveResultFromPolygon(
 	std::string iPath = pathAndName[0].toStdString();
 	std::string iExt = pathAndName[1].toStdString();
 	cv::String pseudoSavaPath = iPath + "_pseudo.png";  // 保存伪彩色
-	std::string jsonSavePath = iPath + ".json";// 保存json
+	std::string jsonSavePath = iPath + ".json";  // 保存json
 	// 新建保存的图像
 	cv::Mat pseudoResult = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_8UC3);
 	cv::Mat result = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_8UC1);
@@ -297,6 +298,57 @@ void ImagePress::saveResultFromPolygon(
 		CPLSetConfigOption("GDAL_FILENAME_IS_UTF8", "NO");
 		saveTiffFromCVMask(baseSavaPath, result, projs.c_str(), trans);
 		GDALDestroyDriverManager();
+	}
+	os << writer.write(polyList);
+	os.close();  // 关闭json
+}
+
+void ImagePress::savePolygonFromMask(QString maskPath)
+{
+	// 新建保存的json
+	QStringList pathAndName = maskPath.split(".");
+	std::string iPath = pathAndName[0].toStdString();
+	std::string jsonSavePath = iPath + ".json";
+	Json::StyledWriter writer;
+	Json::Value polyList;
+	std::ofstream os;
+	os.open(jsonSavePath);
+	// 读取图像并保存json
+	cv::Mat mat = cv::imread(maskPath.toStdString());
+	cv::cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
+	std::vector< std::vector<cv::Point> > contours;
+	std::vector<cv::Vec4i> hierarchy;
+	cv::findContours(
+		mat,
+		contours,
+		hierarchy,
+		cv::RETR_TREE,
+		cv::CHAIN_APPROX_TC89_KCOS
+	);
+	std::vector<cv::Point> contourPolys;
+	double epsilon;
+	QColor rgb = ColorMap().getColor();
+	for (size_t i = 0; i < hierarchy.size(); i++)
+	{
+		epsilon = 0.005 * cv::arcLength(cv::Mat(contours[i]), true);
+		cv::approxPolyDP(cv::Mat(contours[i]), contourPolys, epsilon, true);
+		if (hierarchy[i][3] < 0)  // 没有父轮廓
+		{
+			Json::Value polygons;
+			polygons["labelIndex"] = 1;
+			polygons["color"]["R"] = rgb.red();
+			polygons["color"]["G"] = rgb.green();
+			polygons["color"]["B"] = rgb.blue();
+			polygons["polygon"]["pointNumber"] = contourPolys.size();
+			Json::Value points;
+			for (cv::Point p : contourPolys)
+			{
+				points.append(p.x);
+				points.append(p.y);
+			}
+			polygons["polygon"]["points"] = points;
+			polyList.append(polygons);
+		}
 	}
 	os << writer.write(polyList);
 	os.close();  // 关闭json
@@ -427,7 +479,7 @@ bool ImagePress::splitTiff(
 			std::copy(std::begin(trans), std::end(trans), std::begin(windowTrans));
 			calcWindowTrans(windowTrans, col * blockWidth, row * blockHeight);
 			if (!saveTiffFromGDAL(windowSavePath, pSrcData, blockWidth, blockHeight,
-					bandCount, types, projs, windowTrans, pBandMaps))
+				bandCount, types, projs, windowTrans, pBandMaps))
 			{
 				delete[] pSrcData;
 				GDALClose(poDataset);
@@ -615,7 +667,7 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 			// 计算相关系数矩阵
 			double corr = (mat1.array() - \
 				mat1.mean()).matrix().normalized().cwiseProduct((mat2.array() - \
-				mat2.mean()).matrix().normalized()).sum() / ((double)width * height);
+					mat2.mean()).matrix().normalized()).sum() / ((double)width * height);
 			coMatrix(i - 1, j - 1) = corr;
 			coMatrix(j - 1, i - 1) = corr;
 			// 释放内存
@@ -626,13 +678,13 @@ std::vector<int> ImagePress::calcOIF(QString hsiPath)
 	// 计算OIF值
 	double maxOIF(0), oif(0);
 	std::vector<int> best_bands = { 0, 0, 0 };
-	for (int i = 1; i <= bandCount; ++i) 
+	for (int i = 1; i <= bandCount; ++i)
 	{
-		for (int j = i + 1; j <= bandCount; ++j) 
+		for (int j = i + 1; j <= bandCount; ++j)
 		{
-			for (int k = j + 1; k <= bandCount; ++k) 
+			for (int k = j + 1; k <= bandCount; ++k)
 			{
-				oif = (stdDev[i - 1] + stdDev[j - 1] + stdDev[k - 1]) / ( \
+				oif = (stdDev[i - 1] + stdDev[j - 1] + stdDev[k - 1]) / (\
 					coMatrix(i - 1, j - 1) + \
 					coMatrix(i - 1, k - 1) + \
 					coMatrix(j - 1, k - 1));

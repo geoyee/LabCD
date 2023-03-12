@@ -23,6 +23,10 @@ private:
 	void openBigImageFile();
 	void mergeBigImage();
 	void clearEmptyMask();
+	inline void _clearEmptyMask(
+		QStringList t1List, QStringList t2List, QStringList GTList);
+	void convertMask2Json();
+	inline void _convertMask2Json(QString dirPath);
 	void save();
 	void setCrossPenColor();
 

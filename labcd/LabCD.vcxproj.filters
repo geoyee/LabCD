@@ -144,6 +144,9 @@
     <Image Include="resources\ClearMask.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\Convert.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">

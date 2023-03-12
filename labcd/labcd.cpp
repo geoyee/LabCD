@@ -52,6 +52,9 @@ LabCD::LabCD(QWidget* parent)
 	QAction* clearAct = fileMenu->addAction(
 		QIcon(":/menu/resources/ClearMask.png"), tr("清理空白标签"));
 	connect(clearAct, &QAction::triggered, this, &LabCD::clearEmptyMask);
+	QAction* convertAct = fileMenu->addAction(
+		QIcon(":/menu/resources/Convert.png"), tr("从标签建立标注"));
+	connect(convertAct, &QAction::triggered, this, &LabCD::convertMask2Json);
 	lcdMenuBar->addMenu(fileMenu);
 	QMenu* aboutMenu = new QMenu(tr("关于"), this);
 	QAction* githubAct = aboutMenu->addAction(
@@ -100,14 +103,14 @@ LabCD::LabCD(QWidget* parent)
 
 	/* 绘图界面 */
 	drawCanvas = new MultCanvas(this);
-	connect(drawCanvas->t1Canva->aView, &AnnotationView::mousePosChanged, 
+	connect(drawCanvas->t1Canva->aView, &AnnotationView::mousePosChanged,
 		[=](double x, double y) {
 			messageLocal->setText(
 				tr("当前坐标：") + \
 				QString::fromStdString(std::to_string(x)) + ", " + \
 				QString::fromStdString(std::to_string(y)));
 		});
-	connect(drawCanvas->t2Canva->aView, &AnnotationView::mousePosChanged, 
+	connect(drawCanvas->t2Canva->aView, &AnnotationView::mousePosChanged,
 		[=](double x, double y) {
 			messageLocal->setText(
 				tr("当前坐标：") + \
@@ -145,7 +148,7 @@ LabCD::LabCD(QWidget* parent)
 			QString::fromStdString(std::to_string(nowLabel->getIndex())) + \
 			"] " + nowLabel->getName());
 	});
-	connect(labTableWidget, &LabelTable::colorChanged, 
+	connect(labTableWidget, &LabelTable::colorChanged,
 		[=](int labelIndex, QColor newColor) {
 			// 更新界面上的多边形
 			for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); ++i)
@@ -354,28 +357,70 @@ void LabCD::clearEmptyMask()
 	QStringList GTList;
 	if (FileWorker::openImageDir(&t1List, &t2List, &GTList, this))
 	{
-		std::sort(t1List.begin(), t1List.end());
-		std::sort(t2List.begin(), t2List.end());
-		std::sort(GTList.begin(), GTList.end());
-		QFileInfo fInfo;
-		QString pathName;
-		for (int i = 0; i < GTList.size(); ++i)
+		QtConcurrent::run([=]() {
+			LabCD::_clearEmptyMask(t1List, t2List, GTList); });
+		messageState->setText(tr("清理完成"));
+	}
+}
+
+void LabCD::_clearEmptyMask(
+	QStringList t1List, QStringList t2List, QStringList GTList)
+{
+	std::sort(t1List.begin(), t1List.end());
+	std::sort(t2List.begin(), t2List.end());
+	std::sort(GTList.begin(), GTList.end());
+	QFileInfo fInfo;
+	QString pathName;
+	for (int i = 0; i < GTList.size(); ++i)
+	{
+		if (ImagePress::maskIsEmpty(GTList.at(i)))
 		{
-			if (ImagePress::maskIsEmpty(GTList.at(i)))
-			{
-				// 清理图像
-				QFile::remove(t1List.at(i));
-				QFile::remove(t2List.at(i));
-				// 清理标签
-				fInfo = QFileInfo(GTList.at(i));
-				pathName = fInfo.path() + "/" + fInfo.baseName();
-				QFile::remove(GTList.at(i));
-				QFile::remove(pathName + ".json");
-				QFile::remove(pathName + "_pseudo.png");
-			}
+			// 清理图像
+			QFile::remove(t1List.at(i));
+			QFile::remove(t2List.at(i));
+			// 清理标签
+			fInfo = QFileInfo(GTList.at(i));
+			pathName = fInfo.path() + "/" + fInfo.baseName();
+			QFile::remove(GTList.at(i));
+			QFile::remove(pathName + ".json");
+			QFile::remove(pathName + "_pseudo.png");
 		}
 	}
-	messageState->setText(tr("清理完成"));
+}
+
+void LabCD::convertMask2Json()
+{
+	QString dirPath = QFileDialog::getExistingDirectory(
+		this,
+		QObject::tr("打开标签文件夹"),
+		QString(),
+		QFileDialog::ShowDirsOnly
+	);
+	if (dirPath.isEmpty())
+		return;
+	QtConcurrent::run([=]() { LabCD::_convertMask2Json(dirPath); });
+	// 保存json
+	QDir lastPath(dirPath);
+	lastPath.cdUp();
+	QString jsonPath = lastPath.path() + "/label.json";
+	labTableWidget->exportLabelToFile(jsonPath);
+	messageState->setText(tr("转换完成"));
+}
+
+void LabCD::_convertMask2Json(QString dirPath)
+{
+	QDir maskDir(dirPath);
+	QStringList nameFilters;
+	nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
+	QStringList maskList = (maskDir).entryList(
+		nameFilters, QDir::Readable | QDir::Files, QDir::Name);
+	QString maskPath;
+	for (int i = 0; i < maskList.size(); ++i)
+	{
+		maskPath = dirPath + "/" + maskList.at(i);
+		ImagePress::savePolygonFromMask(maskPath);
+	}
+	labTableWidget->addLabelItem();
 }
 
 void LabCD::save()

@@ -399,11 +399,11 @@ void LabCD::convertMask2Json()
 	if (dirPath.isEmpty())
 		return;
 	QtConcurrent::run([=]() { LabCD::_convertMask2Json(dirPath); });
-	// 保存json
-	QDir lastPath(dirPath);
-	lastPath.cdUp();
-	QString jsonPath = lastPath.path() + "/label.json";
-	labTableWidget->exportLabelToFile(jsonPath);
+	//// 保存json
+	//QDir lastPath(dirPath);
+	//lastPath.cdUp();
+	//QString jsonPath = lastPath.path() + "/label.json";
+	//labTableWidget->exportLabelToFile(jsonPath);
 	messageState->setText(tr("转换完成"));
 }
 
@@ -420,7 +420,6 @@ void LabCD::_convertMask2Json(QString dirPath)
 		maskPath = dirPath + "/" + maskList.at(i);
 		ImagePress::savePolygonFromMask(maskPath);
 	}
-	labTableWidget->addLabelItem();
 }
 
 void LabCD::save()

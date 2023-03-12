@@ -303,6 +303,15 @@ void ImagePress::saveResultFromPolygon(
 	os.close();  // 关闭json
 }
 
+std::vector<uint8_t> ImagePress::calcUnique(cv::Mat mask)
+{
+	auto begin = mask.begin<uint8_t>(), end = mask.end<uint8_t>();
+	auto last = std::unique(begin, end);
+	std::sort(begin, last);
+	last = std::unique(begin, last);
+	return std::vector<uint8_t>(begin, last);
+}
+
 void ImagePress::savePolygonFromMask(QString maskPath)
 {
 	// 新建保存的json
@@ -316,38 +325,52 @@ void ImagePress::savePolygonFromMask(QString maskPath)
 	// 读取图像并保存json
 	cv::Mat mat = cv::imread(maskPath.toStdString());
 	cv::cvtColor(mat, mat, cv::COLOR_BGR2GRAY);
-	std::vector< std::vector<cv::Point> > contours;
-	std::vector<cv::Vec4i> hierarchy;
-	cv::findContours(
-		mat,
-		contours,
-		hierarchy,
-		cv::RETR_TREE,
-		cv::CHAIN_APPROX_TC89_KCOS
-	);
-	std::vector<cv::Point> contourPolys;
-	double epsilon;
-	QColor rgb = ColorMap().getColor();
-	for (size_t i = 0; i < hierarchy.size(); i++)
+	cv::Mat uMat;
+	mat.copyTo(uMat);
+	std::vector<uint8_t> unique = ImagePress::calcUnique(uMat);
+	// 多类处理
+	ColorMap cMap;
+	QColor rgb;
+	for (int i = 1; i < unique.size(); ++i)
 	{
-		epsilon = 0.005 * cv::arcLength(cv::Mat(contours[i]), true);
-		cv::approxPolyDP(cv::Mat(contours[i]), contourPolys, epsilon, true);
-		if (hierarchy[i][3] < 0)  // 没有父轮廓
+		rgb = cMap.getColor();
+		int clas = static_cast<int>(unique.at(i));
+		// 创建一个全为0的输出矩阵，与输入矩阵具有相同的大小和类型
+		cv::Mat clasMat = cv::Mat::zeros(mat.size(), CV_8UC1);
+		// 比较输入矩阵与所需值，将比较结果存储在输出矩阵中
+		cv::compare(mat, clas, clasMat, cv::CMP_EQ);
+		std::vector< std::vector<cv::Point> > contours;
+		std::vector<cv::Vec4i> hierarchy;
+		cv::findContours(
+			clasMat,
+			contours,
+			hierarchy,
+			cv::RETR_TREE,
+			cv::CHAIN_APPROX_TC89_KCOS
+		);
+		std::vector<cv::Point> contourPolys;
+		double epsilon;
+		for (size_t i = 0; i < hierarchy.size(); i++)
 		{
-			Json::Value polygons;
-			polygons["labelIndex"] = 1;
-			polygons["color"]["R"] = rgb.red();
-			polygons["color"]["G"] = rgb.green();
-			polygons["color"]["B"] = rgb.blue();
-			polygons["polygon"]["pointNumber"] = contourPolys.size();
-			Json::Value points;
-			for (cv::Point p : contourPolys)
+			epsilon = 0.005 * cv::arcLength(cv::Mat(contours[i]), true);
+			cv::approxPolyDP(cv::Mat(contours[i]), contourPolys, epsilon, true);
+			if (hierarchy[i][3] < 0)  // 没有父轮廓
 			{
-				points.append(p.x);
-				points.append(p.y);
+				Json::Value polygons;
+				polygons["labelIndex"] = clas;
+				polygons["color"]["R"] = rgb.red();
+				polygons["color"]["G"] = rgb.green();
+				polygons["color"]["B"] = rgb.blue();
+				polygons["polygon"]["pointNumber"] = contourPolys.size();
+				Json::Value points;
+				for (cv::Point p : contourPolys)
+				{
+					points.append(p.x);
+					points.append(p.y);
+				}
+				polygons["polygon"]["points"] = points;
+				polyList.append(polygons);
 			}
-			polygons["polygon"]["points"] = points;
-			polyList.append(polygons);
 		}
 	}
 	os << writer.write(polyList);

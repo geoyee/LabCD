@@ -52,6 +52,9 @@ LabCD::LabCD(QWidget* parent)
 	QAction* clearAct = fileMenu->addAction(
 		QIcon(":/menu/resources/ClearMask.png"), tr("清理空白标签"));
 	connect(clearAct, &QAction::triggered, this, &LabCD::clearEmptyMask);
+	QAction* convertAct = fileMenu->addAction(
+		QIcon(":/menu/resources/Convert.png"), tr("从标签建立标注"));
+	connect(convertAct, &QAction::triggered, this, &LabCD::convertMask2Json);
 	lcdMenuBar->addMenu(fileMenu);
 	QMenu* aboutMenu = new QMenu(tr("关于"), this);
 	QAction* githubAct = aboutMenu->addAction(
@@ -100,14 +103,14 @@ LabCD::LabCD(QWidget* parent)
 
 	/* 绘图界面 */
 	drawCanvas = new MultCanvas(this);
-	connect(drawCanvas->t1Canva->aView, &AnnotationView::mousePosChanged, 
+	connect(drawCanvas->t1Canva->aView, &AnnotationView::mousePosChanged,
 		[=](double x, double y) {
 			messageLocal->setText(
 				tr("当前坐标：") + \
 				QString::fromStdString(std::to_string(x)) + ", " + \
 				QString::fromStdString(std::to_string(y)));
 		});
-	connect(drawCanvas->t2Canva->aView, &AnnotationView::mousePosChanged, 
+	connect(drawCanvas->t2Canva->aView, &AnnotationView::mousePosChanged,
 		[=](double x, double y) {
 			messageLocal->setText(
 				tr("当前坐标：") + \
@@ -123,13 +126,15 @@ LabCD::LabCD(QWidget* parent)
 	fListWidget = new FileList(this);
 	// 保存图像
 	connect(fListWidget, &FileList::saveLastFileRequest, this, &LabCD::save);
+	// 加载图像
 	connect(fListWidget, &FileList::FileClickRequest,
 		[=](QString t1Path, QString t2Path, QString jsonPath) {
 			drawCanvas->loadImages(t1Path, t2Path, jsonPath);
+			updatePolysColor();
 			QFileInfo fileInfo(t1Path);
 			fileName = fileInfo.fileName();
 			messageState->setText(tr("加载图像：") + t1Path);
-		});  // 加载图像
+		});
 	filesDock->setWidget(fListWidget);
 	addDockWidget(Qt::RightDockWidgetArea, filesDock);
 
@@ -145,9 +150,9 @@ LabCD::LabCD(QWidget* parent)
 			QString::fromStdString(std::to_string(nowLabel->getIndex())) + \
 			"] " + nowLabel->getName());
 	});
-	connect(labTableWidget, &LabelTable::colorChanged, 
+	connect(labTableWidget, &LabelTable::colorChanged,
 		[=](int labelIndex, QColor newColor) {
-			// 更新界面上的多边形
+			// 更新界面上的多边形颜色
 			for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); ++i)
 			{
 				if (drawCanvas->t1Canva->aScene->polygonItems[i]->labelIndex == \
@@ -162,6 +167,9 @@ LabCD::LabCD(QWidget* parent)
 				drawCanvas->t2Canva->aScene->setColor(newColor, newColor);
 			}
 		});
+	// 同步Json的加载
+	connect(drawCanvas->t1Canva, &Canvas::addJsonPoly, \
+			labTableWidget, &LabelTable::changeLabelDuotoAddPolyJson);
 	addDockWidget(Qt::RightDockWidgetArea, labelsDock);
 
 	/* 工具栏 */
@@ -275,8 +283,6 @@ void LabCD::openDir()
 	QStringList t2List;
 	if (FileWorker::openImageDir(&t1List, &t2List, nullptr, this))
 	{
-		fListWidget->addFileNames(t1List, t2List);
-		fListWidget->gotoItem(0);
 		// 新建保存目录
 		QFileInfo fileInfo(t1List.at(0));
 		savePath = fileInfo.path();
@@ -289,6 +295,9 @@ void LabCD::openDir()
 		QFileInfo jsonFileInfo(jsonPath);
 		if (jsonFileInfo.isFile())
 			labTableWidget->importLabelFromFile(jsonPath);
+		// 加载图像
+		fListWidget->addFileNames(t1List, t2List);
+		fListWidget->gotoItem(0);
 		// 加载总进度
 		fListWidget->resetProgress();
 	}
@@ -354,28 +363,64 @@ void LabCD::clearEmptyMask()
 	QStringList GTList;
 	if (FileWorker::openImageDir(&t1List, &t2List, &GTList, this))
 	{
-		std::sort(t1List.begin(), t1List.end());
-		std::sort(t2List.begin(), t2List.end());
-		std::sort(GTList.begin(), GTList.end());
-		QFileInfo fInfo;
-		QString pathName;
-		for (int i = 0; i < GTList.size(); ++i)
+		QtConcurrent::run([=]() {
+			LabCD::_clearEmptyMask(t1List, t2List, GTList); });
+		messageState->setText(tr("清理完成"));
+	}
+}
+
+void LabCD::_clearEmptyMask(
+	QStringList t1List, QStringList t2List, QStringList GTList)
+{
+	std::sort(t1List.begin(), t1List.end());
+	std::sort(t2List.begin(), t2List.end());
+	std::sort(GTList.begin(), GTList.end());
+	QFileInfo fInfo;
+	QString pathName;
+	for (int i = 0; i < GTList.size(); ++i)
+	{
+		if (ImagePress::maskIsEmpty(GTList.at(i)))
 		{
-			if (ImagePress::maskIsEmpty(GTList.at(i)))
-			{
-				// 清理图像
-				QFile::remove(t1List.at(i));
-				QFile::remove(t2List.at(i));
-				// 清理标签
-				fInfo = QFileInfo(GTList.at(i));
-				pathName = fInfo.path() + "/" + fInfo.baseName();
-				QFile::remove(GTList.at(i));
-				QFile::remove(pathName + ".json");
-				QFile::remove(pathName + "_pseudo.png");
-			}
+			// 清理图像
+			QFile::remove(t1List.at(i));
+			QFile::remove(t2List.at(i));
+			// 清理标签
+			fInfo = QFileInfo(GTList.at(i));
+			pathName = fInfo.path() + "/" + fInfo.baseName();
+			QFile::remove(GTList.at(i));
+			QFile::remove(pathName + ".json");
+			QFile::remove(pathName + "_pseudo.png");
 		}
 	}
-	messageState->setText(tr("清理完成"));
+}
+
+void LabCD::convertMask2Json()
+{
+	QString dirPath = QFileDialog::getExistingDirectory(
+		this,
+		QObject::tr("打开标签文件夹"),
+		QString(),
+		QFileDialog::ShowDirsOnly
+	);
+	if (dirPath.isEmpty())
+		return;
+	QtConcurrent::run([=]() { LabCD::_convertMask2Json(dirPath); });
+	messageState->setText(tr("转换完成"));
+}
+
+void LabCD::_convertMask2Json(QString dirPath)
+{
+	QDir maskDir(dirPath);
+	QStringList nameFilters;
+	nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tif" << "*.tiff";
+	QStringList maskList = (maskDir).entryList(
+		nameFilters, QDir::Readable | QDir::Files, QDir::Name);
+	QString maskPath;
+	for (int i = 0; i < maskList.size(); ++i)
+	{
+		maskPath = dirPath + "/" + maskList.at(i);
+		ImagePress::savePolygonFromMask(maskPath);
+	}
 }
 
 void LabCD::save()
@@ -408,6 +453,23 @@ void LabCD::setCrossPenColor()
 	);
 	setting->setValue("cross_color", color);
 	drawCanvas->setCrossPenColor(color);
+}
+
+void LabCD::updatePolysColor()
+{
+	for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); ++i)
+	{
+		int idx = drawCanvas->t1Canva->aScene->polygonItems[i]->getLabelIndex();
+		QColor polyColor = drawCanvas->t1Canva->aScene->polygonItems[i]->getColor();
+		QColor labColor = labTableWidget->getColorByIndex(idx);
+		if (polyColor.rgb() != labColor.rgb())
+		{
+			drawCanvas->t1Canva->aScene->polygonItems[i]->setColor(
+				labColor, labColor);
+			drawCanvas->t2Canva->aScene->polygonItems[i]->setColor(
+				labColor, labColor);
+		}
+	}
 }
 
 void LabCD::closeEvent(QCloseEvent* ev)

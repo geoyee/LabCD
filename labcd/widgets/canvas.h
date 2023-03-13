@@ -28,4 +28,5 @@ public:
 
 signals:
 	void syncScroll(int hPos, int vPos);  // 滑块控制
+	void addJsonPoly(int index, QColor color);
 };

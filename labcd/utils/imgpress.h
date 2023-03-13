@@ -37,6 +37,7 @@ private:
 		double* trans
 	);
 	static void calcWindowTrans(double trans[6], int locX, int locY);
+	static std::vector<uint8_t> calcUnique(cv::Mat mask);
 
 public:
 	static cv::Mat CVA(cv::Mat t1, cv::Mat t2);
@@ -49,6 +50,7 @@ public:
 		std::string projs = "",
 		double* trans = NULL
 	);
+	static void savePolygonFromMask(QString maskPath);
 	static bool openImage(
 		QString imgPath,
 		QPixmap& img,

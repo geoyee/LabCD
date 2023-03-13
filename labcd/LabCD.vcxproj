@@ -137,6 +137,7 @@
     <Image Include="resources\Chinese.png" />
     <Image Include="resources\ClearMask.png" />
     <Image Include="resources\Color.png" />
+    <Image Include="resources\Convert.png" />
     <Image Include="resources\Delete.png" />
     <Image Include="resources\DeleteAllPolygons.png" />
     <Image Include="resources\DeletePolygon.png" />

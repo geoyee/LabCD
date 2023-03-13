@@ -128,6 +128,13 @@ int LabelTable::getLen()
 	return labelTable->rowCount();
 }
 
+QColor LabelTable::getColorByIndex(int index)
+{
+	if (index > labelTable->rowCount() - 1 || index < 0)
+		exit(-1);
+	return labelTable->item(index, 2)->background().color();
+}
+
 void LabelTable::addLabelItem(bool init)
 {
 	if (init)
@@ -191,4 +198,14 @@ bool LabelTable::importLabelFromFile(QString path)
 	ifs.close();
 	cMap->setIndex(root.size());  // 移动色表
 	return true;
+}
+
+void LabelTable::changeLabelDuotoAddPolyJson(int index, QColor color)
+{
+	if (index > labelTable->rowCount() - 1)
+	{
+		for (int i = 0; i < index - labelTable->rowCount() + 1; ++i)
+			LabelTable::createLabelItem(
+				labelTable->rowCount() + i, "", color);
+	}
 }

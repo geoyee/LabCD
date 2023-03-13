@@ -60,6 +60,11 @@ int LabPolygon::getLen()
 	return mPoints.count();
 }
 
+int LabPolygon::getLabelIndex()
+{
+	return labelIndex;
+}
+
 void LabPolygon::setColor(QColor _insideColor, QColor _borderColor)
 {
 	insideColor = _insideColor;

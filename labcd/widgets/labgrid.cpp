@@ -125,14 +125,14 @@ QVariant LabGrid::itemChange(
 	QVariant tmpVal = QVariant(value);
 	if (change == QGraphicsItem::ItemPositionChange && isEnabled())
 	{
-		if (tmpVal.toPointF().x() > imgHeight)
-			x = imgHeight;
+		if (tmpVal.toPointF().x() > imgWidth)
+			x = imgWidth;
 		else if (tmpVal.toPointF().x() < 0)
 			x = 0;
 		else
 			x = tmpVal.toPointF().x();
-		if (tmpVal.toPointF().y() > imgWidth)
-			y = imgWidth;
+		if (tmpVal.toPointF().y() > imgHeight)
+			y = imgHeight;
 		else if (tmpVal.toPointF().y() < 0)
 			y = 0;
 		else

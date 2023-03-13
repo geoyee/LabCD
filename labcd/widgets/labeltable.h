@@ -23,9 +23,11 @@ public:
 	LabelTable(QWidget* parent = nullptr);
 	~LabelTable();
 	int getLen();
+	QColor getColorByIndex(int index);
 	void addLabelItem(bool init = false);
 	void exportLabelToFile(QString path);
 	bool importLabelFromFile(QString path);
+	void changeLabelDuotoAddPolyJson(int index, QColor color);
 
 signals:
 	void labelSelected(Label* nowLabel);

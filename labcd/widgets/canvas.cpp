@@ -80,6 +80,7 @@ void Canvas::loadJSONFromFile(QString jsonPath)
 				root[i]["color"]["B"].asInt()
 			);
 			int jIndex = root[i]["labelIndex"].asInt();
+			emit addJsonPoly(jIndex, jColor);
 			int jPointNumber = root[i]["polygon"]["pointNumber"].asInt();
 			// 新建多边形
 			LabPolygon* nowItem = new LabPolygon(

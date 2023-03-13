@@ -126,13 +126,15 @@ LabCD::LabCD(QWidget* parent)
 	fListWidget = new FileList(this);
 	// 保存图像
 	connect(fListWidget, &FileList::saveLastFileRequest, this, &LabCD::save);
+	// 加载图像
 	connect(fListWidget, &FileList::FileClickRequest,
 		[=](QString t1Path, QString t2Path, QString jsonPath) {
 			drawCanvas->loadImages(t1Path, t2Path, jsonPath);
+			updatePolysColor();
 			QFileInfo fileInfo(t1Path);
 			fileName = fileInfo.fileName();
 			messageState->setText(tr("加载图像：") + t1Path);
-		});  // 加载图像
+		});
 	filesDock->setWidget(fListWidget);
 	addDockWidget(Qt::RightDockWidgetArea, filesDock);
 
@@ -150,7 +152,7 @@ LabCD::LabCD(QWidget* parent)
 	});
 	connect(labTableWidget, &LabelTable::colorChanged,
 		[=](int labelIndex, QColor newColor) {
-			// 更新界面上的多边形
+			// 更新界面上的多边形颜色
 			for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); ++i)
 			{
 				if (drawCanvas->t1Canva->aScene->polygonItems[i]->labelIndex == \
@@ -165,6 +167,9 @@ LabCD::LabCD(QWidget* parent)
 				drawCanvas->t2Canva->aScene->setColor(newColor, newColor);
 			}
 		});
+	// 同步Json的加载
+	connect(drawCanvas->t1Canva, &Canvas::addJsonPoly, \
+			labTableWidget, &LabelTable::changeLabelDuotoAddPolyJson);
 	addDockWidget(Qt::RightDockWidgetArea, labelsDock);
 
 	/* 工具栏 */
@@ -278,8 +283,6 @@ void LabCD::openDir()
 	QStringList t2List;
 	if (FileWorker::openImageDir(&t1List, &t2List, nullptr, this))
 	{
-		fListWidget->addFileNames(t1List, t2List);
-		fListWidget->gotoItem(0);
 		// 新建保存目录
 		QFileInfo fileInfo(t1List.at(0));
 		savePath = fileInfo.path();
@@ -292,6 +295,9 @@ void LabCD::openDir()
 		QFileInfo jsonFileInfo(jsonPath);
 		if (jsonFileInfo.isFile())
 			labTableWidget->importLabelFromFile(jsonPath);
+		// 加载图像
+		fListWidget->addFileNames(t1List, t2List);
+		fListWidget->gotoItem(0);
 		// 加载总进度
 		fListWidget->resetProgress();
 	}
@@ -447,6 +453,23 @@ void LabCD::setCrossPenColor()
 	);
 	setting->setValue("cross_color", color);
 	drawCanvas->setCrossPenColor(color);
+}
+
+void LabCD::updatePolysColor()
+{
+	for (int i = 0; i < drawCanvas->t1Canva->aScene->polygonItems.count(); ++i)
+	{
+		int idx = drawCanvas->t1Canva->aScene->polygonItems[i]->getLabelIndex();
+		QColor polyColor = drawCanvas->t1Canva->aScene->polygonItems[i]->getColor();
+		QColor labColor = labTableWidget->getColorByIndex(idx);
+		if (polyColor.rgb() != labColor.rgb())
+		{
+			drawCanvas->t1Canva->aScene->polygonItems[i]->setColor(
+				labColor, labColor);
+			drawCanvas->t2Canva->aScene->polygonItems[i]->setColor(
+				labColor, labColor);
+		}
+	}
 }
 
 void LabCD::closeEvent(QCloseEvent* ev)

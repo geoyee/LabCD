@@ -45,6 +45,7 @@ public:
 	);
 	~LabPolygon();
 	int getLen();
+	int getLabelIndex();
 	void setColor(QColor _insideColor, QColor _borderColor);
 	QColor getColor();
 	QList<QPointF*> getScenePos();

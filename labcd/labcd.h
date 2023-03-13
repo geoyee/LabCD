@@ -29,6 +29,7 @@ private:
 	inline void _convertMask2Json(QString dirPath);
 	void save();
 	void setCrossPenColor();
+	void updatePolysColor();
 
 public:
 	FileList* fListWidget = nullptr;  // 数据列表

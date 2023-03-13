@@ -212,6 +212,8 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 void AnnotationScence::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
 	QGraphicsItem* nowObj = itemAt(ev->scenePos(), QTransform());
+	if (nowObj == nullptr)
+		return;
 	switch ((int)nowObj->zValue())
 	{
 	case 10:  // 使双击对多边形无效

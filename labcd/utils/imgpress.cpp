@@ -329,6 +329,12 @@ void ImagePress::savePolygonFromMask(QString maskPath)
 	mat.copyTo(uMat);
 	std::vector<uint8_t> unique = ImagePress::calcUnique(uMat);
 	std::sort(unique.begin(), unique.end());
+	// 处理两类带255
+	if (unique.size() == 2 && unique.at(1) == 255)
+	{
+		unique.at(1) = 1;
+		cv::convertScaleAbs(mat, mat, 1.0 / 255, 0);
+	}
 	// 多类处理
 	ColorMap cMap;
 	QColor rgb;
@@ -353,7 +359,7 @@ void ImagePress::savePolygonFromMask(QString maskPath)
 		double epsilon;
 		for (size_t i = 0; i < hierarchy.size(); i++)
 		{
-			epsilon = 0.005 * cv::arcLength(cv::Mat(contours[i]), true);
+			epsilon = 0.001 * cv::arcLength(cv::Mat(contours[i]), true);
 			cv::approxPolyDP(cv::Mat(contours[i]), contourPolys, epsilon, true);
 			Json::Value polygons;
 			if (hierarchy[i][3] < 0)  // 没有父轮廓

@@ -177,36 +177,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
-    <None Include="depends\Eigen\Cholesky" />
-    <None Include="depends\Eigen\CholmodSupport" />
-    <None Include="depends\Eigen\Core" />
-    <None Include="depends\Eigen\Dense" />
-    <None Include="depends\Eigen\Eigen" />
-    <None Include="depends\Eigen\Eigenvalues" />
-    <None Include="depends\Eigen\Geometry" />
-    <None Include="depends\Eigen\Householder" />
-    <None Include="depends\Eigen\IterativeLinearSolvers" />
-    <None Include="depends\Eigen\Jacobi" />
-    <None Include="depends\Eigen\KLUSupport" />
-    <None Include="depends\Eigen\LU" />
-    <None Include="depends\Eigen\MetisSupport" />
-    <None Include="depends\Eigen\OrderingMethods" />
-    <None Include="depends\Eigen\PardisoSupport" />
-    <None Include="depends\Eigen\PaStiXSupport" />
-    <None Include="depends\Eigen\QR" />
-    <None Include="depends\Eigen\QtAlignedMalloc" />
-    <None Include="depends\Eigen\Sparse" />
-    <None Include="depends\Eigen\SparseCholesky" />
-    <None Include="depends\Eigen\SparseCore" />
-    <None Include="depends\Eigen\SparseLU" />
-    <None Include="depends\Eigen\SparseQR" />
-    <None Include="depends\Eigen\SPQRSupport" />
-    <None Include="depends\Eigen\StdDeque" />
-    <None Include="depends\Eigen\StdList" />
-    <None Include="depends\Eigen\StdVector" />
-    <None Include="depends\Eigen\SuperLUSupport" />
-    <None Include="depends\Eigen\SVD" />
-    <None Include="depends\Eigen\UmfPackSupport" />
     <None Include="i18n\English.qm" />
     <None Include="LabCD.pri" />
     <None Include="LabCD.pro" />

@@ -18,4 +18,5 @@ public:
 	~ColorMap();
 	void setIndex(int _index);
 	QColor getColor();
+	QColor getColor(int index);
 };

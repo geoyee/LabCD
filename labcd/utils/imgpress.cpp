@@ -328,14 +328,14 @@ void ImagePress::savePolygonFromMask(QString maskPath)
 	cv::Mat uMat;
 	mat.copyTo(uMat);
 	std::vector<uint8_t> unique = ImagePress::calcUnique(uMat);
+	std::sort(unique.begin(), unique.end());
 	// 多类处理
 	ColorMap cMap;
 	QColor rgb;
-	// TODO: 背景类有父轮廓的最后来绘制
 	for (int i = 1; i < unique.size(); ++i)
 	{
-		rgb = cMap.getColor();
 		int clas = static_cast<int>(unique.at(i));
+		rgb = cMap.getColor(clas - 1);
 		// 创建一个全为0的输出矩阵，与输入矩阵具有相同的大小和类型
 		cv::Mat clasMat = cv::Mat::zeros(mat.size(), CV_8UC1);
 		// 比较输入矩阵与所需值，将比较结果存储在输出矩阵中
@@ -355,23 +355,30 @@ void ImagePress::savePolygonFromMask(QString maskPath)
 		{
 			epsilon = 0.005 * cv::arcLength(cv::Mat(contours[i]), true);
 			cv::approxPolyDP(cv::Mat(contours[i]), contourPolys, epsilon, true);
+			Json::Value polygons;
 			if (hierarchy[i][3] < 0)  // 没有父轮廓
 			{
-				Json::Value polygons;
 				polygons["labelIndex"] = clas;
 				polygons["color"]["R"] = rgb.red();
 				polygons["color"]["G"] = rgb.green();
 				polygons["color"]["B"] = rgb.blue();
-				polygons["polygon"]["pointNumber"] = contourPolys.size();
-				Json::Value points;
-				for (cv::Point p : contourPolys)
-				{
-					points.append(p.x);
-					points.append(p.y);
-				}
-				polygons["polygon"]["points"] = points;
-				polyList.append(polygons);
 			}
+			else  // 孔洞
+			{
+				polygons["labelIndex"] = 0;
+				polygons["color"]["R"] = 0;
+				polygons["color"]["G"] = 0;
+				polygons["color"]["B"] = 0;
+			}
+			polygons["polygon"]["pointNumber"] = contourPolys.size();
+			Json::Value points;
+			for (cv::Point p : contourPolys)
+			{
+				points.append(p.x);
+				points.append(p.y);
+			}
+			polygons["polygon"]["points"] = points;
+			polyList.append(polygons);
 		}
 	}
 	os << writer.write(polyList);

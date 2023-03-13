@@ -50,3 +50,11 @@ QColor ColorMap::getColor()
 	index++;
 	return QColor(c[0], c[1], c[2]);
 }
+
+QColor ColorMap::getColor(int index)
+{
+	if (index >= colorList.size())
+		index = 0;
+	int* c = colorList[index];
+	return QColor(c[0], c[1], c[2]);
+}

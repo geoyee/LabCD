@@ -365,6 +365,9 @@ FodyWeavers.xsd
 # Test
 testimgs/
 
+# qt
+build-LabCD-Desktop_Qt_6_4_0_MSVC2019_64bit-Release/
+
 # setup
 setup/
 

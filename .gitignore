@@ -365,12 +365,16 @@ FodyWeavers.xsd
 # Test
 testimgs/
 
-# setup
+# Qt build
+build-LabCD-*-Debug/
+build-LabCD-*-Release/
+
+# Setup
 setup/
 
-# depends
+# Depends
 labcd/depends/
 
-# config
+# Config
 labcd/configs/setting.ini
 

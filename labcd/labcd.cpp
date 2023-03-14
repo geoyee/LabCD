@@ -65,9 +65,10 @@ LabCD::LabCD(QWidget* parent)
 	QAction* helpAct = aboutMenu->addAction(
 		QIcon(":/menu/resources/Help.png"), tr("使用帮助"));
 	connect(helpAct, &QAction::triggered, [=]() {
-		QDesktopServices::openUrl(QUrl(
-			"https://github.com/geoyee/LabCD/wiki/%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%88%97%E8%A1%A8"
-		));
+		QString tutorial = "https://github.com/geoyee/LabCD/tree/develop/docs/Usage_tutorial.md";
+		if (!isCN)
+			tutorial = "https://github.com/geoyee/LabCD/tree/develop/docs/Usage_tutorial_en.md";
+		QDesktopServices::openUrl(QUrl(tutorial));
 	});
 	helpAct->setShortcut(QKeySequence("Ctrl+H"));
 	lcdMenuBar->addMenu(aboutMenu);

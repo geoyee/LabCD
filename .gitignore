@@ -365,15 +365,16 @@ FodyWeavers.xsd
 # Test
 testimgs/
 
-# qt
-build-LabCD-Desktop_Qt_6_4_0_MSVC2019_64bit-Release/
+# Qt build
+build-LabCD-*-Debug/
+build-LabCD-*-Release/
 
-# setup
+# Setup
 setup/
 
-# depends
+# Depends
 labcd/depends/
 
-# config
+# Config
 labcd/configs/setting.ini
 

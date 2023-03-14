@@ -83,6 +83,6 @@ Some documentation and videos are available for using LabCD, including:
 
 # Acknowledgements
 
-I thank [Lin Manhui](https://github.com/Bobholamovic) and [Zhao Junchao](https://github.com/junchao-loongson) for helping me with some C++ programming in this project.
+I thank [Manhui Lin](https://github.com/Bobholamovic) and [Junchao Zhao](https://github.com/junchao-loongson) for helping me with some C++ programming in this project.
 
 # References

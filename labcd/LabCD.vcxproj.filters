@@ -196,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="configs\colormap.txt" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

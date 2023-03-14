@@ -173,6 +173,7 @@
     <QtMoc Include="widgets\labeltable.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="CMakeLists.txt" />
     <Text Include="configs\colormap.txt" />
   </ItemGroup>
   <ItemGroup>

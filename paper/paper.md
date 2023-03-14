@@ -33,7 +33,7 @@ In recent years, with the development of deep learning, more and more data needs
 
 For example, ArcGIS and QGIS can't create two synchronized windows, so it is necessary to switch back and forth between the displays of two images and use shapefiles for annotation. Finally, the shapefile needs to be rasterized into an image. Of course, ENVI can be used to open synchronized interfaces for change detection annotation, either with its own software or IDL. However, it is larger than 3GB and requires a license.
 
-LabCD is developed based on C++17. It has a graphical user interface (GUI) developed in [Qt6](https://www.qt.io/product/qt6) and depends on [OpenCV](https://github.com/opencv/opencv) [@opencv_library], [JsonCpp](https://github.com/open-source-parsers/jsoncpp), [GDAL](https://gdal.org/) [@gdal] and [Eigen](https://gitlab.com/libeigen/eigen) [@eigenweb] and it provides project files including Visual Studio and Qt Creator, as well as CMakeLists files. It was designed with reference to [EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.7/EISeg) [@hao2022eiseg; @hao2021edgeflow], but it is mainly used for remote sensing change detection. LabCD provides left-right synchronization of the canvas, and support GeoTiff split and IO with coordinate reference systems (CRS). Above all, LabCD is a convenient and fast data annotation tool for remote sensing professional fields.
+LabCD is developed based on C++17. It has a graphical user interface (GUI) developed in [Qt6](https://www.qt.io/product/qt6) and depends on [OpenCV](https://github.com/opencv/opencv) [@opencv_library], [JsonCpp](https://github.com/open-source-parsers/jsoncpp), [GDAL](https://gdal.org/) [@gdal] and [Eigen](https://gitlab.com/libeigen/eigen) [@eigenweb] and it provides project files including Visual Studio and Qt Creator, as well as CMakeLists files. It was designed with reference to [EISeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.7/EISeg) [@hao2022eiseg; @hao2021edgeflow], but it is mainly used for remote sensing change detection.
 
 |          | Open source / Free | Simple | GeoTiff IO | Dual-window synchronization |
 | :------: | :----------------: | :----: | :--------: | :-------------------------: |
@@ -43,6 +43,10 @@ LabCD is developed based on C++17. It has a graphical user interface (GUI) devel
 |   QGIS   |         √          |        |     √      |                             |
 |   ENVI   |                    |        |     √      |              √              |
 |  LabCD   |         √          |   √    |     √      |              √              |
+
+LabCD provides left-right synchronization of the canvas, and support GeoTiff split and IO with coordinate reference systems (CRS). Above all, LabCD is a convenient and fast data annotation tool for remote sensing professional fields.
+
+![A screenshot of LabCD. Two images are being annotated.](images/gui.png)
 
 # Audience
 
@@ -62,7 +66,9 @@ LabCD has complete functions on annotation for remote sensing change detection. 
 
 - Friendly label and file / process management.
 
-![A screenshot of LabCD. Two images are being annotated.](images/gui.png)
+Some of the annotated results are shown below, including masks, pseudocolored images for visualization, and JSON files for loading annotations.
+
+![Some annotated results output.](images/output.png)
 
 # Tutorials
 

@@ -20,12 +20,14 @@ private:
 	void createLabelItem(int _index, QString _name, QColor _color);
 
 public:
-	LabelTable(QWidget *parent = nullptr);
+	LabelTable(QWidget* parent = nullptr);
 	~LabelTable();
 	int getLen();
+	QColor getColorByIndex(int index);
 	void addLabelItem(bool init = false);
 	void exportLabelToFile(QString path);
 	bool importLabelFromFile(QString path);
+	void changeLabelDuotoAddPolyJson(int index, QColor color);
 
 signals:
 	void labelSelected(Label* nowLabel);

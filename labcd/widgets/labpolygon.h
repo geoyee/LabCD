@@ -45,6 +45,7 @@ public:
 	);
 	~LabPolygon();
 	int getLen();
+	int getLabelIndex();
 	void setColor(QColor _insideColor, QColor _borderColor);
 	QColor getColor();
 	QList<QPointF*> getScenePos();
@@ -64,6 +65,6 @@ public:
 	void focusOutEvent(QFocusEvent* ev);
 	// 重写
 	QVariant itemChange(
-		GraphicsItemChange change, const QVariant &value);
+		GraphicsItemChange change, const QVariant& value);
 	AnnotationScence* scene();
 };

@@ -138,6 +138,15 @@
     <Image Include="resources\Reference.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\Merge.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\ClearMask.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Convert.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\label.h">
@@ -187,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="configs\colormap.txt" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -3,9 +3,7 @@
 #include "annotationview.h"
 
 AnnotationView::AnnotationView(
-	AnnotationScence* scence, 
-	QWidget *parent
-)
+	AnnotationScence* scence, QWidget* parent)
 	: QGraphicsView(scence, parent)
 {
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
@@ -21,18 +19,12 @@ AnnotationView::~AnnotationView()
 
 double AnnotationView::limitZoom(double min, double now, double max)
 {
-	if (now > max) 
-	{
+	if (now > max)
 		return max;
-	}
 	else if (now < min)
-	{
 		return min;
-	}
 	else
-	{
 		return now;
-	}
 }
 
 void AnnotationView::sendSyncSignal()
@@ -48,13 +40,9 @@ void AnnotationView::sendSyncSignal()
 bool AnnotationView::checkZoomAll()
 {
 	if (zoomAll < minRange || zoomAll > maxRange)
-	{
 		return false;
-	}
 	else
-	{
 		return true;
-	}
 }
 
 void  AnnotationView::setZoomAll(double value)
@@ -78,13 +66,12 @@ void AnnotationView::syncTranslate(int hPos, int vPos, QTransform tf, double zoo
 void AnnotationView::scaleZoom(double _zoom)
 {
 	zoomAll *= _zoom;
-	zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
-	emit zoomRequest(zoomAll);
 	// 限制缩放
 	if (AnnotationView::checkZoomAll())
-	{
 		scale(_zoom, _zoom);
-	}
+	else
+		zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
+	emit zoomRequest(zoomAll);
 }
 
 void AnnotationView::wheelEvent(QWheelEvent* ev)
@@ -93,8 +80,6 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 	{
 		double zoom = 1.0 + ev->angleDelta().y() / 2880.0;  // 倍率
 		zoomAll *= zoom;
-		zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
-		emit zoomRequest(zoomAll);
 		// 限制缩放
 		if (AnnotationView::checkZoomAll())
 		{
@@ -104,12 +89,13 @@ void AnnotationView::wheelEvent(QWheelEvent* ev)
 			QPointF delta = newPos - oldPos;
 			translate(delta.x(), delta.y());
 		}
+		else
+			zoomAll = AnnotationView::limitZoom(minRange, zoomAll, maxRange);
+		emit zoomRequest(zoomAll);
 		ev->ignore();  // 忽略滚动条
 	}
 	else
-	{
 		QGraphicsView::wheelEvent(ev);
-	}
 }
 
 void AnnotationView::mouseMoveEvent(QMouseEvent* ev)

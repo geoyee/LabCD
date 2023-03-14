@@ -23,9 +23,7 @@ bool AnnotationScence::getItemHovering()
 	for (LabPolygon* poly : polygonItems)
 	{
 		if (poly->itemHovering)
-		{
 			return true;
-		}
 	}
 	return false;
 }
@@ -35,9 +33,7 @@ bool AnnotationScence::getPolyHovering()
 	for (LabPolygon* poly : polygonItems)
 	{
 		if (poly->polyHovering)
-		{
 			return true;
-		}
 	}
 	return false;
 }
@@ -47,9 +43,7 @@ bool AnnotationScence::getLineHovering()
 	for (LabPolygon* poly : polygonItems)
 	{
 		if (poly->lineHovering)
-		{
 			return true;
-		}
 	}
 	return false;
 }
@@ -71,9 +65,7 @@ void AnnotationScence::finished()
 	if (nowItem != nullptr)
 	{
 		if (drawing == true && nowItem->getLen() < 3)
-		{
 			nowItem->remove();
-		}
 	}
 	resetScence();  // 清理和置零
 }
@@ -88,13 +80,9 @@ void AnnotationScence::updatePolygonSize()
 	for (LabPolygon* poly : polygonItems)
 	{
 		for (LabGrid* grip : poly->mItems)
-		{
 			grip->updateSize();
-		}
 		for (LabLine* line : poly->mLines)
-		{
 			line->updateWidth();
-		}
 	}
 }
 
@@ -126,7 +114,7 @@ bool AnnotationScence::hovering()
 int AnnotationScence::findFocusPolygon()
 {
 	int focusIndex = -1;
-	for (int i = 0; i < polygonItems.count(); i++)
+	for (int i = 0; i < polygonItems.count(); ++i)
 	{
 		if (polygonItems.at(i)->hasFocus())
 		{
@@ -140,18 +128,14 @@ int AnnotationScence::findFocusPolygon()
 void AnnotationScence::delPoly(int index)
 {
 	if (index != -1)
-	{
 		polygonItems[index]->remove();
-	}
 }
 
 void AnnotationScence::removeAllPolygons()
 {
 	int numPoly = polygonItems.count();
-	for (int i = numPoly - 1; i >= 0; i--)
-	{
+	for (int i = numPoly - 1; i >= 0; --i)
 		delPoly(i);
-	}
 }
 
 void AnnotationScence::clearAllFocus()
@@ -159,9 +143,7 @@ void AnnotationScence::clearAllFocus()
 	for (QGraphicsItem* obj : items())
 	{
 		if (obj->hasFocus())
-		{
 			obj->clearFocus();
-		}
 	}
 }
 
@@ -178,7 +160,7 @@ void AnnotationScence::PressedAddPoint(QPointF point)
 		if (nowItem == nullptr)
 		{
 			nowItem = new LabPolygon(
-				this, polygonItems.count(), labelIndex, \
+				this, polygonItems.count(), labelIndex,
 				imgWidth, imgHeight, insideColor, borderColor, opacity
 			);
 			addItem(nowItem);
@@ -203,6 +185,8 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 	else
 	{
 		QPointF p = ev->scenePos();
+		if (p.x() < 0 || p.x() > imgWidth || p.y() < 0 || p.y() > imgHeight)
+			return;  // 超出范围
 		if (!hovering())  // 非激活状态
 		{
 			// 当选择有标签的时候，左键添加
@@ -218,9 +202,7 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 			for (LabPolygon* poly : polygonItems)
 			{
 				if (poly->polyHovering)
-				{
 					emit focusRequest(poly->labelIndex);
-				}
 			}
 		}
 		QGraphicsScene::mousePressEvent(ev);
@@ -230,6 +212,8 @@ void AnnotationScence::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 void AnnotationScence::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 {
 	QGraphicsItem* nowObj = itemAt(ev->scenePos(), QTransform());
+	if (nowObj == nullptr)
+		return;
 	switch ((int)nowObj->zValue())
 	{
 	case 10:  // 使双击对多边形无效
@@ -256,7 +240,8 @@ void AnnotationScence::getImageSize(int Width, int Height)
 	imgHeight = Height;
 }
 
-void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optType, QEvent* ev)
+void AnnotationScence::copyMouseOpt(
+	int polyIndex, int subIndex, OptTypes optType, QEvent* ev)
 {
 	blockSignals(true);
 	switch (optType)
@@ -269,104 +254,80 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		break;
 	case OptTypes::PolyHoverEnter:
 		if (nowItem != nullptr)
-		{
 			nowItem->hoverEnterEvent((QGraphicsSceneHoverEvent*)ev);
-		}
 		else
 		{
 			if (polygonItems.count() != 0)
-			{
 				polygonItems[polyIndex % polygonItems.count()]->hoverEnterEvent(
-					(QGraphicsSceneHoverEvent*)ev
-				);
-			}
+					(QGraphicsSceneHoverEvent*)ev);
 		}
 		break;
 	case OptTypes::PolyHoverLeave:
 		if (nowItem != nullptr)
-		{
 			nowItem->hoverLeaveEvent((QGraphicsSceneHoverEvent*)ev);
-		}
 		else
 		{
 			if (polygonItems.count() != 0)
-			{
 				polygonItems[polyIndex % polygonItems.count()]->hoverLeaveEvent(
-					(QGraphicsSceneHoverEvent*)ev
-				);
-			}
+					(QGraphicsSceneHoverEvent*)ev);
 		}
 		break;
 	case OptTypes::PolyMousePress:
 		if (nowItem != nullptr)
-		{
 			nowItem->mousePressEvent((QGraphicsSceneMouseEvent*)ev);
-		}
 		else
 		{
 			if (polygonItems.count() != 0)
-			{
 				polygonItems[polyIndex % polygonItems.count()]->mousePressEvent(
-					(QGraphicsSceneMouseEvent*)ev
-				);
-			}
+					(QGraphicsSceneMouseEvent*)ev);
 		}
 		break;
 	case OptTypes::PolyMouseRelease:
 		if (nowItem != nullptr)
-		{
 			nowItem->mouseReleaseEvent((QGraphicsSceneMouseEvent*)ev);
-		}
 		else
 		{
 			if (polygonItems.count() != 0)
-			{
 				polygonItems[polyIndex % polygonItems.count()]->mouseReleaseEvent(
-					(QGraphicsSceneMouseEvent*)ev
-				);
-			}
+					(QGraphicsSceneMouseEvent*)ev);
 		}
 		break;
 	case OptTypes::PolyFocusIn:
 		if (nowItem != nullptr)
-		{
 			nowItem->focusInEvent((QFocusEvent*)ev);
-		}
 		else
 		{
 			if (polygonItems.count() != 0)
-			{
-				polygonItems[polyIndex % polygonItems.count()]->focusInEvent((QFocusEvent*)ev);
-			}
+				polygonItems[polyIndex % polygonItems.count()]->focusInEvent(
+					(QFocusEvent*)ev);
 		}
 		break;
 	case OptTypes::PolyFocusOut:
 		if (nowItem != nullptr)
-		{
 			nowItem->focusOutEvent((QFocusEvent*)ev);
-		}
 		else
 		{
 			if (polygonItems.count() != 0)
-			{
-				polygonItems[polyIndex % polygonItems.count()]->focusOutEvent((QFocusEvent*)ev);
-			}
+				polygonItems[polyIndex % polygonItems.count()]->focusOutEvent(
+					(QFocusEvent*)ev);
 		}
 		break;
 	case OptTypes::LineHoverEnter:
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mLines.count();
-			nowItem->mLines[subIndex % lens]->hoverEnterEvent((QGraphicsSceneHoverEvent*)ev);
+			nowItem->mLines[subIndex % lens]->hoverEnterEvent(
+				(QGraphicsSceneHoverEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mLines.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mLines.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mLines[subIndex % lens]->hoverEnterEvent((QGraphicsSceneHoverEvent*)ev
-				);
+					mLines[subIndex % lens]-> \
+					hoverEnterEvent((QGraphicsSceneHoverEvent*)ev);
 			}
 		}
 		break;
@@ -375,17 +336,17 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		{
 			int lens = nowItem->mLines.count();
 			nowItem->mLines[subIndex % lens]->hoverLeaveEvent(
-				(QGraphicsSceneHoverEvent*)ev
-			);
+				(QGraphicsSceneHoverEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mLines.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mLines.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mLines[subIndex % lens]->hoverLeaveEvent((QGraphicsSceneHoverEvent*)ev
-				);
+					mLines[subIndex % lens]-> \
+					hoverLeaveEvent((QGraphicsSceneHoverEvent*)ev);
 			}
 		}
 		break;
@@ -394,17 +355,17 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		{
 			int lens = nowItem->mLines.count();
 			nowItem->mLines[subIndex % lens]->mousePressEvent(
-				(QGraphicsSceneMouseEvent*)ev
-			);
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mLines.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mLines.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mLines[subIndex % lens]->mousePressEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mLines[subIndex % lens]-> \
+					mousePressEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -413,17 +374,17 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		{
 			int lens = nowItem->mLines.count();
 			nowItem->mLines[subIndex % lens]->mouseReleaseEvent(
-				(QGraphicsSceneMouseEvent*)ev
-			);
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mLines.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mLines.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mLines[subIndex % lens]->mouseReleaseEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mLines[subIndex % lens]-> \
+					mouseReleaseEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -431,16 +392,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mLines.count();
-			nowItem->mLines[subIndex % lens]->mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev);
+			nowItem->mLines[subIndex % lens]->mouseDoubleClickEvent(
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mLines.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mLines.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mLines[subIndex % lens]->mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mLines[subIndex % lens]-> \
+					mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -448,16 +411,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mItems.count();
-			nowItem->mItems[subIndex % lens]->hoverEnterEvent((QGraphicsSceneHoverEvent*)ev);
+			nowItem->mItems[subIndex % lens]->hoverEnterEvent(
+				(QGraphicsSceneHoverEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mItems.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mItems.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mItems[subIndex % lens]->hoverEnterEvent((QGraphicsSceneHoverEvent*)ev
-				);
+					mItems[subIndex % lens]-> \
+					hoverEnterEvent((QGraphicsSceneHoverEvent*)ev);
 			}
 		}
 		break;
@@ -465,16 +430,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mItems.count();
-			nowItem->mItems[subIndex % lens]->hoverLeaveEvent((QGraphicsSceneHoverEvent*)ev);
+			nowItem->mItems[subIndex % lens]->hoverLeaveEvent(
+				(QGraphicsSceneHoverEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mItems.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mItems.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mItems[subIndex % lens]->hoverLeaveEvent((QGraphicsSceneHoverEvent*)ev
-				);
+					mItems[subIndex % lens]-> \
+					hoverLeaveEvent((QGraphicsSceneHoverEvent*)ev);
 			}
 		}
 		break;
@@ -482,16 +449,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mItems.count();
-			nowItem->mItems[subIndex % lens]->mousePressEvent((QGraphicsSceneMouseEvent*)ev);
+			nowItem->mItems[subIndex % lens]->mousePressEvent(
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mItems.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mItems.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mItems[subIndex % lens]->mousePressEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mItems[subIndex % lens]-> \
+					mousePressEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -499,16 +468,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mItems.count();
-			nowItem->mItems[subIndex % lens]->mouseReleaseEvent((QGraphicsSceneMouseEvent*)ev);
+			nowItem->mItems[subIndex % lens]->mouseReleaseEvent(
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mItems.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mItems.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mItems[subIndex % lens]->mouseReleaseEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mItems[subIndex % lens]-> \
+					mouseReleaseEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -516,16 +487,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mItems.count();
-			nowItem->mItems[subIndex % lens]->mouseMoveEvent((QGraphicsSceneMouseEvent*)ev);
+			nowItem->mItems[subIndex % lens]->mouseMoveEvent(
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mItems.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mItems.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mItems[subIndex % lens]->mouseMoveEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mItems[subIndex % lens]-> \
+					mouseMoveEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -533,16 +506,18 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 		if (nowItem != nullptr)
 		{
 			int lens = nowItem->mItems.count();
-			nowItem->mItems[subIndex % lens]->mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev);
+			nowItem->mItems[subIndex % lens]->mouseDoubleClickEvent(
+				(QGraphicsSceneMouseEvent*)ev);
 		}
 		else
 		{
 			if (polygonItems.count() != 0)
 			{
-				int lens = polygonItems[polyIndex % polygonItems.count()]->mItems.count();
+				int lens = polygonItems[polyIndex % polygonItems.count()]-> \
+					mItems.count();
 				polygonItems[polyIndex % polygonItems.count()]-> \
-					mItems[subIndex % lens]->mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev
-				);
+					mItems[subIndex % lens]-> \
+					mouseDoubleClickEvent((QGraphicsSceneMouseEvent*)ev);
 			}
 		}
 		break;
@@ -552,7 +527,7 @@ void AnnotationScence::copyMouseOpt(int polyIndex, int subIndex, OptTypes optTyp
 	blockSignals(false);
 }
 
-void AnnotationScence::drawForeground(QPainter* painter, const QRectF &rect)
+void AnnotationScence::drawForeground(QPainter* painter, const QRectF& rect)
 {
 	if (coords != nullptr && *coords != QPointF(-1, -1))
 	{
@@ -560,11 +535,13 @@ void AnnotationScence::drawForeground(QPainter* painter, const QRectF &rect)
 		painter->setPen(*crossPen);
 		painter->drawLine(
 			int(coords->x()),
-			int(rect.top()), int(coords->x()), int(rect.bottom() + 1));
+			int(rect.top()), int(coords->x()), int(rect.bottom() + 1)
+		);
 		painter->drawLine(
 			int(rect.left()),
 			int(coords->y()),
-			int(rect.right() + 1), int(coords->y()));
+			int(rect.right() + 1), int(coords->y())
+		);
 	}
 }
 

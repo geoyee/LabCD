@@ -3,7 +3,7 @@
 #include <QString>
 #include "filelist.h"
 
-FileList::FileList(QWidget *parent)
+FileList::FileList(QWidget* parent)
 	: QWidget(parent)
 {
 	// 布局
@@ -35,13 +35,9 @@ QString FileList::getGTJsonPath(QString t1Path)
 	jsonPath = jsonPath.replace(fileInfo.completeSuffix(), "json");
 	QFileInfo jsonInfo(jsonPath);
 	if (jsonInfo.isFile())
-	{ 
 		return jsonPath;
-	}
 	else
-	{
 		return "";
-	}
 }
 
 void FileList::addFileNames(QStringList t1List, QStringList t2List)
@@ -56,9 +52,7 @@ void FileList::addFileNames(QStringList t1List, QStringList t2List)
 bool FileList::gotoItem(int index)
 {
 	if (index < 0 || index > fList->count() - 1)
-	{
 		return false;
-	}
 	fList->setCurrentRow(index);
 	nowIndex = index;
 	QString t1Path = fList->currentItem()->text();
@@ -95,7 +89,7 @@ bool FileList::gotoNextItem()
 }
 
 void FileList::finishedCurrentItem()
-{	
+{
 	QListWidgetItem* item = fList->item(nowIndex);
 	if (item->background().color() != QColor("#7fffd4"))
 	{
@@ -114,7 +108,7 @@ void FileList::resetProgress()
 }
 
 void FileList::progressUpAdd()
-{	
+{
 	progressBar->setValue(finishedNumber);
 	progressBar->setFormat(QString::number(finishedNumber) + " / %m");
 }

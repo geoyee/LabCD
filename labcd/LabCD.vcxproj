@@ -71,6 +71,7 @@
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)depends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -82,6 +83,7 @@
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)depends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -133,7 +135,9 @@
     <Image Include="resources\AddLabel.png" />
     <Image Include="resources\CantDelete.png" />
     <Image Include="resources\Chinese.png" />
+    <Image Include="resources\ClearMask.png" />
     <Image Include="resources\Color.png" />
+    <Image Include="resources\Convert.png" />
     <Image Include="resources\Delete.png" />
     <Image Include="resources\DeleteAllPolygons.png" />
     <Image Include="resources\DeletePolygon.png" />
@@ -145,6 +149,7 @@
     <Image Include="resources\Help.png" />
     <Image Include="resources\Icon.png" />
     <Image Include="resources\Last.png" />
+    <Image Include="resources\Merge.png" />
     <Image Include="resources\Narrow.png" />
     <Image Include="resources\Next.png" />
     <Image Include="resources\Reference.png" />
@@ -168,6 +173,7 @@
     <QtMoc Include="widgets\labeltable.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="CMakeLists.txt" />
     <Text Include="configs\colormap.txt" />
   </ItemGroup>
   <ItemGroup>

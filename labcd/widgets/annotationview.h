@@ -18,14 +18,14 @@ private:
 	const double minRange = 0.02;
 	const double maxRange = 50;
 	double zoomAll = 1;
-	
+
 	double limitZoom(double min, double now, double max);
 	void sendSyncSignal();
 
 public:
 	AnnotationView(
-		AnnotationScence* scence, 
-		QWidget *parent = nullptr
+		AnnotationScence* scence,
+		QWidget* parent = nullptr
 	);
 	~AnnotationView();
 	bool checkZoomAll();

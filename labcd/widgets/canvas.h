@@ -13,13 +13,13 @@ class Canvas : public QScrollArea
 
 private:
 	double optSize = 0.98;  // 最佳缩放
-	
+
 
 public:
 	AnnotationView* aView = nullptr;
 	AnnotationScence* aScene = nullptr;
 
-	Canvas(QWidget *parent = nullptr);
+	Canvas(QWidget* parent = nullptr);
 	~Canvas();
 	void resetZoom(int width, int height);
 	void loadImageFromPixmap(QPixmap pixmap);
@@ -28,4 +28,5 @@ public:
 
 signals:
 	void syncScroll(int hPos, int vPos);  // 滑块控制
+	void addJsonPoly(int index, QColor color);
 };

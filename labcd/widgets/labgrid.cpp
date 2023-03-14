@@ -36,7 +36,7 @@ LabGrid::LabGrid(
 
 LabGrid::~LabGrid()
 {
-	
+
 }
 
 void LabGrid::setColor(QColor c)
@@ -52,13 +52,9 @@ void LabGrid::updateSize(double s)
 	circlePath.addEllipse(QRectF(-size, -size, size * s, size * s));
 	squarePath.addRect(QRectF(-size, -size, size * s, size * s));
 	if (hovering)
-	{
 		setPath(squarePath);
-	}
 	else
-	{
 		setPath(circlePath);
-	}
 }
 
 void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
@@ -68,8 +64,7 @@ void LabGrid::hoverEnterEvent(QGraphicsSceneHoverEvent* ev)
 	annItem->itemHovering = true;
 	hovering = true;
 	emit annItem->scene()->mouseOptRequest(
-		annItem->index, index, OptTypes::GridHoverEnter, ev
-	);
+		annItem->index, index, OptTypes::GridHoverEnter, ev);
 	QGraphicsPathItem::hoverEnterEvent(ev);
 }
 
@@ -80,8 +75,7 @@ void LabGrid::hoverLeaveEvent(QGraphicsSceneHoverEvent* ev)
 	annItem->itemHovering = false;
 	hovering = false;
 	emit annItem->scene()->mouseOptRequest(
-		annItem->index, index, OptTypes::GridHoverLeave, ev
-	);
+		annItem->index, index, OptTypes::GridHoverLeave, ev);
 	QGraphicsPathItem::hoverLeaveEvent(ev);
 }
 
@@ -92,8 +86,7 @@ void LabGrid::mousePressEvent(QGraphicsSceneMouseEvent* ev)
 		annItem->scene()->clearSelection();
 		setSelected(true);
 		emit annItem->scene()->mouseOptRequest(
-			annItem->index, index, OptTypes::GridMousePress, ev
-		);
+			annItem->index, index, OptTypes::GridMousePress, ev);
 		QGraphicsPathItem::mousePressEvent(ev);
 	}
 }
@@ -102,8 +95,7 @@ void LabGrid::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev)
 {
 	setSelected(false);
 	emit annItem->scene()->mouseOptRequest(
-		annItem->index, index, OptTypes::GridMouseRelease, ev
-	);
+		annItem->index, index, OptTypes::GridMouseRelease, ev);
 	QGraphicsPathItem::mouseReleaseEvent(ev);
 }
 
@@ -113,8 +105,7 @@ void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 	if (!annItem->scene()->drawing)
 	{
 		emit annItem->scene()->mouseOptRequest(
-		annItem->index, index, OptTypes::GridMouseDoubleClick, ev
-		);
+			annItem->index, index, OptTypes::GridMouseDoubleClick, ev);
 		annItem->removeFocusPoint(index);
 	}
 }
@@ -122,8 +113,7 @@ void LabGrid::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* ev)
 void LabGrid::mouseMoveEvent(QGraphicsSceneMouseEvent* ev)
 {
 	emit annItem->scene()->mouseOptRequest(
-		annItem->index, index, OptTypes::GridMouseMove, ev
-	);
+		annItem->index, index, OptTypes::GridMouseMove, ev);
 	QGraphicsPathItem::mouseMoveEvent(ev);
 }
 
@@ -135,29 +125,18 @@ QVariant LabGrid::itemChange(
 	QVariant tmpVal = QVariant(value);
 	if (change == QGraphicsItem::ItemPositionChange && isEnabled())
 	{
-		if (tmpVal.toPointF().x() > imgHeight) {
-			x = imgHeight;
-		}
+		if (tmpVal.toPointF().x() > imgWidth)
+			x = imgWidth;
 		else if (tmpVal.toPointF().x() < 0)
-		{
 			x = 0;
-		}
 		else
-		{
 			x = tmpVal.toPointF().x();
-		}
-		if (tmpVal.toPointF().y() > imgWidth)
-		{
-			y = imgWidth;
-		}
+		if (tmpVal.toPointF().y() > imgHeight)
+			y = imgHeight;
 		else if (tmpVal.toPointF().y() < 0)
-		{
 			y = 0;
-		}
 		else
-		{
 			y = tmpVal.toPointF().y();
-		}
 		tmpVal = QPointF(x, y);
 		annItem->movePoint(index, tmpVal.toPointF());
 	}

@@ -1,7 +1,7 @@
 ﻿#include <QFile>
 #include "colormap.h"
 
-int* ColorMap::strToColor(std::string &str)
+int* ColorMap::strToColor(std::string& str)
 {
 	int* color = new int[3];
 	std::size_t startIdx = 0;
@@ -45,10 +45,16 @@ void ColorMap::setIndex(int _index)
 QColor ColorMap::getColor()
 {
 	if (index >= colorList.size())
-	{
 		index = 0;
-	}
 	int* c = colorList[index];
 	index++;
+	return QColor(c[0], c[1], c[2]);
+}
+
+QColor ColorMap::getColor(int index)
+{
+	if (index >= colorList.size())
+		index = 0;
+	int* c = colorList[index];
 	return QColor(c[0], c[1], c[2]);
 }

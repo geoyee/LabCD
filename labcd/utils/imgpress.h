@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <iostream>
 #include <variant>
 #include <opencv2/opencv.hpp>
 #include <gdal/gdal_priv.h>
@@ -9,10 +10,12 @@
 class ImagePress
 {
 private:
+	static bool createArr(
+		void** data, GDALDataType types, int xSize, int ySize, int band);
 	static unsigned char* imgSketch(
-		float* buffer, 
-		GDALRasterBand* currentBand, 
-		int bandSize, 
+		float* buffer,
+		GDALRasterBand* currentBand,
+		int bandSize,
 		double noValue
 	);
 	static QPixmap GDALRastertoPixmap(QList<GDALRasterBand*>* imgBand);
@@ -34,6 +37,7 @@ private:
 		double* trans
 	);
 	static void calcWindowTrans(double trans[6], int locX, int locY);
+	static std::vector<uint8_t> calcUnique(cv::Mat mask);
 
 public:
 	static cv::Mat CVA(cv::Mat t1, cv::Mat t2);
@@ -46,10 +50,11 @@ public:
 		std::string projs = "",
 		double* trans = NULL
 	);
+	static void savePolygonFromMask(QString maskPath);
 	static bool openImage(
 		QString imgPath,
-		QPixmap &img,
-		std::string &projs,
+		QPixmap& img,
+		std::string& projs,
 		double trans[6]
 	);
 	static bool splitTiff(
@@ -58,5 +63,8 @@ public:
 		int blockHeight = 512,
 		int blockWidth = 512
 	);
+	static bool mergeTiff(QString imgDir);
 	static cv::Mat qpixmapToCVMat(QPixmap pimg);
+	static std::vector<int> calcOIF(QString hsiPath);
+	static bool maskIsEmpty(QString maskPath);
 };
